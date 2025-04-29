@@ -13,7 +13,7 @@ export default function AllOrder() {
       <PageBreadcrumb pageTitle="Halaman Order" />
 
       <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-        <div className="hidden lg:block mb-4">
+        <div className="lg:block mb-4">
           <form>
             <div className="relative">
               <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
