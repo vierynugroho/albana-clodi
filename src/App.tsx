@@ -24,6 +24,7 @@ import AllOrderPage from "./pages/Order/AllOrder";
 import CancelOrderPage from "./pages/Order/CancelOder";
 import AllProdukPage from "./pages/Produk/AllProduk";
 import AllCustomerPage from "./pages/Customer/AllCustomer";
+import AllReportPage from "./pages/Laporan/AllReport";
 
 export default function App() {
   return (
@@ -51,6 +52,9 @@ export default function App() {
 
             {/* Customer Page */}
             <Route path="/customer" element={<AllCustomerPage />} />
+
+            {/* Report Page */}
+            <Route path="/report" element={<AllReportPage/>} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
