@@ -2,7 +2,7 @@ import { useRef } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 
-export default function AllOrderPage() {
+export default function CancelOrderPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div>
@@ -10,7 +10,7 @@ export default function AllOrderPage() {
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
       />
-      <PageBreadcrumb pageTitle="Halaman Order" />
+      <PageBreadcrumb pageTitle="Cancel Order" />
 
       <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
         <div className="lg:block mb-4">

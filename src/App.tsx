@@ -19,7 +19,9 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import AllOrder from "./pages/Order/AllOrder";
+import NewOrderPage from "./pages/Order/NewOrder";
+import AllOrderPage from "./pages/Order/AllOrder";
+import CancelOrderPage from "./pages/Order/CancelOder";
 
 export default function App() {
   return (
@@ -38,7 +40,9 @@ export default function App() {
             <Route index path="/" element={<Home />} />
 
             {/* Order Page */}
-            <Route path="/order" element={<AllOrder />} />
+            <Route path="/order" element={<AllOrderPage />} />
+            <Route path="/order/sales_channel" element={<NewOrderPage />} />
+            <Route path="/order/canceled" element={<CancelOrderPage />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
