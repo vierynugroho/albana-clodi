@@ -23,6 +23,7 @@ import NewOrderPage from "./pages/Order/NewOrder";
 import AllOrderPage from "./pages/Order/AllOrder";
 import CancelOrderPage from "./pages/Order/CancelOder";
 import AllProdukPage from "./pages/Produk/AllProduk";
+import AllCustomerPage from "./pages/Customer/AllCustomer";
 
 export default function App() {
   return (
@@ -47,6 +48,9 @@ export default function App() {
 
             {/* Produk Page */}
             <Route path="/produk" element={<AllProdukPage />} />
+
+            {/* Customer Page */}
+            <Route path="/customer" element={<AllCustomerPage />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
