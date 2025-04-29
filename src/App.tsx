@@ -19,6 +19,7 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import AllOrder from "./pages/Order/AllOrder";
 
 export default function App() {
   return (
@@ -35,6 +36,9 @@ export default function App() {
             }
           >
             <Route index path="/" element={<Home />} />
+
+            {/* Order Page */}
+            <Route path="/order" element={<AllOrder />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
