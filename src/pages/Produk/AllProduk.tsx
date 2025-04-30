@@ -1,8 +1,27 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
+import Button from "../../components/ui/button/Button";
+import { BoxIcon, DownloadIcon } from "../../icons";
+import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
+import OptionDropdown from "../../components/produk/OptionDropdown";
 
 export default function AllProdukPage() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div>
@@ -13,10 +32,14 @@ export default function AllProdukPage() {
       <PageBreadcrumb pageTitle="Halaman Produk" />
 
       <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-        <div className="lg:block mb-4">
-          <form>
+        <div
+          className={`mb-4 flex justify-between items-center ${
+            isMobile ? "gap-x-5" : "gap-x-2"
+          }`}
+        >
+          <form className="flex-1">
             <div className="relative">
-              <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
+              <span className="absolute -translate-y-1/2 pointer-events-auto left-4 top-1/2">
                 <svg
                   className="fill-gray-500 dark:fill-gray-400"
                   width="20"
@@ -37,21 +60,45 @@ export default function AllProdukPage() {
                 ref={inputRef}
                 type="text"
                 placeholder="Cari Order Barang"
-                className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
+                className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-10 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 md:pl-12"
               />
             </div>
           </form>
+
+          {/* Tambah Product */}
+          <Button
+            size={isMobile ? "sm" : "md"}
+            variant="primary"
+            startIcon={<BoxIcon className="size-5" />}
+          >
+            Tambah Produk
+          </Button>
+
+          {/* Option Produk */}
+          <OptionDropdown />
         </div>
 
-        <div className="mx-auto w-full max-w-[630px] text-center mt-2">
-          <h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-            Card Title Here
-          </h3>
+        <div className="mx-auto w-full flex justify-start gap-3">
+          <Button
+            size="md"
+            variant="outline"
+            className="flex-1/2"
+            startIcon={<DownloadIcon className="size-5" />}
+          >
+            Download
+          </Button>
+          <Button
+            size="md"
+            variant="outline"
+            className="flex-1/2"
+            startIcon={<DownloadIcon className="size-5" />}
+          >
+            Filter
+          </Button>
+        </div>
 
-          <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-            Start putting content on grids or panels, you can also use different
-            combinations of grids.Please check out the dashboard and other pages
-          </p>
+        <div className="mx-auto w-full text-center mt-2">
+          <BasicTableOne />
         </div>
       </div>
     </div>
