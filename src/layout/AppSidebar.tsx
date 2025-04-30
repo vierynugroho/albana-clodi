@@ -21,7 +21,6 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { TbReportAnalytics } from "react-icons/tb";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { useSidebar } from "../context/SidebarContext";
-import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
   name: string;
@@ -340,7 +339,7 @@ const AppSidebar: React.FC = () => {
         <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
-              <img
+              {/* <img
                 className="dark:hidden"
                 src="/images/logo/logo.svg"
                 alt="Logo"
@@ -353,14 +352,31 @@ const AppSidebar: React.FC = () => {
                 alt="Logo"
                 width={150}
                 height={40}
-              />
+              /> */}
+              <div className="flex items-center">
+                <img
+                  className="dark:block mx-2"
+                  src="/images/logo/albana-clodi-logo.svg"
+                  alt="Logo"
+                  width={80}
+                  height={30}
+                />
+                <h2 className="font-mono font-medium text-2xl text-purple-950 dark:text-white">AlbanaGrosir</h2>
+              </div>
             </>
           ) : (
+            // <img
+            //   src="/images/logo/logo-icon.svg"
+            //   alt="Logo"
+            //   width={32}
+            //   height={32}
+            // />
             <img
-              src="/images/logo/logo-icon.svg"
+              className="dark:block"
+              src="/images/logo/albana-clodi-logo.svg"
               alt="Logo"
-              width={32}
-              height={32}
+              width={80}
+              height={30}
             />
           )}
         </Link>
@@ -402,7 +418,7 @@ const AppSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
+        {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
       </div>
     </aside>
   );
