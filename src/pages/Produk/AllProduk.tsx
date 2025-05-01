@@ -3,8 +3,9 @@ import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
 import { BoxIcon, DownloadIcon } from "../../icons";
-import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
 import OptionDropdown from "../../components/produk/OptionDropdown";
+import TableProduk from "../../components/produk/TableProduk";
+import { TbFilterDiscount } from "react-icons/tb";
 
 export default function AllProdukPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -65,17 +66,33 @@ export default function AllProdukPage() {
             </div>
           </form>
 
-          {/* Tambah Product */}
-          <Button
-            size={isMobile ? "sm" : "md"}
-            variant="primary"
-            startIcon={<BoxIcon className="size-5" />}
-          >
-            Tambah Produk
-          </Button>
+          {/* Button Add Product */}
+          {!isMobile ? (
+            <Button
+              size={isMobile ? "sm" : "md"}
+              variant="primary"
+              startIcon={<BoxIcon className="size-5" />}
+            >
+              Tambah Produk
+            </Button>
+          ) : null}
 
           {/* Option Produk */}
           <OptionDropdown />
+        </div>
+
+        {/* When display mobile is open change button layout*/}
+        <div className="mx-auto w-full flex justify-start gap-3 mb-2">
+          {isMobile ? (
+            <Button
+              size={isMobile ? "sm" : "md"}
+              variant="primary"
+              className="flex-1"
+              startIcon={<BoxIcon className="size-5" />}
+            >
+              Tambah Produk
+            </Button>
+          ) : null}
         </div>
 
         <div className="mx-auto w-full flex justify-start gap-3">
@@ -91,14 +108,14 @@ export default function AllProdukPage() {
             size="md"
             variant="outline"
             className="flex-1/2"
-            startIcon={<DownloadIcon className="size-5" />}
+            startIcon={<TbFilterDiscount className="size-5" />}
           >
             Filter
           </Button>
         </div>
 
         <div className="mx-auto w-full text-center mt-2">
-          <BasicTableOne />
+          <TableProduk />
         </div>
       </div>
     </div>
