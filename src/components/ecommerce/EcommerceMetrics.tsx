@@ -49,31 +49,31 @@ export default function EcommerceMetrics() {
         <div
           key={item.label}
           className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 transition-all duration-300 
-                  dark:border-gray-800 dark:bg-white/[0.03] md:p-6 shadow-md">
+                  dark:border-gray-800 dark:bg-white/[0.03] md:p-6 shadow-md hover:shadow-blue-300 dark:hover:bg-blue-200/[0.03]">
           {/* Content */}
           <div className="relative z-10">
             <div className="flex items-center justify-between">
               <div
                 className={`flex items-center justify-center w-12 h-12 rounded-xl ${
                   item.label === "Laba Kotor"
-                    ? "bg-green-50"
+                    ? "bg-green-50 dark:bg-green-800"
                     : item.label === "Item Terjual"
-                    ? "bg-blue-50"
+                    ? "bg-blue-50 dark:bg-blue-800"
                     : item.label === "Order Belum Diproses"
                     ? "bg-yellow-50 dark:bg-yellow-800"
-                    : "bg-orange-50"
+                    : "bg-orange-50 dark:bg-orange-800"
                 }`}>
                 {item.icon}
               </div>
               <IoIosArrowForward className="text-gray-500" />
             </div>
 
-            <div className="flex items-end justify-between mt-5">
+            <div className="flex items-end justify-between mt-3">
               <div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+                <span className="text-theme-sm text-gray-500 dark:text-gray-400">
                   {item.label}
                 </span>
-                <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+                <h4 className="mt-0.5 font-bold text-gray-800 text-theme-xl dark:text-white/90">
                   {item.label === "Laba Kotor"
                     ? `Rp ${item.value.toLocaleString("id-ID")}`
                     : item.value.toLocaleString()}
