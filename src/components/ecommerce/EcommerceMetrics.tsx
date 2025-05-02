@@ -1,24 +1,19 @@
-import { TbPackageExport } from "react-icons/tb";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  BoxIconLine,
-  DollarLineIcon,
-  // GroupIcon,
-} from "../../icons";
+import { IoIosArrowForward } from "react-icons/io";
+import { GiProfit } from "react-icons/gi";
+import { GiBoxUnpacking } from "react-icons/gi";
+import { BsBoxSeamFill } from "react-icons/bs";
+import { FaPeopleCarryBox } from "react-icons/fa6";
+import { ArrowDownIcon, ArrowUpIcon } from "../../icons";
 import Badge from "../ui/badge/Badge";
-import { FaCalendar } from "react-icons/fa";
 
 export default function EcommerceMetrics() {
   const metrics = [
     {
       label: "Laba Kotor",
-      value: "Rp4,96jt",
+      value: 4960000,
       change: 8.2,
       trend: "up",
-      icon: (
-        <DollarLineIcon className="text-gray-800 size-6 dark:text-white/90" />
-      ),
+      icon: <GiProfit className="text-green-600 size-6 dark:text-white/90" />,
     },
     {
       label: "Item Terjual",
@@ -26,73 +21,29 @@ export default function EcommerceMetrics() {
       change: 3.5,
       trend: "up",
       icon: (
-        <TbPackageExport className="text-gray-800 size-6 dark:text-white/90" />
+        <GiBoxUnpacking className="text-blue-600 size-6 dark:text-white/90" />
       ),
     },
     {
       label: "Order Belum Diproses",
       value: 27,
-      change: "",
-      trend: "",
-      icon: <BoxIconLine className="text-gray-800 size-6 dark:text-white/90" />,
+      change: null,
+      trend: null,
+      icon: (
+        <FaPeopleCarryBox className="text-yellow-500 size-6 dark:text-white/90" />
+      ),
     },
     {
       label: "Order Hari Ini",
       value: 92,
       change: 2.3,
       trend: "down",
-      icon: <FaCalendar className="text-gray-800 size-6 dark:text-white/90" />,
+      icon: (
+        <BsBoxSeamFill className="text-orange-600 size-6 dark:text-white/90" />
+      ),
     },
   ];
   return (
-    // <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
-    //   {/* <!-- Metric Item Start --> */}
-    //   <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-    //     <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-    //       <GroupIcon className="text-gray-800 size-6 dark:text-white/90" />
-    //     </div>
-
-    //     <div className="flex items-end justify-between mt-5">
-    //       <div>
-    //         <span className="text-sm text-gray-500 dark:text-gray-400">
-    //           Customers
-    //         </span>
-    //         <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-    //           3,782
-    //         </h4>
-    //       </div>
-    //       <Badge color="success">
-    //         <ArrowUpIcon />
-    //         11.01%
-    //       </Badge>
-    //     </div>
-    //   </div>
-    //   {/* <!-- Metric Item End --> */}
-
-    //   {/* <!-- Metric Item Start --> */}
-    //   <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-    //     <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-    //       <BoxIconLine className="text-gray-800 size-6 dark:text-white/90" />
-    //     </div>
-    //     <div className="flex items-end justify-between mt-5">
-    //       <div>
-    //         <span className="text-sm text-gray-500 dark:text-gray-400">
-    //           Orders
-    //         </span>
-    //         <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-    //           5,359
-    //         </h4>
-    //       </div>
-
-    //       <Badge color="error">
-    //         <ArrowDownIcon />
-    //         9.05%
-    //       </Badge>
-    //     </div>
-    //   </div>
-    //   {/* <!-- Metric Item End --> */}
-    // </div>
-
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 md:gap-6">
       {metrics.map((item) => (
         <div
@@ -101,8 +52,20 @@ export default function EcommerceMetrics() {
                   dark:border-gray-800 dark:bg-white/[0.03] md:p-6 shadow-md">
           {/* Content */}
           <div className="relative z-10">
-            <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-              {item.icon}
+            <div className="flex items-center justify-between">
+              <div
+                className={`flex items-center justify-center w-12 h-12 rounded-xl ${
+                  item.label === "Laba Kotor"
+                    ? "bg-green-50"
+                    : item.label === "Item Terjual"
+                    ? "bg-blue-50"
+                    : item.label === "Order Belum Diproses"
+                    ? "bg-yellow-50 dark:bg-yellow-800"
+                    : "bg-orange-50"
+                }`}>
+                {item.icon}
+              </div>
+              <IoIosArrowForward className="text-gray-500" />
             </div>
 
             <div className="flex items-end justify-between mt-5">
@@ -116,10 +79,12 @@ export default function EcommerceMetrics() {
                     : item.value.toLocaleString()}
                 </h4>
               </div>
-              <Badge color={item.trend === "up" ? "success" : "error"}>
-                {item.trend === "up" ? <ArrowUpIcon /> : <ArrowDownIcon />}
-                {item.change}%
-              </Badge>
+              {item.change !== null && (
+                <Badge color={item.trend === "up" ? "success" : "error"}>
+                  {item.trend === "up" ? <ArrowUpIcon /> : <ArrowDownIcon />}
+                  {item.change}%
+                </Badge>
+              )}
             </div>
           </div>
         </div>

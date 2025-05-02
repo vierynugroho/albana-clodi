@@ -1,5 +1,5 @@
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
-import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
+import MonthlyGrossProfitChart from "../../components/ecommerce/MonthlyGrossProfitChart";
 import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 // import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
 // import RecentOrders from "../../components/ecommerce/RecentOrders";
@@ -24,7 +24,7 @@ export default function Home() {
         <div className="grid grid-cols-12 gap-4 md:gap-6">
           <div className="col-span-12 space-y-6 xl:col-span-7">
             <EcommerceMetrics />
-            <MonthlySalesChart />
+            <MonthlyGrossProfitChart />
           </div>
           <div className="col-span-12">
             <StatisticsChart />
@@ -43,14 +43,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
-            <h2 className="text-lg font-medium text-gray-800 dark:text-white">
-              Another Section
-            </h2>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              Additional content for the left section.
-            </p>
-          </div>
+          <div className="p-4 bg-white rounded-lg shadow dark:bg-gray-800"></div>
         </div>
       </div>
     </>
