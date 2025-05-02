@@ -6,6 +6,7 @@ import { BoxIcon, DownloadIcon } from "../../icons";
 import OptionDropdown from "../../components/produk/OptionDropdown";
 import TableProduk from "../../components/produk/TableProduk";
 import { TbFilterDiscount } from "react-icons/tb";
+import { Link } from "react-router";
 
 export default function AllProdukPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -68,33 +69,35 @@ export default function AllProdukPage() {
 
           {/* Button Add Product */}
           {!isMobile ? (
-            <Button
-              size={isMobile ? "sm" : "md"}
-              variant="primary"
-              startIcon={<BoxIcon className="size-5" />}
-            >
-              Tambah Produk
-            </Button>
+            <Link to={"/produk/form_produk"}>
+              <Button
+                size={isMobile ? "sm" : "md"}
+                variant="primary"
+                startIcon={<BoxIcon className="size-5" />}
+              >
+                Tambah Produk
+              </Button>
+            </Link>
           ) : null}
 
           {/* Option Produk */}
           <OptionDropdown />
         </div>
-
-        {/* When display mobile is open change button layout*/}
-        <div className="mx-auto w-full flex justify-start gap-3 mb-2">
-          {isMobile ? (
-            <Button
-              size={isMobile ? "sm" : "md"}
-              variant="primary"
-              className="flex-1"
-              startIcon={<BoxIcon className="size-5" />}
-            >
-              Tambah Produk
-            </Button>
-          ) : null}
-        </div>
-
+        {/* When display mobile is open change button layout*/}{" "}
+        <Link to={"/produk/form_produk"}>
+          <div className="mx-auto w-full flex justify-start gap-3 mb-2">
+            {isMobile ? (
+              <Button
+                size={isMobile ? "sm" : "md"}
+                variant="primary"
+                className="flex-1"
+                startIcon={<BoxIcon className="size-5" />}
+              >
+                Tambah Produk
+              </Button>
+            ) : null}
+          </div>
+        </Link>
         <div className="mx-auto w-full flex justify-start gap-3">
           <Button
             size="md"
@@ -113,7 +116,6 @@ export default function AllProdukPage() {
             Filter
           </Button>
         </div>
-
         <div className="mx-auto w-full text-center mt-2">
           <TableProduk />
         </div>
