@@ -8,14 +8,42 @@ import PhoneInput from "../../form/group-input/PhoneInput";
 import ManageProduk from "../switch/ManageProduk";
 import ManagePrivorAndStorefront from "../switch/ManagePrivorAndStorefront";
 import VarianProduk from "./VarianProduk";
+import GrosirProduk from "./GrosirProduk";
+import Button from "../button/Button";
+
+type BarisInput = {
+  minJumlah: string;
+  maxJumlah: string;
+  hargaSatuan: string;
+};
+
+type VariantProduk = {
+  image: string;
+  hargaBeli: number | null;
+  hargaNormal: number | null;
+  hargaReseler: number | null;
+  varian?: string;
+  warna?: string;
+  stok: number | null;
+};
 
 export default function FormProduk() {
+  // State For Select Kategori Produk
   const [selectedValue, setSelectedValue] = useState<string>("option1");
   const handleRadioChange = (value: string) => {
     setSelectedValue(value);
   };
 
-  // Select Change
+  // State For Grosir Produk
+  const [row, setRows] = useState<BarisInput[]>(
+    Array.from({ length: 5 }, () => ({
+      minJumlah: "",
+      maxJumlah: "",
+      hargaSatuan: "",
+    }))
+  );
+
+  // State for set product condition
   const [switchStates, setSwitchStates] = useState({
     varian: false,
     diskon: false,
@@ -48,11 +76,39 @@ export default function FormProduk() {
     console.log("Updated phone number:", phoneNumber);
   };
 
+  // State For Add Variant
+  const [varian, setVarian] = useState<VariantProduk[]>(
+    Array.from({ length: 1 }, () => ({
+      hargaBeli: null,
+      hargaNormal: null,
+      hargaReseler: null,
+      image: "",
+      stok: null,
+    }))
+  );
+
+  const addVariantComponent = () => {
+    setVarian((prevVariant) => [
+      ...prevVariant,
+      {
+        hargaBeli: null,
+        hargaNormal: null,
+        hargaReseler: null,
+        image: "",
+        stok: null,
+      },
+    ]);
+  };
+
+  const deleteVariant = (index: number) => {
+    setVarian((prevVariant) => prevVariant.filter((_, i) => i !== index));
+  };
+
   return (
     <div>
-      <div className="flex gap-4 max-lg:flex-col">
-        <div className="flex flex-col gap-y-5 ">
-          <ComponentCard title="Informasi Produk" className="xl:w-205 flex-initial">
+      <div className="flex gap-4 max-xl:flex-col">
+        <div className="flex flex-col gap-y-5">
+          <ComponentCard title="Informasi Produk" className="md:min-w-[780px]">
             <form action="">
               <div className="space-y-6">
                 <div>
@@ -74,7 +130,6 @@ export default function FormProduk() {
                 </div>
                 <div>
                   <Label>Jenis Produk</Label>
-
                   <div className="flex flex-wrap items-center gap-8">
                     <div
                       className={`${
@@ -168,6 +223,11 @@ export default function FormProduk() {
               </div>
             </form>
           </ComponentCard>
+
+          {/* Component Grosir Price */}
+          {switchStates.grosir ? (
+            <GrosirProduk rows={row} setRows={setRows} />
+          ) : null}
         </div>
         {/* Manage Produk */}
         <div className="flex flex-col gap-7 flex-1">
@@ -180,24 +240,37 @@ export default function FormProduk() {
         </div>
       </div>
       <div className="overflow-auto">
-        <div className=" p-4 mt-5 bg-brand-900 rounded-2xl max-w-[820px] min-w-[820px]">
-          <div className="grid grid-cols-5 ml-8 content-center text-sky-50 ">
+        <div className=" p-4 mt-5 bg-brand-900 rounded-2xl max-w-full lg:max-w-[791px] min-w-[791px]">
+          <div className="grid grid-cols-5 ml-15 content-center text-sky-50 ">
             {" "}
             <h2>Gambar</h2>
             <h2>Spesifikasi</h2>
             <h2>Harga</h2>
-            <h2>Varian</h2>
+            <h2>Variant</h2>
             <h2>Stok</h2>
           </div>
         </div>
 
         {/* Variant Produk */}
-        <ComponentCard
-          title="Variant 1"
-          className="mt-5 max-w-[820px] min-w-[820px]"
-        >
-          <VarianProduk />
-        </ComponentCard>
+        {varian.map((row, index) => (
+          <ComponentCard
+            key={index + 1}
+            title={`Variant ${index + 1}`}
+            className="mt-5 max-lg:max-w-full lg:max-w-[791px] min-w-[791px] relative"
+          >
+            <VarianProduk
+              varian={row}
+              setVarian={setVarian}
+              index={index}
+              onDelete={deleteVariant}
+            />
+          </ComponentCard>
+        ))}
+        {switchStates.varian ? (
+          <Button className="mt-5" onClick={addVariantComponent}>
+            Tambah Varian
+          </Button>
+        ) : null}
       </div>
     </div>
   );

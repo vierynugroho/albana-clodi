@@ -7,6 +7,7 @@ import OptionDropdown from "../../components/produk/OptionDropdown";
 import TableProduk from "../../components/produk/TableProduk";
 import { TbFilterDiscount } from "react-icons/tb";
 import { Link } from "react-router";
+import FilterProduk from "../../components/produk/FilterProduk";
 
 export default function AllProdukPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -117,6 +118,7 @@ export default function AllProdukPage() {
           </Button>
         </div>
         <div className="mx-auto w-full text-center mt-2">
+          <FilterProduk />
           <TableProduk />
         </div>
       </div>
