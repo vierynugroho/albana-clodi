@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 function SliderDashboard() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const slides = [
-    "https://jubelio.com/wp-content/uploads/2021/04/33.png",
-    "https://jubelio.com/wp-content/uploads/2021/04/32.png",
-    "https://jubelio.com/wp-content/uploads/2021/04/35.png",
+    "https://assets.jenius.com/assets/2018/08/03063131/belanja-hemat.jpg",
+    "https://assets.jenius.com/assets/2018/08/03063131/belanja-hemat.jpg",
+    "https://assets.jenius.com/assets/2018/08/03063131/belanja-hemat.jpg",
   ];
 
   const thumbnailRef = useRef<HTMLDivElement>(null);

@@ -140,7 +140,7 @@ export default function MonthlyGrossProfitChart() {
         </div>
       </div>
 
-      <div className="flex justify-end text-md mb-4">
+      <div className="flex justify-end text-md pt-4 pb-2">
         <label
           htmlFor="toggleChartProfitGross"
           className="flex items-center text-gray-800 dark:text-white/90 cursor-pointer">
@@ -153,7 +153,7 @@ export default function MonthlyGrossProfitChart() {
           />
           <span className="w-3 h-3 flex items-center justify-center border  bg-gray-400 rounded-full mr-2">
             {showChartProGross && (
-              <div className="w-3 h-3 bg-[#FFB22C] dark:bg-white rounded-full"></div>
+              <div className="w-3 h-3 bg-[#FFB22C] rounded-full"></div>
             )}
           </span>
           <div

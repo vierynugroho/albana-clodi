@@ -126,7 +126,7 @@ export default function StatisticsSalerChart() {
         </div>
       </div>
 
-      <div className="flex justify-end text-md mb-4">
+      <div className="flex justify-end text-md pt-4 pb-2">
         <label
           htmlFor="toggleChartSaler"
           className="flex items-center text-gray-800 dark:text-white/90 cursor-pointer">
@@ -139,7 +139,7 @@ export default function StatisticsSalerChart() {
           />
           <span className="w-3 h-3 flex items-center justify-center border  bg-gray-400 rounded-full mr-2">
             {showChartSaler && (
-              <div className="w-3 h-3 bg-blue-700 dark:bg-white rounded-full"></div>
+              <div className="w-3 h-3 bg-blue-700 rounded-full"></div>
             )}
           </span>
           <div
