@@ -127,7 +127,7 @@ export default function AllProdukPage() {
             className="flex-1/2"
             startIcon={<DownloadIcon className="size-5" />}
           >
-            Download
+            Export Data
           </Button>
           <Button
             size="md"

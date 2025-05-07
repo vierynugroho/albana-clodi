@@ -1,7 +1,7 @@
 import ComponentCard from "../../common/ComponentCard";
 import Switch from "../switch/Switch";
 
-type SwitchKey = "varian" | "diskon" | "grosir";
+type SwitchKey = "varian" | "diskon";
 interface ManageProduk {
   title: string;
   switchStates: Record<SwitchKey, boolean>;
@@ -25,11 +25,6 @@ export default function ManageProduk({
           label="Diskon"
           defaultChecked={switchStates.diskon}
           onChange={(val) => onSwitchChange("diskon", val)}
-        />
-        <Switch
-          label="Harga Grosir"
-          defaultChecked={switchStates.grosir}
-          onChange={(val) => onSwitchChange("grosir", val)}
         />
       </div>
     </ComponentCard>

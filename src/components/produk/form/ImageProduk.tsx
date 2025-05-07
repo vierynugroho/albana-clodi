@@ -15,7 +15,7 @@ const DropzoneComponent: React.FC = () => {
     },
   });
   return (
-    <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500 w-40 h-40 ">
+    <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500 w-40 h-full ">
       <form
         {...getRootProps()}
         className={`dropzone rounded-xl   border-dashed border-gray-300 p-7 lg:p-10
@@ -32,12 +32,12 @@ const DropzoneComponent: React.FC = () => {
 
         <div className="dz-message flex flex-col items-center m-0!">
           {/* Icon Container */}
-          <div className="mb-[22px] flex justify-center">
+          <div className="flex justify-center">
             <div className="flex h-[68px] w-[68px]  items-center justify-center rounded-full bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
               <svg
                 className="fill-current"
-                width="20"
-                height="20"
+                width="30"
+                height="30"
                 viewBox="0 0 29 28"
                 xmlns="http://www.w3.org/2000/svg"
               >
