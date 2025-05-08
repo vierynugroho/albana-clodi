@@ -26,6 +26,7 @@ import AllProdukPage from "./pages/Produk/AllProduk";
 import AllCustomerPage from "./pages/Customer/AllCustomer";
 import AllReportPage from "./pages/Laporan/AllReport";
 import ProductFormPage from "./pages/Produk/ProductFormPage";
+import PrintProductBarcode from "./pages/Produk/PrintProductBarcode";
 
 export default function App() {
   return (
@@ -51,6 +52,10 @@ export default function App() {
             {/* Produk Page */}
             <Route path="/produk" element={<AllProdukPage />} />
             <Route path="/produk/form_produk" element={<ProductFormPage />} />
+            <Route
+              path="/produk/barcode_sku"
+              element={<PrintProductBarcode />}
+            />
 
             {/* Customer Page */}
             <Route path="/customer" element={<AllCustomerPage />} />
