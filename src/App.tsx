@@ -28,6 +28,7 @@ import AllReportPage from "./pages/Laporan/AllReport";
 import ProductFormPage from "./pages/Produk/ProductFormPage";
 import PrintProductBarcode from "./pages/Produk/PrintProductBarcode";
 import CategoryProduk from "./pages/Produk/CategoryProduk";
+import CustomerFormPage from "./pages/Customer/CustomerFormPage";
 
 export default function App() {
   return (
@@ -64,6 +65,7 @@ export default function App() {
 
             {/* Customer Page */}
             <Route path="/customer" element={<AllCustomerPage />} />
+            <Route path="/customer/form_customer" element={<CustomerFormPage />} />
 
             {/* Report Page */}
             <Route path="/report" element={<AllReportPage />} />

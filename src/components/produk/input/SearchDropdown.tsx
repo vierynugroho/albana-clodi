@@ -62,7 +62,7 @@ export default function SearchableDropdown({
       <div className="control">
         <div className="">
           <input
-            className="w-full px-[10px] pr-[52px] py-[8px] text-base leading-[1.5] bg-white border border-[#ccc] box-border cursor-default outline-none transition-all duration-200 ease-in-out rounded-lg"
+            className="w-full px-[10px] pr-[52px] py-[8px] text-base leading-[1.5] bg-white border border-[#ccc] box-border cursor-default outline-none transition-all duration-200 ease-in-out rounded-lg dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
             ref={inputRef}
             type="text"
             placeholder="Masukkan Nama Produk"
@@ -91,7 +91,7 @@ export default function SearchableDropdown({
           return (
             <div
               onClick={() => selectOption(option)}
-              className={`option box-border cursor-pointer block p-2 hover:text-[#333333] hover:bg-[#f2f9fc] ${
+              className={`option box-border cursor-pointer block p-2 hover:text-[#333333] hover:bg-[#f2f9fc] dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30${
                 option[label] === selectedVal
                   ? "selected bg-[#f2f9fc] text-[#333333]"
                   : ""

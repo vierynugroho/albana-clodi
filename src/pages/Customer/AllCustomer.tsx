@@ -4,6 +4,7 @@ import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
 import { FaFilter } from "react-icons/fa";
 import TableCustomer from "../../components/customer/TableCustomer";
+import { Link } from "react-router";
 
 export default function AllCustomerPage() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -94,7 +95,9 @@ export default function AllCustomerPage() {
                 Filter
                 <FaFilter />
               </Button>
-              <Button size="md">Tambah Customer</Button>
+              <Link to={'/customer/form_customer'}>
+                <Button size="md">Tambah Customer</Button>
+              </Link>
             </div>
           </div>
 

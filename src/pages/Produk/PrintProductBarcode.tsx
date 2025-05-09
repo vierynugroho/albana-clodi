@@ -16,7 +16,6 @@ type OptionsDropdows = {
 export default function PrintProductBarcode() {
   const [value, setValue] = useState("");
   const [listProduk, setListProduk] = useState<OptionsDropdows[]>([]);
-  console.log(listProduk);
   const data = [
     { id: 1, name: "Graspus graspus" },
     { id: 2, name: "Grus rubicundus" },
