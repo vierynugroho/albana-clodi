@@ -1,12 +1,14 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
 import { FaFilter } from "react-icons/fa";
 import TableCustomer from "../../components/customer/TableCustomer";
 import { Link } from "react-router";
+import ModalCustomerKategory from "../../components/customer/modal/ModalFilterCustomer";
 
 export default function AllCustomerPage() {
+  const [filter, setFilter] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const customer = [
     {
@@ -46,6 +48,10 @@ export default function AllCustomerPage() {
     },
   ];
 
+  function changeModal() {
+    setFilter((prevFilter) => !prevFilter);
+  }
+
   return (
     <div>
       <PageMeta
@@ -79,7 +85,7 @@ export default function AllCustomerPage() {
                 ref={inputRef}
                 type="text"
                 placeholder="Cari Nama ,Alamat,atau No Hp"
-                className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
+                className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
               />
             </div>
 
@@ -91,16 +97,17 @@ export default function AllCustomerPage() {
               >
                 Download Exel
               </Button>
-              <Button size="md" variant="outline">
+              <Button size="md" variant="outline" onClick={() => changeModal()}>
                 Filter
                 <FaFilter />
               </Button>
-              <Link to={'/customer/form_customer'}>
+              <Link to={"/customer/form_customer"}>
                 <Button size="md">Tambah Customer</Button>
               </Link>
             </div>
           </div>
-
+          {/* check if the filter value is true or false */}
+          {filter ? <ModalCustomerKategory changeModal={changeModal} /> : null}
           <TableCustomer customers={customer} />
         </div>
       </div>
