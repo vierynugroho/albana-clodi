@@ -4,7 +4,6 @@ import { IoIosArrowForward } from "react-icons/io";
 import { IoIosWallet } from "react-icons/io";
 import Button from "../../components/ui/button/Button";
 import IconsCourier from "../../icons/choose-courier.svg";
-import React from "react";
 
 function SectionDasboard() {
   const orders = [
