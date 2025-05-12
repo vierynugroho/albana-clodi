@@ -24,7 +24,7 @@ const Carousel: React.FC<Props> = ({ children }) => {
       </div>
 
       {/* Tombol navigasi bulat di tengah bawah */}
-      <div className="flex gap-1 w-full justify-center mt-1">
+      <div className="flex gap-1 w-full justify-center mt-3">
         {slides.map((_, index) => (
           <button
             key={index}
