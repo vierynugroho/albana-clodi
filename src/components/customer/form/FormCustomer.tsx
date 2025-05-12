@@ -2,13 +2,22 @@ import ComponentCard from "../../common/ComponentCard";
 import Input from "../../form/input/InputField";
 import Label from "../../form/Label";
 import Select from "../../form/Select";
-import SearchableDropdown from "../../produk/input/SearchDropdown";
+import SearchableDropdown from "../input/SearchDropdown";
 import { useState } from "react";
 import Button from "../../ui/button/Button";
+import CustomerCategoryList from "../categoryCustomer/CustomerCategoryList";
 
-type OptionsDropdows = {
-  id: number;
-  name: string;
+type FormCustomer = {
+  category: string;
+  fullName: string;
+  province: string;
+  city: string;
+  subdistrict: string;
+  village: string;
+  postalCode: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
 };
 
 const optionsCustomers = [
@@ -47,15 +56,60 @@ const kecamatan = [
   { id: 7, name: "Gandusari" },
   { id: 8, name: "Garum" },
 ];
+const desa = [
+  // Kota Blitar
+  { id: 1, name: "Kepanjenkidul" },
+  { id: 2, name: "Sananwetan" },
+  { id: 3, name: "Sukorejo" },
+
+  // Kabupaten Blitar
+  { id: 4, name: "Bakung" },
+  { id: 5, name: "Binangun" },
+  { id: 6, name: "Doko" },
+  { id: 7, name: "Gandusari" },
+  { id: 8, name: "Garum" },
+];
 
 export default function FormCustomer() {
-  const [value, setValue] = useState("");
-  const [listKecamatan, setListKecamatan] = useState<OptionsDropdows[]>([]);
-  console.log(listKecamatan);
+  const [formData, setFormData] = useState<FormCustomer>({
+    category: "",
+    fullName: "",
+    province: "",
+    city: "",
+    subdistrict: "",
+    village: "",
+    postalCode: "",
+    email: "",
+    phoneNumber: "",
+    address: "",
+  });
 
-  function handleChange(value: string) {
-    console.log(value);
+  function handleChange<K extends keyof FormCustomer>(
+    key: K,
+    value: FormCustomer[K]
+  ) {
+    setFormData((prev) => ({ ...prev, [key]: value }));
   }
+
+  const handleSubmit = () => {
+    const payload = {
+      id: crypto.randomUUID(),
+      name: formData.fullName,
+      category: formData.category.toUpperCase(),
+      address: formData.address,
+      subdistrict: formData.subdistrict,
+      postalCode: formData.postalCode,
+      phoneNumber: formData.phoneNumber,
+      email: formData.email,
+      destinationId: 12345,
+      status: "ACTIVE",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    console.log(JSON.stringify(payload, null, 2));
+  };
+
   return (
     <div className="flex gap-4 l">
       <div className="flex gap-5 w-full max-md:flex-col">
@@ -66,7 +120,7 @@ export default function FormCustomer() {
               <Select
                 options={optionsCustomers}
                 placeholder="Pilih Kategori Customer"
-                onChange={handleChange}
+                onChange={(val) => handleChange("category", val)}
                 className="dark:bg-dark-900"
               />
             </div>
@@ -76,6 +130,8 @@ export default function FormCustomer() {
                 type="text"
                 id="inputTwo"
                 placeholder="Isi Nama Customer"
+                value={formData.fullName}
+                onChange={(e) => handleChange("fullName", e.target.value)}
               />
             </div>
 
@@ -85,9 +141,8 @@ export default function FormCustomer() {
                 options={provinsi}
                 label="name"
                 id="id"
-                selectedVal={value}
-                handleChange={(val) => setValue(val)}
-                setListProduk={setListKecamatan}
+                selectedVal={formData.province}
+                handleChange={(val) => handleChange("province", val)}
               />
             </div>
 
@@ -97,9 +152,8 @@ export default function FormCustomer() {
                 options={kabupatenAtauKota}
                 label="name"
                 id="id"
-                selectedVal={value}
-                handleChange={(val) => setValue(val)}
-                setListProduk={setListKecamatan}
+                selectedVal={formData.city}
+                handleChange={(val) => handleChange("city", val)}
               />
             </div>
             <div className="flex-1/3">
@@ -108,9 +162,18 @@ export default function FormCustomer() {
                 options={kecamatan}
                 label="name"
                 id="id"
-                selectedVal={value}
-                handleChange={(val) => setValue(val)}
-                setListProduk={setListKecamatan}
+                selectedVal={formData.subdistrict}
+                handleChange={(val) => handleChange("subdistrict", val)}
+              />
+            </div>
+            <div className="flex-1/3">
+              <Label>Desa/Dusun</Label>
+              <SearchableDropdown
+                options={desa}
+                label="name"
+                id="id"
+                selectedVal={formData.village}
+                handleChange={(val) => handleChange("village", val)}
               />
             </div>
             <div className="flex-1/3">
@@ -120,6 +183,7 @@ export default function FormCustomer() {
                 id="inputTwo"
                 placeholder="99102"
                 min="0"
+                onChange={(e) => handleChange("postalCode", e.target.value)}
                 className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
               />
             </div>
@@ -130,16 +194,19 @@ export default function FormCustomer() {
                 id="inputTwo"
                 placeholder="my@gmail.com"
                 min="0"
+                onChange={(e) => handleChange("email", e.target.value)}
                 className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
               />
             </div>
-            <div className="flex-1/3">
+
+            <div className="w-full">
               <Label>No Telepon</Label>
               <Input
                 type="number"
                 id="inputTwo"
                 placeholder="0897662516"
                 min="0"
+                onChange={(e) => handleChange("phoneNumber", e.target.value)}
                 className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
               />
             </div>
@@ -149,51 +216,18 @@ export default function FormCustomer() {
               <textarea
                 id="addres"
                 placeholder="JL Melati No 10 ...."
+                onChange={(e) => handleChange("address", e.target.value)}
                 className="w-full h-32 mt-2 p-4 rounded-xl border border-gray-300 focus:outline-none  dark:bg-dark-900 dark:text-white dark:border-gray-700 resize-none"
               />
             </div>
-            
-            <Button size="md" className="w-full">Tambah Customer</Button>
+
+            <Button size="md" className="w-full" onClick={handleSubmit}>
+              Tambah Customer
+            </Button>
           </div>
         </ComponentCard>
-        <ComponentCard title="Kategori Customer" className="flex-1/4">
-          <ul className="space-y-5 text-sm">
-            <li className="p-4 border rounded shadow-sm">
-              <strong className="block text-base">Customer</strong>
-              <p className="text-gray-600">
-                Pelanggan biasa yang mendapatkan harga normal.
-              </p>
-            </li>
-            <li className="p-4 border rounded shadow-sm">
-              <strong className="block text-base">Reseller</strong>
-              <p className="text-gray-600">
-                Customer yang mendapatkan potongan harga khusus untuk penjualan
-                kembali.
-              </p>
-            </li>
-            <li className="p-4 border rounded shadow-sm">
-              <strong className="block text-base">Agent</strong>
-              <p className="text-gray-600">
-                Perantara yang biasanya memiliki kuota atau target penjualan
-                tertentu.
-              </p>
-            </li>
-            <li className="p-4 border rounded shadow-sm">
-              <strong className="block text-base">Member</strong>
-              <p className="text-gray-600">
-                Customer yang telah mendaftar sebagai anggota dan mungkin
-                mendapatkan promo atau akses khusus.
-              </p>
-            </li>
-            <li className="p-4 border rounded shadow-sm">
-              <strong className="block text-base">Dropshiper</strong>
-              <p className="text-gray-600">
-                Customer dengan harga normal, tetapi alamat pengiriman memakai
-                data customer dropship.
-              </p>
-            </li>
-          </ul>
-        </ComponentCard>
+
+        <CustomerCategoryList title="Katori Customer" className="flex-1/4" />
       </div>
     </div>
   );
