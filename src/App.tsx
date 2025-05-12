@@ -25,6 +25,7 @@ import CancelOrderPage from "./pages/Order/CancelOder";
 import AllProdukPage from "./pages/Produk/AllProduk";
 import AllCustomerPage from "./pages/Customer/AllCustomer";
 import AllReportPage from "./pages/Laporan/AllReport";
+import AllExpense from "./pages/Expenses/Allexpense";
 
 export default function App() {
   return (
@@ -38,8 +39,7 @@ export default function App() {
               <ProtectedRoute>
                 <AppLayout />
               </ProtectedRoute>
-            }
-          >
+            }>
             <Route index path="/" element={<Home />} />
 
             {/* Order Page */}
@@ -54,7 +54,10 @@ export default function App() {
             <Route path="/customer" element={<AllCustomerPage />} />
 
             {/* Report Page */}
-            <Route path="/report" element={<AllReportPage/>} />
+            <Route path="/report" element={<AllReportPage />} />
+
+            {/* Produk Page */}
+            <Route path="/expense" element={<AllExpense />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
