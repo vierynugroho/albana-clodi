@@ -8,7 +8,7 @@ import {
 
 import Badge from "../ui/badge/Badge";
 import Checkbox from "../form/input/Checkbox";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
 
@@ -71,26 +71,25 @@ const tableData: Order[] = [
 ];
 export default function TableProduk() {
   const [isChecked, setIsChecked] = useState(false);
-  const [selectedItem, setSelectItems] = useState<number[]>([]);
-
-  // State for Checkbox and Multiple Checkbox
+  const [selectedItem, setSelectedItem] = useState<number[]>([]);
+  
+  // Sync selectedItem when isChecked changes
   useEffect(() => {
-    if (isChecked) {
-      setSelectItems(tableData.map((val) => val.id));
-    } else {
-      setSelectItems([]);
-    }
+    setSelectedItem(isChecked ? tableData.map((val) => val.id) : []);
   }, [isChecked]);
 
-  function checkboxHandler(checked: boolean, id: number) {
-    if (checked) {
-      setSelectItems((prev) => [...prev, id]);
-    } else {
-      setSelectItems((prev) => prev.filter((item) => item !== id));
+  // Sync isChecked when selectedItem manually emptied
+  useEffect(() => {
+    if (selectedItem.length === 0) {
+      setIsChecked(false);
     }
-  }
+  }, [selectedItem]);
 
-  // State for button Filter
+  const checkboxHandler = useCallback((checked: boolean, id: number) => {
+    setSelectedItem((prev) =>
+      checked ? [...prev, id] : prev.filter((item) => item !== id)
+    );
+  }, []);
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">

@@ -9,7 +9,6 @@ export default function SearchProduk({
   keywordChange,
   onSearch,
 }: Props) {
-  console.log(keyword);
   return (
     <div className="relative">
       <span className="absolute -translate-y-1/2 pointer-events-auto left-4 top-1/2">

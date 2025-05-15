@@ -7,13 +7,20 @@ import Radio from "../../form/input/Radio";
 import ManageProduk from "../switch/ManageProduk";
 import ManagePrivorAndStorefront from "../switch/ManagePrivorAndStorefront";
 import VarianProduk from "./VarianProduk";
-// import GrosirProduk from "./GrosirProduk";
 import Button from "../button/Button";
 import GrosirProduk from "./GrosirProduk";
 import { GiWeight } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
 
-type WholesaleProduct = {
+type ProductPrice = {
+  normal: number;
+  buy: number;
+  reseller: number;
+  agent: number;
+  member: number;
+};
+
+type ProductWholesaler = {
   lowerLimitItem: number;
   upperLimitItem: number;
   unitPrice: number;
@@ -21,30 +28,71 @@ type WholesaleProduct = {
 };
 
 type ProductVariant = {
-  image: string;
-  SKU: string;
-  purchasePrice: number | null;
-  regularPrice: number | null;
-  resellerPrice: number | null;
-  wholesalePrices: WholesaleProduct[];
-  variant?: string;
+  imageUrl: string;
+  sku: string;
+  productPrices: ProductPrice;
+  productWholesalers: ProductWholesaler[];
+  barcode?: string;
+  size?: string;
   color?: string;
   stock: number | null;
 };
 
-export default function FormProduk() {
-  // State For Select Kategori Produk
-  const [selectedValue, setSelectedValue] = useState<string>("option1");
-  const handleRadioChange = (value: string) => {
-    setSelectedValue(value);
-  };
+type SwichStatesType = {
+  varian: boolean;
+  diskon: boolean;
+  grosir: boolean;
+};
 
-  // State for set product condition
-  const [switchStates, setSwitchStates] = useState({
+const defaultWholesalePrices: ProductWholesaler[] = Array.from(
+  { length: 5 },
+  () => ({
+    lowerLimitItem: 0,
+    upperLimitItem: 0,
+    unitPrice: 0,
+    wholesalerPrice: 0,
+  })
+);
+
+const defaultVariant = (): ProductVariant => ({
+  sku: "",
+  stock: 0,
+  size: "",
+  color: "",
+  imageUrl: "",
+  barcode: "",
+  productPrices: {
+    normal: 0,
+    buy: 0,
+    reseller: 0,
+    agent: 0,
+    member: 0,
+  },
+  productWholesalers: defaultWholesalePrices,
+});
+
+const options = [
+  { value: "BARANG_STOK_SENDIRI", label: "Barang Stock Sendiri" },
+  { value: "BARANG_SUPLIER_LAIN", label: "Barang Suplier Lain" },
+  { value: "BARANG_PRE_ORDER", label: "Barang Pre-Order" },
+];
+
+export default function FormProduk() {
+  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [switchStates, setSwitchStates] = useState<SwichStatesType>({
     varian: false,
     diskon: false,
     grosir: false,
   });
+  const [categoryId, setCategoryId] = useState<string>("");
+  const [productName, setProductName] = useState("");
+  const [productDescription, setProductDescription] = useState("");
+  const [productWeight, setProductWeight] = useState(0);
+  const [varian, setVarian] = useState<ProductVariant[]>([defaultVariant()]);
+
+  const handleRadioChange = (value: string) => {
+    setSelectedValue(value);
+  };
 
   const handleSwitchChange = (
     key: keyof typeof switchStates,
@@ -53,58 +101,56 @@ export default function FormProduk() {
     setSwitchStates((prev) => ({ ...prev, [key]: value }));
   };
 
-  // Select Option
-  const options = [
-    { value: "marketing", label: "Marketing" },
-    { value: "template", label: "Template" },
-    { value: "development", label: "Development" },
-  ];
   const handleSelectChange = (value: string) => {
-    console.log("Selected value:", value);
+    setCategoryId(value);
   };
 
-  // State For Grosir Produk
-  const [wholesaleProducts, setWholesaleProducts] = useState<
-    WholesaleProduct[]
-  >(
-    Array.from({ length: 5 }, () => ({
-      lowerLimitItem: 0,
-      upperLimitItem: 0,
-      unitPrice: 0,
-      wholesalerPrice: 0,
-    }))
-  );
-
-  // State For Add Variant
-  const [varian, setVarian] = useState<ProductVariant[]>(
-    Array.from({ length: 1 }, () => ({
-      image: "",
-      SKU: "",
-      purchasePrice: null,
-      regularPrice: null,
-      resellerPrice: null,
-      wholesalePrices: wholesaleProducts,
-      stock: null,
-    }))
-  );
-
   const addVariantComponent = () => {
-    setVarian((prevVariant) => [
-      ...prevVariant,
-      {
-        image: "",
-        SKU: "",
-        purchasePrice: null,
-        regularPrice: null,
-        resellerPrice: null,
-        wholesalePrices: wholesaleProducts,
-        stock: null,
-      },
-    ]);
+    setVarian((prev) => [...prev, defaultVariant()]);
   };
 
   const deleteVariant = (index: number) => {
-    setVarian((prevVariant) => prevVariant.filter((_, i) => i !== index));
+    setVarian((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const renderRadio = (value: string, label: string) => {
+    const id = `radio-${value}`;
+    return (
+      <div key={id} className="md:flex-1 max-md:w-full">
+        <div
+          className={`${
+            selectedValue === value
+              ? "border-brand-500 bg-brand-900/25 text-brand-500"
+              : "border-gray-300 text-gray-600"
+          } flex-auto h-20 border-2 rounded-2xl `}
+        >
+          <Radio
+            id={id}
+            name="group1"
+            value={value}
+            checked={selectedValue === value}
+            onChange={handleRadioChange}
+            label={label}
+            className="p-2 w-full h-20"
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const handleSubmit = () => {
+    const payload = {
+      product: {
+        name: productName,
+        description: productDescription,
+        type: selectedValue,
+        isPublish: true,
+        weight: productWeight,
+      },
+      categoryId,
+      productVariants: varian,
+    };
+    console.log(payload);
   };
 
   return (
@@ -117,10 +163,12 @@ export default function FormProduk() {
                 <Label htmlFor="inputTwo">Nama Produk</Label>
                 <Input
                   type="text"
-                  id="inputTwo"
-                  placeholder="Isi Nama Produk"
+                  placeholder="Baju Anak"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
                 />
               </div>
+
               <div>
                 <Label>Kategori</Label>
                 <Select
@@ -130,72 +178,27 @@ export default function FormProduk() {
                   className="dark:bg-dark-900"
                 />
               </div>
+
               <div>
                 <Label>Jenis Produk</Label>
                 <div className="flex flex-wrap items-center gap-8">
-                  <div
-                    className={`${
-                      selectedValue === "option1"
-                        ? "border-brand-500 bg-brand-900/25 text-brand-500"
-                        : "border-gray-300 text-gray-600"
-                    } w-50 h-20 border-2 rounded-2xl flex-1`}
-                  >
-                    <Radio
-                      id="radio1"
-                      name="group1"
-                      value="option1"
-                      checked={selectedValue === "option1"}
-                      onChange={handleRadioChange}
-                      label="Barang Stock Sendiri"
-                      className="p-2 w-50 h-20"
-                    />
-                  </div>
-
-                  <div
-                    className={`${
-                      selectedValue === "option2"
-                        ? "border-brand-500 bg-brand-900/25 text-brand-500"
-                        : "border-gray-300 text-gray-600"
-                    } w-50 h-20 border-2 rounded-2xl flex-1`}
-                  >
-                    <Radio
-                      id="radio2"
-                      name="group1"
-                      value="option2"
-                      checked={selectedValue === "option2"}
-                      onChange={handleRadioChange}
-                      label="Barang Suplier Lain"
-                      className="p-2 w-50 h-20"
-                    />
-                  </div>
-
-                  <div
-                    className={`${
-                      selectedValue === "option3"
-                        ? "border-brand-500 bg-brand-900/25 text-brand-500"
-                        : "border-gray-300 text-gray-600"
-                    } w-50 h-20 border-2 rounded-2xl flex-1`}
-                  >
-                    <Radio
-                      id="radio3"
-                      name="group1"
-                      value="option3"
-                      checked={selectedValue === "option3"}
-                      onChange={handleRadioChange}
-                      label="Barang Pre-Order"
-                      className="p-2 w-50 h-20"
-                    />
-                  </div>
+                  {options.map((opt) => {
+                    return renderRadio(opt.value, opt.label);
+                  })}
                 </div>
               </div>
+
               <div>
                 <Label>Deskripsi Produk</Label>
                 <textarea
                   id="productDescription"
                   placeholder="Tulis deskripsi produk di sini..."
                   className="w-full h-32 mt-2 p-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:bg-dark-900 dark:text-white dark:border-gray-700 resize-none"
+                  value={productDescription}
+                  onChange={(e) => setProductDescription(e.target.value)}
                 />
               </div>
+
               <div className="flex gap-5">
                 <div>
                   {" "}
@@ -206,12 +209,15 @@ export default function FormProduk() {
                       type="number"
                       min="0"
                       className="pl-[62px] appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
+                      value={productWeight == 0 ? "" : productWeight}
+                      onChange={(e) => setProductWeight(Number(e.target.value))}
                     />
                     <span className="absolute left-0 top-1/2 -translate-y-1/2 border-r border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
                       <GiWeight className="size-6" />
                     </span>
                   </div>
                 </div>
+
                 {switchStates.diskon ? (
                   <div>
                     {" "}
@@ -235,6 +241,7 @@ export default function FormProduk() {
             </div>
           </ComponentCard>
         </div>
+
         {/* Manage Produk */}
         <div className="flex flex-col gap-7 flex-1">
           <ManageProduk
@@ -243,17 +250,12 @@ export default function FormProduk() {
             onSwitchChange={handleSwitchChange}
           />
           <ManagePrivorAndStorefront title="Atur Privor & Storefront" />
-
-          <Button
-            className="hover:bg-black"
-            onClick={() => {
-              console.log(varian);
-            }}
-          >
+          <Button className="hover:bg-black" onClick={handleSubmit}>
             Tambah Produk
           </Button>
         </div>
       </div>
+
       <div className="overflow-auto">
         <div className=" p-4 mt-5 bg-brand-900 rounded-2xl max-w-full lg:max-w-[791px] min-w-[791px]">
           <div className="grid grid-cols-5 ml-15 content-center text-sky-50 ">
@@ -274,15 +276,15 @@ export default function FormProduk() {
             className="mt-5 max-lg:max-w-full lg:max-w-[791px] min-w-[791px] relative"
           >
             <VarianProduk
-              varian={row}
               setVarian={setVarian}
               index={index}
               onDelete={deleteVariant}
             />
+
             <GrosirProduk
               variantIndex={index}
-              rows={row.wholesalePrices}
-              setRows={setWholesaleProducts}
+              rows={row.productWholesalers}
+              setRows={() => {}}
               setVarian={setVarian}
             />
           </ComponentCard>

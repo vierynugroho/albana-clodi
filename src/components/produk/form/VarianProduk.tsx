@@ -3,7 +3,15 @@ import Input from "../../form/input/InputField";
 import Label from "../../form/Label";
 import DropzoneComponent from "./ImageProduk";
 
-type WholesaleProduct = {
+type ProductPrice = {
+  normal: number;
+  buy: number;
+  reseller: number;
+  agent: number;
+  member: number;
+};
+
+type ProductWholesaler = {
   lowerLimitItem: number;
   upperLimitItem: number;
   unitPrice: number;
@@ -11,37 +19,33 @@ type WholesaleProduct = {
 };
 
 type ProductVariant = {
-  image: string;
-  SKU: string;
-  purchasePrice: number | null;
-  regularPrice: number | null;
-  resellerPrice: number | null;
-  wholesalePrices: WholesaleProduct[];
-  variant?: string;
+  imageUrl: string;
+  sku: string;
+  productPrices: ProductPrice;
+  productWholesalers: ProductWholesaler[];
+  barcode?: string;
+  size?: string;
   color?: string;
   stock: number | null;
 };
 
 type Props = {
-  varian: ProductVariant;
   setVarian: React.Dispatch<React.SetStateAction<ProductVariant[]>>;
   index: number;
   onDelete: (index: number) => void;
 };
 
 export default function VarianProduk({
-  varian,
   setVarian,
   index,
   onDelete,
 }: Props) {
-  // function change value
+
   function onChange(
     index: number,
     value: number | string,
-    label: keyof ProductVariant
+    label: keyof ProductVariant | keyof ProductPrice
   ) {
-    console.log(varian);
     setVarian((prev) => {
       const updated = [...prev];
       const updatedVarian = { ...updated[index], [label]: value };
@@ -57,7 +61,7 @@ export default function VarianProduk({
         <Label htmlFor="inputTwo">SKU</Label>
         <Input
           type="text"
-          onChange={(val) => onChange(index, val.target.value, "SKU")}
+          onChange={(val) => onChange(index, val.target.value, "sku")}
         />
       </div>
       <div className="flex flex-col gap-4">
@@ -65,7 +69,7 @@ export default function VarianProduk({
           <Label htmlFor="inputTwo">Harga Beli</Label>
           <Input
             onChange={(val) =>
-              onChange(index, val.target.value, "purchasePrice")
+              onChange(index, val.target.value, "buy")
             }
             type="number"
             min="0"
@@ -77,7 +81,7 @@ export default function VarianProduk({
           <Label htmlFor="inputTwo">Harga Jual Normal</Label>
           <Input
             onChange={(val) =>
-              onChange(index, val.target.value, "regularPrice")
+              onChange(index, val.target.value, "normal")
             }
             type="number"
             min="0"
@@ -88,7 +92,7 @@ export default function VarianProduk({
           <Label htmlFor="inputTwo">Harga Jual Reseller</Label>
           <Input
             onChange={(val) =>
-              onChange(index, val.target.value, "resellerPrice")
+              onChange(index, val.target.value, "reseller")
             }
             type="number"
             min="0"
@@ -100,9 +104,8 @@ export default function VarianProduk({
         <div>
           <Label htmlFor="inputTwo">Ukuran</Label>
           <Input
-            onChange={(val) => onChange(index, val.target.value, "variant")}
-            type="number"
-            min="0"
+            onChange={(val) => onChange(index, val.target.value, "size")}
+            type="string"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>

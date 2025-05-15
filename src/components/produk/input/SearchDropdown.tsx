@@ -24,55 +24,52 @@ export default function SearchableDropdown({
 }: Props) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-
-  const inputRef = useRef(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.addEventListener("click", toggle);
-    return () => document.removeEventListener("click", toggle);
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const selectOption = (option: OptionDataProduk) => {
-    setQuery(() => "");
-    setListProduk((prev) => [...prev, option]);
-    handleChange(String(option[label]));
-    setIsOpen((isOpen) => !isOpen);
-  };
-
-  function toggle(e: MouseEvent | React.MouseEvent) {
-    setIsOpen(e && e.target === inputRef.current);
-  }
-
-  const getDisplayValue = () => {
-    if (query) return query;
-    if (selectedVal) return selectedVal;
-
-    return "";
-  };
-
-  const filter = (options: OptionDataProduk[]) => {
-    return options.filter((option) =>
-      String(option[label]).toLowerCase().includes(query.toLowerCase())
+  const handleSelect = (option: OptionDataProduk) => {
+    setQuery("");
+    setIsOpen(false);
+    setListProduk((prev) =>
+      prev.some((item) => item.id === option.id) ? prev : [...prev, option]
     );
+    handleChange(String(option[label]));
   };
+
+  const displayValue = query || selectedVal || "";
+
+  const filteredOptions = options.filter((option) =>
+    String(option[label]).toLowerCase().includes(query.toLowerCase())
+  );
 
   return (
-    <div className="relative cursor-default">
-      {/* dropdown */}
+    <div className="relative cursor-default" ref={wrapperRef}>
       <div className="control">
         <div className="">
           <input
             className="w-full px-[10px] pr-[52px] py-[8px] text-base leading-[1.5] bg-white border border-[#ccc] box-border cursor-default outline-none transition-all duration-200 ease-in-out rounded-lg dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
-            ref={inputRef}
             type="text"
             placeholder="Masukkan Nama Produk"
-            value={getDisplayValue()}
+            value={displayValue}
             name="searchTerm"
             onChange={(e) => {
               setQuery(e.target.value);
               handleChange("");
+              setIsOpen(true);
             }}
-            onClick={toggle}
+            onClick={() => setIsOpen(true)}
           />
         </div>
         <div
@@ -87,10 +84,10 @@ export default function SearchableDropdown({
           isOpen ? "open" : "hidden"
         }`}
       >
-        {filter(options).map((option, index) => {
+        {filteredOptions.map((option, index) => {
           return (
             <div
-              onClick={() => selectOption(option)}
+              onClick={() => handleSelect(option)}
               className={`option box-border cursor-pointer block p-2 hover:text-[#333333] hover:bg-[#f2f9fc] dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30${
                 option[label] === selectedVal
                   ? "selected bg-[#f2f9fc] text-[#333333]"

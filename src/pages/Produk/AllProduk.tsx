@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
@@ -22,7 +22,6 @@ type FilterState = {
 
 export default function AllProdukPage() {
   const navigate = useNavigate();
-
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
   const [keyword, setKeyword] = useState<string>("");
@@ -35,7 +34,6 @@ export default function AllProdukPage() {
     produkMarketplace: "",
   });
 
-  // Hooks for receive screen size
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
@@ -51,21 +49,24 @@ export default function AllProdukPage() {
   }, []);
 
   // Handle Search and Filter Query
-  const handleSearchAndFilter = (keyword: string, filter: FilterState) => {
-    const params = new URLSearchParams();
-    // for search
-    params.set("keyword", keyword.toLowerCase());
+  const handleSearchAndFilter = useCallback(
+    (keyword: string, filter: FilterState) => {
+      const params = new URLSearchParams();
+      // for search
+      params.set("keyword", keyword.toLowerCase());
 
-    // for filter
-    params.set("kategori", filter.kategori);
-    params.set("channel", filter.channel);
-    params.set("harga", filter.harga);
-    params.set("tipe", filter.tipe);
-    params.set("urutan", filter.urutan);
-    params.set("produkMarketplace", filter.produkMarketplace);
+      // for filter
+      params.set("kategori", filter.kategori);
+      params.set("channel", filter.channel);
+      params.set("harga", filter.harga);
+      params.set("tipe", filter.tipe);
+      params.set("urutan", filter.urutan);
+      params.set("produkMarketplace", filter.produkMarketplace);
 
-    navigate(`?${params.toString()}`);
-  };
+      navigate(`?${params.toString()}`);
+    },
+    [navigate]
+  );
 
   return (
     <div>
@@ -81,14 +82,13 @@ export default function AllProdukPage() {
             isMobile ? "gap-x-5" : "gap-x-2"
           }`}
         >
-          <form className="flex-1">
+          <div className="flex-1">
             <SearchProduk
               onSearch={() => handleSearchAndFilter(keyword, filterProduk)}
               keyword={keyword}
               keywordChange={setKeyword}
             />
-          </form>
-
+          </div>
           {/* Button Add Product */}
           {!isMobile ? (
             <Link to={"/produk/form_produk"}>

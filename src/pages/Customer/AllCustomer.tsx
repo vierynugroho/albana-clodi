@@ -7,46 +7,47 @@ import TableCustomer from "../../components/customer/TableCustomer";
 import { Link } from "react-router";
 import ModalCustomerKategory from "../../components/customer/modal/ModalFilterCustomer";
 
+const customer = [
+  {
+    id: "CUST001",
+    name: "Bapak Wahyudi Akbar Doe",
+    category: "Retail",
+    phone: "081234567890",
+    address: "Jl. Merdeka No. 1, Jakarta",
+  },
+  {
+    id: "CUST002",
+    name: "Jane Smith",
+    category: "Wholesale",
+    phone: "082345678901",
+    address: "Jl. Sudirman No. 10, Bandung",
+  },
+  {
+    id: "CUST003",
+    name: "Ahmad Fauzi",
+    category: "Retail",
+    phone: "083456789012",
+    address: "Jl. Pemuda No. 15, Surabaya",
+  },
+  {
+    id: "CUST004",
+    name: "Linda Hartono",
+    category: "Distributor",
+    phone: "084567890123",
+    address: "Jl. Diponegoro No. 7, Yogyakarta",
+  },
+  {
+    id: "CUST005",
+    name: "Michael Tan",
+    category: "Wholesale",
+    phone: "085678901234",
+    address: "Jl. Gajah Mada No. 3, Medan",
+  },
+];
+
 export default function AllCustomerPage() {
   const [filter, setFilter] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const customer = [
-    {
-      id: "CUST001",
-      name: "Bapak Wahyudi Akbar Doe",
-      category: "Retail",
-      phone: "081234567890",
-      address: "Jl. Merdeka No. 1, Jakarta",
-    },
-    {
-      id: "CUST002",
-      name: "Jane Smith",
-      category: "Wholesale",
-      phone: "082345678901",
-      address: "Jl. Sudirman No. 10, Bandung",
-    },
-    {
-      id: "CUST003",
-      name: "Ahmad Fauzi",
-      category: "Retail",
-      phone: "083456789012",
-      address: "Jl. Pemuda No. 15, Surabaya",
-    },
-    {
-      id: "CUST004",
-      name: "Linda Hartono",
-      category: "Distributor",
-      phone: "084567890123",
-      address: "Jl. Diponegoro No. 7, Yogyakarta",
-    },
-    {
-      id: "CUST005",
-      name: "Michael Tan",
-      category: "Wholesale",
-      phone: "085678901234",
-      address: "Jl. Gajah Mada No. 3, Medan",
-    },
-  ];
 
   function changeModal() {
     setFilter((prevFilter) => !prevFilter);
@@ -62,7 +63,7 @@ export default function AllCustomerPage() {
 
       <div className="min-h-screen rounded-2xl border flex border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
         <div className="mb-4 w-full">
-          <div className="flex justify-between">
+          <div className="flex justify-between max-md:flex-col max-md:gap-4">
             <div className="relative">
               <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
                 <svg

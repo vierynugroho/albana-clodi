@@ -125,7 +125,7 @@ export default function FormCustomer() {
               />
             </div>
             <div className="flex-1/3">
-              <Label htmlFor="inputTwo">Nama Lengkap Customer</Label>
+              <Label htmlFor="inputTwo">Nama Lengkap</Label>
               <Input
                 type="text"
                 id="inputTwo"

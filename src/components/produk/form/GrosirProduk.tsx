@@ -2,7 +2,15 @@ import ComponentCard from "../../common/ComponentCard";
 import Input from "../../form/input/InputField";
 import { TiMinusOutline } from "react-icons/ti";
 
-type WholesaleProduct = {
+type ProductPrice = {
+  normal: number;
+  buy: number;
+  reseller: number;
+  agent: number;
+  member: number;
+};
+
+type ProductWholesaler = {
   lowerLimitItem: number;
   upperLimitItem: number;
   unitPrice: number;
@@ -10,20 +18,19 @@ type WholesaleProduct = {
 };
 
 type ProductVariant = {
-  image: string;
-  SKU: string;
-  purchasePrice: number | null;
-  regularPrice: number | null;
-  resellerPrice: number | null;
-  wholesalePrices: WholesaleProduct[];
-  variant?: string;
+  imageUrl: string;
+  sku: string;
+  productPrices: ProductPrice;
+  productWholesalers: ProductWholesaler[];
+  barcode?: string;
+  size?: string;
   color?: string;
   stock: number | null;
 };
 
 type Props = {
-  rows: WholesaleProduct[];
-  setRows: React.Dispatch<React.SetStateAction<WholesaleProduct[]>>;
+  rows: ProductWholesaler[];
+  setRows: React.Dispatch<React.SetStateAction<ProductWholesaler[]>>;
   setVarian: React.Dispatch<React.SetStateAction<ProductVariant[]>>;
   variantIndex: number;
 };
@@ -36,7 +43,7 @@ export default function GrosirProduk({
 }: Props) {
   const handleChange = (
     index: number,
-    field: keyof WholesaleProduct,
+    field: keyof ProductWholesaler,
     value: string
   ) => {
     const numberValue = value === "" ? "" : Number(value);
@@ -44,15 +51,15 @@ export default function GrosirProduk({
     setVarian((prev) => {
       const updated = [...prev];
       const variant = { ...updated[variantIndex] };
-      const newRows = [...variant.wholesalePrices];
+      const newRows = [...variant.productWholesalers];
       newRows[index] = { ...newRows[index], [field]: numberValue };
-      variant.wholesalePrices = newRows;
+      variant.productWholesalers = newRows;
       updated[variantIndex] = variant;
       return updated;
     });
   };
 
-  const handleBlur = (index: number, field: keyof WholesaleProduct) => {
+  const handleBlur = (index: number, field: keyof ProductWholesaler) => {
     const num = Number(rows[index][field]);
     if (num < 0) {
       const newRows = [...rows];
@@ -60,6 +67,7 @@ export default function GrosirProduk({
       setRows(newRows);
     }
   };
+
   return (
     <ComponentCard title="Harga Grosir">
       <div className="space-y-5 sm:space-y-6">
