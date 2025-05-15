@@ -34,7 +34,7 @@ function SectionDasboard() {
           Keuntungan Paket
         </h3>
         <div className="p-2.5 border border-gray-300 rounded-lg mt-4 mb-2">
-          <div className="flex justify-between mx-4 gap-2 items-center">
+          <div className="flex justify-center gap-2.5 items-center">
             <div>
               <IoIosWallet className="text-blue-500 dark:text-white/90 size-6" />
             </div>
@@ -51,7 +51,7 @@ function SectionDasboard() {
         <div className="flex items-center mt-2 my-3">
           <Button
             className="w-full h-9 border-blue-500 font-normal text-blue-400 py-2 rounded-lg"
-            variant="outline"
+            variant="outlineblue"
             onClick={() => console.log("Button clicked!")}>
             Lihat Detail
           </Button>
