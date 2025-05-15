@@ -8,7 +8,7 @@ import { FaLifeRing, FaPlaneDeparture } from "react-icons/fa";
 import { GiMoneyStack, GiProfit, GiTakeMyMoney } from "react-icons/gi";
 import { BiCalculator, BiSolidDiscount } from "react-icons/bi";
 import { LuPackageOpen } from "react-icons/lu";
-import StatisticsChart from "../../components/ecommerce/StatisticsChart";
+import StatisticsChart from "../../components/ecommerce/StatisticsSalerChart";
 import RecentOrders from "../../components/ecommerce/RecentOrders";
 
 export default function AllReportPage() {

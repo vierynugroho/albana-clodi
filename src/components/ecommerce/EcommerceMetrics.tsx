@@ -6,7 +6,7 @@ import { FaPeopleCarryBox } from "react-icons/fa6";
 import { ArrowDownIcon, ArrowUpIcon } from "../../icons";
 import Badge from "../ui/badge/Badge";
 
-export default function EcommerceMetrics() {
+export default function  EcommerceMetrics() {
   const metrics = [
     {
       label: "Laba Kotor",
