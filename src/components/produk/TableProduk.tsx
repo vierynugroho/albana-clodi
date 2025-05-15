@@ -8,7 +8,7 @@ import {
 
 import Badge from "../ui/badge/Badge";
 import Checkbox from "../form/input/Checkbox";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
 
@@ -71,23 +71,25 @@ const tableData: Order[] = [
 ];
 export default function TableProduk() {
   const [isChecked, setIsChecked] = useState(false);
-  const [selectedItem, setSelectItems] = useState<number[]>([]);
-
+  const [selectedItem, setSelectedItem] = useState<number[]>([]);
+  
+  // Sync selectedItem when isChecked changes
   useEffect(() => {
-    if (isChecked) {
-      setSelectItems(tableData.map((val) => val.id));
-    } else {
-      setSelectItems([]);
-    }
+    setSelectedItem(isChecked ? tableData.map((val) => val.id) : []);
   }, [isChecked]);
 
-  function checkboxHandler(checked: boolean, id: number) {
-    if (checked) {
-      setSelectItems((prev) => [...prev, id]);
-    } else {
-      setSelectItems((prev) => prev.filter((item) => item !== id));
+  // Sync isChecked when selectedItem manually emptied
+  useEffect(() => {
+    if (selectedItem.length === 0) {
+      setIsChecked(false);
     }
-  }
+  }, [selectedItem]);
+
+  const checkboxHandler = useCallback((checked: boolean, id: number) => {
+    setSelectedItem((prev) =>
+      checked ? [...prev, id] : prev.filter((item) => item !== id)
+    );
+  }, []);
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -218,8 +220,8 @@ export default function TableProduk() {
                 </TableCell>
                 <TableCell className="px-4 text-gray-500 text-theme-sm dark:text-gray-40">
                   <div className="flex gap-2 items-stretch">
-                    <FaEdit className="w-6 h-5 dark:text-amber-300 text-amber-400" />
-                    <AiFillDelete className="w-6 h-5 dark:text-red-500 text-red-600" />
+                    <FaEdit className="w-6 h-5 text-amber-500" />
+                    <AiFillDelete className="w-6 h-5  text-red-700" />
                   </div>
                 </TableCell>
               </TableRow>

@@ -25,6 +25,10 @@ import CancelOrderPage from "./pages/Order/CancelOder";
 import AllProdukPage from "./pages/Produk/AllProduk";
 import AllCustomerPage from "./pages/Customer/AllCustomer";
 import AllReportPage from "./pages/Laporan/AllReport";
+import ProductFormPage from "./pages/Produk/ProductFormPage";
+import PrintProductBarcode from "./pages/Produk/PrintProductBarcode";
+import CategoryProduk from "./pages/Produk/CategoryProduk";
+import CustomerFormPage from "./pages/Customer/CustomerFormPage";
 
 export default function App() {
   return (
@@ -49,12 +53,22 @@ export default function App() {
 
             {/* Produk Page */}
             <Route path="/produk" element={<AllProdukPage />} />
+            <Route path="/produk/form_produk" element={<ProductFormPage />} />
+            <Route
+              path="/produk/barcode_sku"
+              element={<PrintProductBarcode />}
+            />
+            <Route
+              path="/produk/kategori_produk"
+              element={<CategoryProduk />}
+            />
 
             {/* Customer Page */}
             <Route path="/customer" element={<AllCustomerPage />} />
+            <Route path="/customer/form_customer" element={<CustomerFormPage />} />
 
             {/* Report Page */}
-            <Route path="/report" element={<AllReportPage/>} />
+            <Route path="/report" element={<AllReportPage />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />

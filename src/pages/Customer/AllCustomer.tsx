@@ -1,9 +1,58 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
+import Button from "../../components/ui/button/Button";
+import { FaFilter } from "react-icons/fa";
+import TableCustomer from "../../components/customer/TableCustomer";
+import { Link } from "react-router";
+import ModalCustomerKategory from "../../components/customer/modal/ModalFilterCustomer";
+
+const customer = [
+  {
+    id: "CUST001",
+    name: "Bapak Wahyudi Akbar Doe",
+    category: "Retail",
+    phone: "081234567890",
+    address: "Jl. Merdeka No. 1, Jakarta",
+  },
+  {
+    id: "CUST002",
+    name: "Jane Smith",
+    category: "Wholesale",
+    phone: "082345678901",
+    address: "Jl. Sudirman No. 10, Bandung",
+  },
+  {
+    id: "CUST003",
+    name: "Ahmad Fauzi",
+    category: "Retail",
+    phone: "083456789012",
+    address: "Jl. Pemuda No. 15, Surabaya",
+  },
+  {
+    id: "CUST004",
+    name: "Linda Hartono",
+    category: "Distributor",
+    phone: "084567890123",
+    address: "Jl. Diponegoro No. 7, Yogyakarta",
+  },
+  {
+    id: "CUST005",
+    name: "Michael Tan",
+    category: "Wholesale",
+    phone: "085678901234",
+    address: "Jl. Gajah Mada No. 3, Medan",
+  },
+];
 
 export default function AllCustomerPage() {
+  const [filter, setFilter] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  function changeModal() {
+    setFilter((prevFilter) => !prevFilter);
+  }
+
   return (
     <div>
       <PageMeta
@@ -12,9 +61,9 @@ export default function AllCustomerPage() {
       />
       <PageBreadcrumb pageTitle="Halaman Customer" />
 
-      <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-        <div className="lg:block mb-4">
-          <form>
+      <div className="min-h-screen rounded-2xl border flex border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
+        <div className="mb-4 w-full">
+          <div className="flex justify-between max-md:flex-col max-md:gap-4">
             <div className="relative">
               <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
                 <svg
@@ -36,22 +85,31 @@ export default function AllCustomerPage() {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Cari Order Barang"
-                className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
+                placeholder="Cari Nama ,Alamat,atau No Hp"
+                className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
               />
             </div>
-          </form>
-        </div>
 
-        <div className="mx-auto w-full max-w-[630px] text-center mt-2">
-          <h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-            Card Title Here
-          </h3>
-
-          <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-            Start putting content on grids or panels, you can also use different
-            combinations of grids.Please check out the dashboard and other pages
-          </p>
+            <div className="flex gap-2 ">
+              <Button
+                size="md"
+                variant="outline"
+                className="border-b-brand-500 "
+              >
+                Download Exel
+              </Button>
+              <Button size="md" variant="outline" onClick={() => changeModal()}>
+                Filter
+                <FaFilter />
+              </Button>
+              <Link to={"/customer/form_customer"}>
+                <Button size="md">Tambah Customer</Button>
+              </Link>
+            </div>
+          </div>
+          {/* check if the filter value is true or false */}
+          {filter ? <ModalCustomerKategory changeModal={changeModal} /> : null}
+          <TableCustomer customers={customer} />
         </div>
       </div>
     </div>

@@ -1,6 +1,15 @@
 import { useRef } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
+import Carousel from "../../components/laporan/Caraousel";
+import CardReport from "../../components/laporan/card/CardReport";
+
+import { FaLifeRing, FaPlaneDeparture } from "react-icons/fa";
+import { GiMoneyStack, GiProfit, GiTakeMyMoney } from "react-icons/gi";
+import { BiCalculator, BiSolidDiscount } from "react-icons/bi";
+import { LuPackageOpen } from "react-icons/lu";
+import StatisticsChart from "../../components/ecommerce/StatisticsSalerChart";
+import RecentOrders from "../../components/ecommerce/RecentOrders";
 
 export default function AllReportPage() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,15 +52,97 @@ export default function AllReportPage() {
           </form>
         </div>
 
-        <div className="mx-auto w-full max-w-[630px] text-center mt-2">
-          <h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-            Card Title Here
-          </h3>
+        <Carousel>
+          {/* Slide 1 */}
+          <div className="py-3 mr-5">
+            <div className="grid gap-6 md:grid-cols-4">
+              <CardReport
+                icon={<FaLifeRing size={30} />}
+                title="Penjualan Kotor"
+                result="Rp 1.052.000"
+                iconColor="bg-brand-100 text-brand-600"
+              />
+              <CardReport
+                icon={<GiProfit size={30} />}
+                title="Laba Kotor"
+                result="Rp 1.052.000"
+                iconColor="bg-green-100 text-green-600"
+              />
+              <CardReport
+                icon={<GiTakeMyMoney size={30} />}
+                title="Penjualan Bersih"
+                result="Rp 1.052.000"
+                iconColor="bg-amber-100 text-amber-600"
+              />
+              <CardReport
+                icon={<GiMoneyStack size={30} />}
+                title="Laba Bersih"
+                result="Rp 1.052.000"
+                iconColor="bg-yellow-100 text-yellow-600"
+              />
+              {/* Row 2 */}
+              <CardReport
+                icon={<BiSolidDiscount size={30} />}
+                title="Diskon"
+                result="Rp 1.052.000"
+                iconColor="bg-red-100 text-red-600"
+              />
+              <CardReport
+                icon={<LuPackageOpen size={30} />}
+                title="Ongkir"
+                result="Rp 1.052.000"
+                iconColor="bg-cyan-100 text-cyan-600"
+              />
+              <CardReport
+                icon={<BiCalculator size={30} />}
+                title="Pengeluaran"
+                result="Rp 1.052.000"
+                iconColor="bg-red-100 text-red-600"
+              />
+              <CardReport
+                icon={<FaPlaneDeparture size={30} />}
+                title="Biaya Lain"
+                result="Rp 1.052.000"
+                iconColor="bg-blue-100 text-blue-600"
+              />
+            </div>
+          </div>
 
-          <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-            Start putting content on grids or panels, you can also use different
-            combinations of grids.Please check out the dashboard and other pages
-          </p>
+          {/* Slide 2 */}
+          <div className="py-3">
+            <div className="grid gap-6 md:grid-cols-4">
+              <CardReport
+                icon={<LuPackageOpen size={30} />}
+                title="Ongkir"
+                result="Rp 1.052.000"
+                iconColor="bg-cyan-100 text-cyan-600"
+              />
+              <CardReport
+                icon={<BiCalculator size={30} />}
+                title="Pengeluaran"
+                result="Rp 1.052.000"
+                iconColor="bg-red-100 text-red-600"
+              />
+              <CardReport
+                icon={<FaPlaneDeparture size={30} />}
+                title="Biaya Lain"
+                result="Rp 1.052.000"
+                iconColor="bg-blue-100 text-blue-600"
+              />
+            </div>
+          </div>
+        </Carousel>
+
+        <div className="grid grid-cols-12 gap-4 md:gap-6 mt-10">
+          <div className="col-span-12">
+            <StatisticsChart />
+          </div>
+          <div className="col-span-12">
+            <StatisticsChart />
+          </div>
+          <div className="col-span-12 xl:col-span-7">
+            <RecentOrders />
+          </div>
         </div>
       </div>
     </div>
