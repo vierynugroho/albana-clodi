@@ -1,25 +1,45 @@
-import ComponentCard from "../../common/ComponentCard";
+import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-// import Dropzone from "react-dropzone";
+import { PiMicrosoftExcelLogoLight } from "react-icons/pi";
 
-const DropzoneComponent: React.FC = () => {
+const DropzoneFileExel: React.FC = () => {
+  const [file, setFiles] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(true);
+
   const onDrop = (acceptedFiles: File[]) => {
-    console.log("Files dropped:", acceptedFiles);
-    // Handle file uploads here
+    setFiles(acceptedFiles[0]);
+    setUploadProgress(0);
+    setIsUploading(true);
   };
+
+  useEffect(() => {
+    if (isUploading) {
+      const interval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setIsUploading(false);
+            return 100;
+          }
+          return prev + 1;
+        });
+      });
+    }
+  }, [isUploading]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    multiple: false,
     accept: {
-      "image/png": [],
-      "image/jpeg": [],
-      "image/webp": [],
-      "image/svg+xml": [],
+      "application/vnd.ms-excel": [],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
+      "text/csv": [],
     },
   });
-  
+
   return (
-    <ComponentCard title="Dropzone">
+    <div>
       <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
         <form
           {...getRootProps()}
@@ -61,7 +81,7 @@ const DropzoneComponent: React.FC = () => {
             </h4>
 
             <span className=" text-center mb-5 block w-full max-w-[290px] text-sm text-gray-700 dark:text-gray-400">
-              Drag and drop your PNG, JPG, WebP, SVG images here or browse
+              Drag and drop your Excel file (.xls, .xlsx, or .csv)
             </span>
 
             <span className="font-medium underline text-theme-sm text-brand-500">
@@ -70,8 +90,34 @@ const DropzoneComponent: React.FC = () => {
           </div>
         </form>
       </div>
-    </ComponentCard>
+      {file && (
+        <div className="mt-4 px-5  border border-gray-300 rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700 ">
+          <div className="flex items-center gap-3 mt-2 mb-2">
+            <PiMicrosoftExcelLogoLight size={40} className="text-emerald-600" />
+            <div className="flex flex-col justify-start">
+              <div className="font-medium text-gray-800 dark:text-white">
+                {file.name}
+              </div>
+              <div className="text-sm text-left text-gray-600 dark:text-gray-400">
+                {(file.size / 1024 / 1024).toFixed(2)} MB
+              </div>
+            </div>
+          </div>
+          {isUploading && (
+            <div className="w-full mt-3 bg-black h-3 rounded-full  dark:bg-gray-700 mb-4">
+              <div
+                className="bg-emerald-500 h-3 rounded-full transition-all duration-200 ease-in-out "
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
+              <div className="text-right text-xs mt- text-gray-600 dark:text-gray-400">
+                {uploadProgress}%
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 
-export default DropzoneComponent;
+export default DropzoneFileExel;
