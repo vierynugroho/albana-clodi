@@ -54,6 +54,7 @@ export default function App() {
             {/* Produk Page */}
             <Route path="/produk" element={<AllProdukPage />} />
             <Route path="/produk/form_produk" element={<ProductFormPage />} />
+            <Route path="/produk/edit/:id" element={<ProductFormPage />} />
             <Route
               path="/produk/barcode_sku"
               element={<PrintProductBarcode />}

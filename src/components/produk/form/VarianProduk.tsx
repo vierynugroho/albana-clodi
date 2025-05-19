@@ -35,12 +35,7 @@ type Props = {
   onDelete: (index: number) => void;
 };
 
-export default function VarianProduk({
-  setVarian,
-  index,
-  onDelete,
-}: Props) {
-
+export default function VarianProduk({ setVarian, index, onDelete }: Props) {
   function onChange(
     index: number,
     value: number | string,
@@ -48,8 +43,18 @@ export default function VarianProduk({
   ) {
     setVarian((prev) => {
       const updated = [...prev];
-      const updatedVarian = { ...updated[index], [label]: value };
-      updated[index] = updatedVarian;
+      const currentVariant = { ...updated[index] };
+      if (label in currentVariant.productPrices) {
+        const updatedPrice = {
+          ...currentVariant.productPrices,
+          [label]: value,
+        };
+        currentVariant.productPrices = updatedPrice;
+        updated[index] = currentVariant;
+      } else {
+        const updatedVarian = { ...updated[index], [label]: value };
+        updated[index] = updatedVarian;
+      }
       return updated;
     });
   }
@@ -68,9 +73,7 @@ export default function VarianProduk({
         <div>
           <Label htmlFor="inputTwo">Harga Beli</Label>
           <Input
-            onChange={(val) =>
-              onChange(index, val.target.value, "buy")
-            }
+            onChange={(val) => onChange(index, val.target.value, "buy")}
             type="number"
             min="0"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
@@ -80,9 +83,7 @@ export default function VarianProduk({
         <div>
           <Label htmlFor="inputTwo">Harga Jual Normal</Label>
           <Input
-            onChange={(val) =>
-              onChange(index, val.target.value, "normal")
-            }
+            onChange={(val) => onChange(index, val.target.value, "normal")}
             type="number"
             min="0"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
@@ -91,9 +92,7 @@ export default function VarianProduk({
         <div>
           <Label htmlFor="inputTwo">Harga Jual Reseller</Label>
           <Input
-            onChange={(val) =>
-              onChange(index, val.target.value, "reseller")
-            }
+            onChange={(val) => onChange(index, val.target.value, "reseller")}
             type="number"
             min="0"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"

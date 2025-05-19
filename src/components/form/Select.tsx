@@ -5,8 +5,13 @@ interface Option {
   label: string;
 }
 
+interface OptionProduct {
+  value: string;
+  label: string;
+}
+
 interface SelectProps {
-  options: Option[];
+  options: Option[]|OptionProduct[];
   placeholder?: string;
   onChange: (value: string) => void;
   className?: string;
