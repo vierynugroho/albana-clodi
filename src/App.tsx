@@ -25,6 +25,7 @@ import CancelOrderPage from "./pages/Order/CancelOder";
 import AllProdukPage from "./pages/Produk/AllProduk";
 import AllCustomerPage from "./pages/Customer/AllCustomer";
 import AllReportPage from "./pages/Laporan/AllReport";
+import AddOrderFomPage from "./components/order/form/AddOrderFormPage";
 
 export default function App() {
   return (
@@ -38,13 +39,13 @@ export default function App() {
               <ProtectedRoute>
                 <AppLayout />
               </ProtectedRoute>
-            }
-          >
+            }>
             <Route index path="/" element={<Home />} />
 
             {/* Order Page */}
             <Route path="/order" element={<AllOrderPage />} />
             <Route path="/order/sales_channel" element={<NewOrderPage />} />
+            <Route path="/order/form_add_order" element={<AddOrderFomPage />} />
             <Route path="/order/canceled" element={<CancelOrderPage />} />
 
             {/* Produk Page */}
@@ -54,7 +55,7 @@ export default function App() {
             <Route path="/customer" element={<AllCustomerPage />} />
 
             {/* Report Page */}
-            <Route path="/report" element={<AllReportPage/>} />
+            <Route path="/report" element={<AllReportPage />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />

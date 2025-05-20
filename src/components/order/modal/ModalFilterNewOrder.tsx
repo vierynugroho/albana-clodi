@@ -1,6 +1,6 @@
-import { useModal } from "../../hooks/useModal";
-import { Modal } from "../../components/ui/modal/";
-import Button from "../../components/ui/button/Button";
+import { useModal } from "../../../hooks/useModal";
+import { Modal } from "../../ui/modal";
+import Button from "../../ui/button/Button";
 // import Label from "../form/Label";
 
 // import Label from "../form/Label";

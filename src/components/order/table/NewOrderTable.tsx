@@ -4,7 +4,7 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
+} from "../../ui/table";
 
 export default function NewOrderTable() {
   const orders = []; // Ganti dengan data order Anda
@@ -18,37 +18,37 @@ export default function NewOrderTable() {
             <TableRow>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-theme-md dark:text-gray-400 w-1">
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400 w-1">
                 No
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-theme-md dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Order ID
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-theme-md dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Pemesan & Tgl Pesan
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-theme-md dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Produk
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-theme-md dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Tagihan
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-theme-md dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Pembayaran
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-theme-md dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Keterangan
               </TableCell>
             </TableRow>
@@ -62,22 +62,22 @@ export default function NewOrderTable() {
                   <TableCell className="py-4 px-3 sm:px-6 text-start text-gray-500">
                     {index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-black text-start text-theme-md dark:text-gray-400">
+                  <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                     {order.id}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-black text-start text-theme-md dark:text-gray-400">
+                  <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                     {order.customer} - {order.orderDate}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-black text-start text-theme-md dark:text-gray-400">
+                  <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                     {order.product}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-black text-start text-theme-md dark:text-gray-400">
+                  <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                     {order.bill}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-black text-start text-theme-md dark:text-gray-400">
+                  <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                     {order.payment}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-black text-start text-theme-md dark:text-gray-400">
+                  <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                     {order.notes}
                   </TableCell>
                 </TableRow>

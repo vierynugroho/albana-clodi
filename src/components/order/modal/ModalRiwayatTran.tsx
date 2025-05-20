@@ -7,7 +7,7 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
+} from "../../ui/table";
 
 type Props = {
   changeModal: () => void;

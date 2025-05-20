@@ -5,8 +5,8 @@ import { Link } from "react-router";
 import { FaFilter } from "react-icons/fa";
 import Button from "../../components/ui/button/Button";
 import Alert from "../../components/ui/alert/Alert";
-import NewOrderTable from "./NewOrderTable";
-import ModalFilterNewOrder from "./ModalFilterNewOrder";
+import NewOrderTable from "../../components/order/table/NewOrderTable";
+import ModalFilterNewOrder from "../../components/order/modal/ModalFilterNewOrder";
 
 export default function NewOrderPage() {
   const inputRef = useRef<HTMLInputElement>(null);

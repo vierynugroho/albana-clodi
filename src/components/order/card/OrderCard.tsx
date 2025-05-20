@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaPrint, FaTruck, FaEdit } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
-import ModalRiwayatTran from "./ModalRiwayatTran";
+import ModalRiwayatTran from "../modal/ModalRiwayatTran";
 import { FaTruckFast } from "react-icons/fa6";
 import { BiSolidPackage } from "react-icons/bi";
 import { LuPackageCheck } from "react-icons/lu";
@@ -12,19 +12,19 @@ export default function OrderCard() {
 
   const TrackingProgress = [
     {
-      icon: <BiSolidPackage className="text-green-500 w-6 h-6" />,
+      icon: <BiSolidPackage className="text-green-500 w-4 h-4" />,
       status: "pending",
     },
     {
-      icon: <FaTruck className="text-gray-400 w-6 h-6" />,
+      icon: <FaTruck className="text-gray-400 w-4 h-4" />,
       status: "pending",
     },
     {
-      icon: <FaTruckFast className="text-gray-400 w-6 h-6" />,
+      icon: <FaTruckFast className="text-gray-400 w-4 h-4" />,
       status: "pending",
     },
     {
-      icon: <LuPackageCheck className="text-gray-400 w-6 h-6" />,
+      icon: <LuPackageCheck className="text-gray-400 w-4 h-4" />,
       status: "complated",
     },
   ];
@@ -33,7 +33,7 @@ export default function OrderCard() {
     {
       id: "#57799",
       date: "Senin, 12 Mei 2025 15:29:48",
-      status: "Proses",
+      status: "pending",
       customer: "Hana (Ibu Warti)",
       statusCustumer: "DROPSHIPPER",
       admin: "fina harya muslikhah",
@@ -58,7 +58,7 @@ export default function OrderCard() {
     {
       id: "#57800",
       date: "Selasa, 13 Mei 2025 10:15:30",
-      status: "Dikirim",
+      status: "complated",
       customer: "Rina (Ibu Sari)",
       statusCustumer: "RESELLER",
       admin: "dina kartika putri",
@@ -94,7 +94,7 @@ export default function OrderCard() {
                   <div
                     className={`p-2 rounded-full border-2 cursor-pointer ${
                       step.status === "completed"
-                        ? "border-green-500 bg-green-100"
+                        ? "border-green-500 bg-green-500"
                         : "border-gray-300"
                     }  hover:border-green-500 transition duration-300`}
                     title={`Status pengiriman: ${step.status}`}>
@@ -174,16 +174,18 @@ export default function OrderCard() {
                     <FaTruck className="text-blue-500 text-2xl" />
                   </div>
                   <div>
-                    <p className="text-xl font-semi-bold">
+                    <p className="text-md font-semibold">
                       {order.courier.name}
                     </p>
-                    <p className="text-xl font-semi-bold">
-                      {order.courier.ongkir}
+                    {order.courier.ongkir && (
+                      <p className="text-md font-semibold">
+                        {order.courier.ongkir}
+                      </p>
+                    )}
+                    <p className="text-md text-gray-500">
+                      Resi: {order.courier.tracking}
                     </p>
                   </div>
-                  <p className="text-md text-gray-500">
-                    Resi: {order.courier.tracking}
-                  </p>
                 </div>
               </div>
             </div>
