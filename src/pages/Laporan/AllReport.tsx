@@ -1,18 +1,37 @@
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import Carousel from "../../components/laporan/Caraousel";
 import CardReport from "../../components/laporan/card/CardReport";
-
 import { FaLifeRing, FaPlaneDeparture } from "react-icons/fa";
 import { GiMoneyStack, GiProfit, GiTakeMyMoney } from "react-icons/gi";
 import { BiCalculator, BiSolidDiscount } from "react-icons/bi";
 import { LuPackageOpen } from "react-icons/lu";
 import StatisticsChart from "../../components/ecommerce/StatisticsSalerChart";
 import RecentOrders from "../../components/ecommerce/RecentOrders";
+import { getReport, type ReportAll } from "../../service/report";
 
 export default function AllReportPage() {
-  const inputRef = useRef<HTMLInputElement>(null);
+  // const inputRef = useRef<HTMLInputElement>(null);
+  const [report, setReport] = useState<ReportAll | null>(null);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const fetchReport = async () => {
+      const result = await getReport();
+      if (result.success && result.responseObject) {
+        setReport(result.responseObject);
+        setMessage(result.message);
+      } else {
+        setMessage(result.message);
+      }
+    };
+    fetchReport();
+  }, []);
+
+  console.log(report);
+  console.log(message);
+
   return (
     <div>
       <PageMeta
@@ -22,7 +41,7 @@ export default function AllReportPage() {
       <PageBreadcrumb pageTitle="Laporan" />
 
       <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-        <div className="lg:block mb-4">
+        {/* <div className="lg:block mb-4">
           <form>
             <div className="relative">
               <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
@@ -45,12 +64,12 @@ export default function AllReportPage() {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Cari Order Barang"
+                placeholder="Cari Rep"
                 className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
               />
             </div>
           </form>
-        </div>
+        </div> */}
 
         <Carousel>
           {/* Slide 1 */}
@@ -59,50 +78,66 @@ export default function AllReportPage() {
               <CardReport
                 icon={<FaLifeRing size={30} />}
                 title="Penjualan Kotor"
-                result="Rp 1.052.000"
+                result={`Rp ${
+                  report?.reportOrders?.penjualan_kotor.toLocaleString(
+                    "id-ID"
+                  ) ?? 0
+                }`}
                 iconColor="bg-brand-100 text-brand-600"
               />
               <CardReport
                 icon={<GiProfit size={30} />}
                 title="Laba Kotor"
-                result="Rp 1.052.000"
+                result={`Rp ${
+                  report?.reportOrders?.laba_kotor.toLocaleString("id-ID") ?? 0
+                }`}
                 iconColor="bg-green-100 text-green-600"
               />
               <CardReport
                 icon={<GiTakeMyMoney size={30} />}
                 title="Penjualan Bersih"
-                result="Rp 1.052.000"
+                result={`Rp ${
+                  report?.reportOrders?.penjualan_bersih.toLocaleString(
+                    "id-ID"
+                  ) ?? 0
+                }`}
                 iconColor="bg-amber-100 text-amber-600"
               />
               <CardReport
                 icon={<GiMoneyStack size={30} />}
                 title="Laba Bersih"
-                result="Rp 1.052.000"
+                result={`Rp ${
+                  report?.reportOrders?.laba_kotor.toLocaleString("id-ID") ?? 0
+                }`}
                 iconColor="bg-yellow-100 text-yellow-600"
-              />
-              {/* Row 2 */}
-              <CardReport
-                icon={<BiSolidDiscount size={30} />}
-                title="Diskon"
-                result="Rp 1.052.000"
-                iconColor="bg-red-100 text-red-600"
-              />
-              <CardReport
-                icon={<LuPackageOpen size={30} />}
-                title="Ongkir"
-                result="Rp 1.052.000"
-                iconColor="bg-cyan-100 text-cyan-600"
               />
               <CardReport
                 icon={<BiCalculator size={30} />}
                 title="Pengeluaran"
-                result="Rp 1.052.000"
+                result={`Rp ${
+                  report?.reportExpenses?.totalExpenses.toLocaleString(
+                    "id-ID"
+                  ) ?? 0
+                }`}
                 iconColor="bg-red-100 text-red-600"
+              />
+              {/* Row 2 */}
+              <CardReport
+                icon={<BiSolidDiscount size={30} />}
+                title="Total Item Terjual"
+                result={`${report?.reportOrders?.total_item_terjual ?? 0}`}
+                iconColor="bg-red-100 text-red-600"
+              />
+              <CardReport
+                icon={<LuPackageOpen size={30} />}
+                title="Total Order"
+                result={`${report?.reportOrders?.total_orders ?? 0}`}
+                iconColor="bg-cyan-100 text-cyan-600"
               />
               <CardReport
                 icon={<FaPlaneDeparture size={30} />}
                 title="Biaya Lain"
-                result="Rp 1.052.000"
+                result={`${report?.reportOrders?.total_transactions ?? 0}`}
                 iconColor="bg-blue-100 text-blue-600"
               />
             </div>
@@ -120,7 +155,11 @@ export default function AllReportPage() {
               <CardReport
                 icon={<BiCalculator size={30} />}
                 title="Pengeluaran"
-                result="Rp 1.052.000"
+                result={`Rp ${
+                  report?.reportExpenses?.totalExpenses.toLocaleString(
+                    "id-ID"
+                  ) ?? 0
+                }`}
                 iconColor="bg-red-100 text-red-600"
               />
               <CardReport

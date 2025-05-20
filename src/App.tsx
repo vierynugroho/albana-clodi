@@ -29,6 +29,7 @@ import ProductFormPage from "./pages/Produk/ProductFormPage";
 import PrintProductBarcode from "./pages/Produk/PrintProductBarcode";
 import CategoryProduk from "./pages/Produk/CategoryProduk";
 import CustomerFormPage from "./pages/Customer/CustomerFormPage";
+import AllExpense from "./pages/Expenses/Allexpense";
 
 export default function App() {
   return (
@@ -42,8 +43,7 @@ export default function App() {
               <ProtectedRoute>
                 <AppLayout />
               </ProtectedRoute>
-            }
-          >
+            }>
             <Route index path="/" element={<Home />} />
 
             {/* Order Page */}
@@ -70,6 +70,9 @@ export default function App() {
 
             {/* Report Page */}
             <Route path="/report" element={<AllReportPage />} />
+
+            {/* Produk Page */}
+            <Route path="/expense" element={<AllExpense  />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />

@@ -54,7 +54,6 @@ export default function AllProdukPage() {
       const params = new URLSearchParams();
       // for search
       params.set("keyword", keyword.toLowerCase());
-
       // for filter
       params.set("kategori", filter.kategori);
       params.set("channel", filter.channel);
