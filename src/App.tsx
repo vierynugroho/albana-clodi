@@ -19,13 +19,15 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import NewOrderPage from "./pages/Order/NewOrder";
+import NewOrderPage from "./pages/Order/NewOrderPage";
 import AllOrderPage from "./pages/Order/AllOrder";
 import CancelOrderPage from "./pages/Order/CancelOder";
 import AllProdukPage from "./pages/Produk/AllProduk";
 import AllCustomerPage from "./pages/Customer/AllCustomer";
 import AllReportPage from "./pages/Laporan/AllReport";
 import AddOrderFomPage from "./components/order/form/AddOrderFormPage";
+import UploadOrderPage from "./pages/Order/UploadOrderPage";
+import EditOrderFomPage from "./components/order/form/EditOrderPage";
 
 export default function App() {
   return (
@@ -47,6 +49,11 @@ export default function App() {
             <Route path="/order/sales_channel" element={<NewOrderPage />} />
             <Route path="/order/form_add_order" element={<AddOrderFomPage />} />
             <Route path="/order/canceled" element={<CancelOrderPage />} />
+            <Route path="/order/import_order" element={<UploadOrderPage />} />
+            <Route
+              path="/order/edit_order/:id"
+              element={<EditOrderFomPage />}
+            />
 
             {/* Produk Page */}
             <Route path="/produk" element={<AllProdukPage />} />

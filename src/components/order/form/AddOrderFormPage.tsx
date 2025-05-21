@@ -43,6 +43,7 @@ export default function AddOrderFomPage() {
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
       />
       <OrderPageBreadcrumb pageTitle="Tambah Order" />
+      <hr className="border-1 border-gray-200" />
 
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

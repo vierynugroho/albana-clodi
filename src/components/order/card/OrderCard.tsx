@@ -6,6 +6,8 @@ import { FaTruckFast } from "react-icons/fa6";
 import { BiSolidPackage } from "react-icons/bi";
 import { LuPackageCheck } from "react-icons/lu";
 import { IoIosArrowDown } from "react-icons/io";
+import { Link } from "react-router";
+import DropdownCancelOrder from "../dropdown/DropdownCancelOrder";
 
 export default function OrderCard() {
   const [showModal, setShowModal] = useState(false);
@@ -228,12 +230,13 @@ export default function OrderCard() {
                 Tandai diterima
               </button>
               <div className="flex gap-2">
-                <button className="flex items-center gap-2 border border-blue-600 px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100 text-sm">
-                  <FaEdit /> Edit Order
-                </button>
-                <button className="border">
-                  <IoIosArrowDown />
-                </button>
+                <Link to="/order/edit_order/:id">
+                  <button className="flex items-center gap-2 border border-blue-600 px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100 text-sm">
+                    <FaEdit /> Edit Order
+                  </button>
+                </Link>
+
+                <DropdownCancelOrder />
               </div>
             </div>
           </div>

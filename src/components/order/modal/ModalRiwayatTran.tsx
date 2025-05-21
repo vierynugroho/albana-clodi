@@ -26,7 +26,7 @@ export default function ModalRiwayatTran({ changeModal }: Props) {
   return ReactDOM.createPortal(
     <div className="fixed z-[100000] inset-0 overflow-y-auto">
       <div className="flex items-center justify-center max-h-screen px-4 text-center">
-        <div className="fixed inset-0 bg-gray-500 opacity-75"></div>
+        <div className="fixed inset-0 bg-gray-500 opacity-40"></div>
         <div className="inline-block align-bottom bg-white rounded-lg px-7 pt-6 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold text-black mb-2">

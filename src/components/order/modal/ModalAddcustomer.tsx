@@ -10,7 +10,6 @@ export default function ModalAddCustomer({ changeModal }: Props) {
   return ReactDOM.createPortal(
     <div className="fixed z-[100000] inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 text-center">
-        <div className="fixed inset-0 bg-gray-500 opacity-75"></div>
         <div className="bg-white rounded-lg w-full max-w-3xl p-6 shadow-xl relative z-10">
           {/* Header */}
           <div className="flex justify-between items-center mb-4">

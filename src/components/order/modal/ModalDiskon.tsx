@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ReactDOM from "react-dom";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import PhoneInput from "../../form/group-input/PhoneInput";
+import Input from "../../form/input/InputField";
 
 type Props = {
   changeModal: () => void;
@@ -8,16 +10,22 @@ type Props = {
 
 export default function ModalDiskon({ changeModal }: Props) {
   const [namaDiskon, setNamaDiskon] = useState("");
-  const [nominal, setNominal] = useState(0);
-  const [tipeNominal, setTipeNominal] = useState("Rp");
 
   const handleSubmit = () => {
     // Implement logic to handle diskon submission
-    console.log({ namaDiskon, nominal, tipeNominal });
+    console.log({ namaDiskon });
+  };
+
+  const typeNominal = [
+    { code: "Rp", label: "Rp" },
+    { code: "%", label: "%" },
+  ];
+  const handlePhoneNumberChange = (phoneNumber: string) => {
+    console.log("Updated phone number:", phoneNumber);
   };
 
   return ReactDOM.createPortal(
-    <div className="fixed z-[10000] inset-0 overflow-y-auto">
+    <div className="fixed z-[100000] inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4">
         <div className="fixed inset-0 bg-black opacity-40"></div>
         <div className="bg-white rounded-xl shadow-lg z-50 w-full max-w-md p-6 relative">
@@ -36,7 +44,7 @@ export default function ModalDiskon({ changeModal }: Props) {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">Nama</label>
-              <input
+              <Input
                 type="text"
                 value={namaDiskon}
                 onChange={(e) => setNamaDiskon(e.target.value)}
@@ -47,21 +55,12 @@ export default function ModalDiskon({ changeModal }: Props) {
 
             <div>
               <label className="block text-sm font-medium mb-1">Nominal</label>
-              <div className="flex items-center gap-2">
-                <select
-                  value={tipeNominal}
-                  onChange={(e) => setTipeNominal(e.target.value)}
-                  className="border border-gray-300 rounded-md p-2">
-                  <option value="Rp">Rp</option>
-                  <option value="%">%</option>
-                </select>
-                <input
-                  type="number"
-                  value={nominal}
-                  onChange={(e) => setNominal(parseInt(e.target.value))}
-                  className="flex-1 border border-gray-300 rounded-md p-2"
-                />
-              </div>
+              <PhoneInput
+                selectPosition="start"
+                countries={typeNominal}
+                placeholder="masukkan nominal"
+                onChange={handlePhoneNumberChange}
+              />
             </div>
             <hr className="pt-0 pb-3 border-gray-300 dark:border-gray-700" />
 

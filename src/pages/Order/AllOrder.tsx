@@ -11,7 +11,8 @@ import FilterOrder from "../../components/order/filter/FilterOrder";
 import FilterStatusOrder from "../../components/order/filter/FilterStatusOrder";
 import { DownloadIcon } from "../../icons";
 import { FaPlus } from "react-icons/fa6";
-import OptionDropdownOrder from "./OptionDropdownOrder";
+import OptionDropdownOrder from "../../components/order/dropdown/OptionDropdownOrder";
+import FilterOrderDropdown from "../../components/order/filter/FilterOrderDropdown";
 
 type FilterState = {
   pembayaran: string;
@@ -121,7 +122,7 @@ export default function AllOrderPage() {
         {/* Search and Filter Row */}
         <div className="flex flex-wrap items-center gap-2 mb-4 mt-3">
           <div className="relative">
-            <select className="border px-3 py-2 rounded-xl text-sm bg-white">
+            {/* <select className="border px-3 py-2 rounded-xl text-sm bg-white">
               <option value="">Pilih Filter</option>
               <option value="orderId">Order ID</option>
               <option value="customerName">Nama Customer</option>
@@ -130,7 +131,13 @@ export default function AllOrderPage() {
               <option value="resiNumber">No Resi</option>
               <option value="customerPhone">Telp Customer</option>
               <option value="shipperTrackingId">Shipper Tracking ID</option>
-            </select>
+            </select> */}
+            <FilterOrderDropdown
+              value={""}
+              onChange={function (value: string): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
           </div>
           <div className="flex-1">
             <SearchOrder

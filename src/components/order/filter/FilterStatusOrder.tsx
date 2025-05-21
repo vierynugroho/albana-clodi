@@ -31,7 +31,7 @@ export default function FilterStatusOrder({
       {statusList.map((statusOrder) => (
         <label
           key={statusOrder}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-colors duration-200 ${
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors duration-200 ${
             selectedStatuses.includes(statusOrder)
               ? "bg-blue-600 text-white border-blue-600"
               : "bg-white text-gray-700 border-gray-300"
@@ -42,6 +42,7 @@ export default function FilterStatusOrder({
             onChange={() => handleToggle(statusOrder)}
             className="form-checkbox accent-blue-600"
           />
+
           <span className="text-sm">{statusOrder}</span>
         </label>
       ))}

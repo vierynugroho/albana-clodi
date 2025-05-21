@@ -10,10 +10,7 @@ import ModalFilterNewOrder from "../../components/order/modal/ModalFilterNewOrde
 
 export default function NewOrderPage() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <div>
@@ -54,12 +51,14 @@ export default function NewOrderPage() {
           size="md"
           variant="outlineblue"
           className="font-semibold"
-          onClick={openModal}>
+          onClick={() => setShowModal(true)}>
           Filter
           <FaFilter />
         </Button>
 
-        <ModalFilterNewOrder isOpen={isOpen} onClose={closeModal} />
+        {showModal && (
+          <ModalFilterNewOrder changeModal={() => setShowModal(false)} />
+        )}
       </div>
       <div className="flex justify-end items-center mt-6">
         <div className="flex justify-between items-center bg-white p-3.5 rounded-lg">
@@ -85,22 +84,6 @@ export default function NewOrderPage() {
         />
       </div>
       <NewOrderTable />
-      {/* <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-        <div className="lg:block mb-4">
-         
-        </div>
-
-        <div className="mx-auto w-full max-w-[630px] text-center mt-2">
-          <h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-            Card Title Here
-          </h3>
-
-          <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-            Start putting content on grids or panels, you can also use different
-            combinations of grids.Please check out the dashboard and other pages
-          </p>
-        </div>
-      </div> */}
     </div>
   );
 }
