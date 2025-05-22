@@ -5,8 +5,13 @@ interface Option {
   label: string;
 }
 
+interface OptionProduct {
+  value: string;
+  label: string;
+}
+
 interface SelectProps {
-  options: Option[];
+  options: Option[]|OptionProduct[];
   placeholder?: string;
   onChange: (value: string) => void;
   className?: string;
@@ -42,7 +47,6 @@ const Select: React.FC<SelectProps> = ({
       {/* Placeholder option */}
       <option
         value=""
-        disabled
         className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
       >
         {placeholder}

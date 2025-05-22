@@ -5,11 +5,13 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const authUser = localStorage.getItem("authUser");
+  const authUser = localStorage.getItem("token");
+  localStorage.setItem("token", "test");
   if (!authUser) {
     return <Navigate to={"/signin"} replace />;
+  } else {
+    return children;
   }
-  return children;
 }
 
 export default ProtectedRoute;
