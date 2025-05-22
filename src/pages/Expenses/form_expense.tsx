@@ -21,11 +21,12 @@ type Props = {
   }) => void;
   isEdit: boolean;
   id?: string;
+  refreshData: () => void;
 };
 
 export default function FormExpense({
   changeModal,
-  setExpenses,
+  refreshData,
   isEdit,
   id,
 }: Props) {
@@ -44,16 +45,6 @@ export default function FormExpense({
 
   async function addExpense() {
     if (name.trim() === "" || amount <= 0 || quantity <= 0) return;
-
-    setExpenses({
-      id: Date.now().toString(),
-      name,
-      date,
-      amount,
-      quantity,
-      note,
-    });
-
     const result = await createExpense({
       itemName: name,
       personResponsible: responseObject,
@@ -64,6 +55,7 @@ export default function FormExpense({
     });
     if (result.success) {
       console.log("Berhasil:", result.message);
+      refreshData();
     } else {
       console.log(result.message);
     }
@@ -83,6 +75,7 @@ export default function FormExpense({
     });
     if (result.success) {
       console.log("Berhasil:", result.message);
+      refreshData();
     } else {
       console.log(result.message);
     }
@@ -96,7 +89,6 @@ export default function FormExpense({
         const result = await getDetailExpense(id);
         if (result.success && result.responseObject) {
           setName(result.responseObject.itemName);
-          console.log(toDateOnly(result.responseObject.expenseDate));
           setDate(toDateOnly(result.responseObject.expenseDate));
           setAmount(result.responseObject.itemPrice);
           setQuantity(result.responseObject.qty);

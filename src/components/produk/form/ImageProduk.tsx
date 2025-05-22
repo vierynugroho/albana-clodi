@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { ProductPrice, ProductVariant } from "./VarianProduk";
 
 type PreviewFile = File & { preview: string };
+type DropzoneProps = {
+  index: number;
+  onChange: (
+    index: number,
+    value: File,
+    label: keyof ProductVariant | keyof ProductPrice
+  ) => void;
+};
 
-const DropzoneComponent: React.FC = () => {
+const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
   const [image, setImage] = useState<PreviewFile | null>(null);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -12,6 +21,7 @@ const DropzoneComponent: React.FC = () => {
       preview: URL.createObjectURL(file),
     });
     setImage(previewFile);
+    onChange(index, previewFile, "image" as keyof ProductVariant);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

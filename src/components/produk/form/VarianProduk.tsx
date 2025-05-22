@@ -3,7 +3,7 @@ import Input from "../../form/input/InputField";
 import Label from "../../form/Label";
 import DropzoneComponent from "./ImageProduk";
 
-type ProductPrice = {
+export type ProductPrice = {
   normal: number;
   buy: number;
   reseller: number;
@@ -18,8 +18,9 @@ type ProductWholesaler = {
   wholesalerPrice: number;
 };
 
-type ProductVariant = {
+export type ProductVariant = {
   imageUrl: string;
+  image?: File;
   sku: string;
   productPrices: ProductPrice;
   productWholesalers: ProductWholesaler[];
@@ -38,7 +39,7 @@ type Props = {
 export default function VarianProduk({ setVarian, index, onDelete }: Props) {
   function onChange(
     index: number,
-    value: number | string,
+    value: number | string | File,
     label: keyof ProductVariant | keyof ProductPrice
   ) {
     setVarian((prev) => {
@@ -61,11 +62,12 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
 
   return (
     <div className="relative border rounded-2xl p-4 shadow-md mb-4 flex justify-evenly gap-6 whitespace-nowrap items-start">
-      <DropzoneComponent />
+      <DropzoneComponent index={index} onChange={onChange} />
       <div>
         <Label htmlFor="inputTwo">SKU</Label>
         <Input
           type="text"
+          placeholder="SKU45"
           onChange={(val) => onChange(index, val.target.value, "sku")}
         />
       </div>
@@ -76,6 +78,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
             onChange={(val) => onChange(index, val.target.value, "buy")}
             type="number"
             min="0"
+            placeholder="5000"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
@@ -86,6 +89,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
             onChange={(val) => onChange(index, val.target.value, "normal")}
             type="number"
             min="0"
+            placeholder="40000"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
@@ -95,6 +99,27 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
             onChange={(val) => onChange(index, val.target.value, "reseller")}
             type="number"
             min="0"
+            placeholder="13000"
+            className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
+          />
+        </div>
+        <div>
+          <Label htmlFor="inputTwo">Harga Jual Agent</Label>
+          <Input
+            onChange={(val) => onChange(index, val.target.value, "agent")}
+            type="number"
+            min="0"
+            placeholder="15000"
+            className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
+          />
+        </div>
+        <div>
+          <Label htmlFor="inputTwo">Harga Jual Member</Label>
+          <Input
+            onChange={(val) => onChange(index, val.target.value, "member")}
+            type="number"
+            min="0"
+            placeholder="20000"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
@@ -105,6 +130,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
           <Input
             onChange={(val) => onChange(index, val.target.value, "size")}
             type="string"
+            placeholder="XL"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
@@ -112,6 +138,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
           <Label htmlFor="inputTwo">Warna</Label>
           <Input
             type="text"
+            placeholder="Merah"
             onChange={(val) => onChange(index, val.target.value, "color")}
           />
         </div>
@@ -121,6 +148,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
         <Input
           onChange={(val) => onChange(index, val.target.value, "stock")}
           type="number"
+          placeholder="20"
           className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
         />
       </div>

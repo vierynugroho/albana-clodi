@@ -65,7 +65,8 @@ export type ProductResponse = {
     size: string;
     color: string;
     imageUrl: string;
-    barcode: string ;
+    file?: File;
+    barcode: string;
     createdAt: string;
     updatedAt: string;
     productPrices: {
@@ -137,14 +138,11 @@ export async function createProduct(
 
 export async function getProducts(): Promise<ResponseSucces> {
   try {
-    const response = await axios.get(
-      `${apiUrl}/products`,
-      {
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-        },
-      }
-    );
+    const response = await axios.get(`${apiUrl}/products`, {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     return {
       success: true,
       message: response.data.message ?? "Produk berhasil Dimuat",

@@ -30,6 +30,7 @@ type ProductWholesaler = {
 
 type ProductVariant = {
   imageUrl: string;
+  file?: File;
   sku: string;
   productPrices: ProductPrice;
   productWholesalers: ProductWholesaler[];

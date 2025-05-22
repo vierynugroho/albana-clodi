@@ -26,9 +26,14 @@ import { ExpenseItem } from "../../service/expense";
 type Props = {
   expenses: ExpenseItem[];
   setEditExpense: (id: string) => void;
+  deleteExpense: (id: string) => void;
 };
 
-export default function TablExpense({ expenses, setEditExpense }: Props) {
+export default function TablExpense({
+  expenses,
+  setEditExpense,
+  deleteExpense,
+}: Props) {
   function toDateOnly(dateString: string): string {
     return new Date(dateString).toISOString().split("T")[0];
   }
@@ -121,6 +126,7 @@ export default function TablExpense({ expenses, setEditExpense }: Props) {
                     <TiDelete
                       size={30}
                       className="text-red-600 cursor-pointer"
+                      onClick={() => deleteExpense(expense.id)}
                     />
                   </div>
                 </TableCell>

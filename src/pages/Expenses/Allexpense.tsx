@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import TablExpense from "./TableExpense";
 import Button from "../../components/ui/button/Button";
@@ -8,10 +8,13 @@ import InfoCard from "./Info_card";
 import FormExpense from "./form_expense";
 import DatePicker from "../../components/form/date-picker";
 import {
+  deleteExpense,
   type ExpenseItem,
   getDetailExpense,
   getExpenses,
 } from "../../service/expense";
+import DeleteModal from "../../components/expenses/modal/DeleteModal";
+import ModalUploadExel from "../../components/expenses/importExel/ModalUploadExel";
 
 interface Expense {
   id: string;
@@ -25,6 +28,8 @@ interface Expense {
 export default function AllExpense() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isDelete, setIsDelete] = useState<boolean>(false);
+  const [isImport, setIsImport] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filterType, setFilterType] = useState<string>("By Date");
@@ -32,14 +37,16 @@ export default function AllExpense() {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   // Untuk "By Month"
-  const [month, setMonth] = useState(String(new Date().getMonth() + 1));
-  const [year, setYear] = useState(String(new Date().getFullYear()));
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
 
+  // Untuk Search
+  const [keyword, setKeyword] = useState<string>("");
   const [expensesAll, setExpensesAll] = useState<ExpenseItem[]>([]);
   const [message, setMessage] = useState("");
 
-  // Id Edit Data
   const [idEditData, setIdEditData] = useState("");
+  const [idDeleteData, setIdDeleteData] = useState("");
 
   const handleAddExpense = (expense: Expense) => {
     setExpenses((prev) => [...prev, expense]);
@@ -61,6 +68,23 @@ export default function AllExpense() {
     };
   }, []);
 
+  const fetchExpenses = useCallback(async () => {
+    console.log({ endDate, startDate, month, year });
+    const result = await getExpenses({
+      keyword: "", // atau keyword dari state
+      endDate,
+      startDate,
+      month,
+      year,
+    });
+    if (result.success && result.responseObject) {
+      setExpensesAll(result.responseObject.data);
+      setMessage(result.message);
+    } else {
+      setMessage(result.message);
+    }
+  }, [endDate, startDate, month, year]);
+
   async function handleEditExpense(id: string) {
     setIdEditData(id);
     const result = await getDetailExpense(id);
@@ -73,13 +97,29 @@ export default function AllExpense() {
     }
   }
 
-  useEffect(() => {
-    const fetchExpenses = async () => {
+  function handleDeleteModal(id: string) {
+    setIdDeleteData(id);
+    setIsDelete(true);
+  }
+
+  async function handleDeleteExpense(id: string) {
+    const result = await deleteExpense(id);
+    if (result.success) {
+      fetchExpenses();
+    } else {
+      console.error(result.message);
+    }
+    setIsDelete(false);
+  }
+
+  function handleSearch() {
+    const fetchByKeyword = async () => {
       const result = await getExpenses({
-        endDate: endDate,
-        startDate: startDate,
-        month: month,
-        year: year,
+        keyword,
+        endDate,
+        startDate,
+        month,
+        year,
       });
       if (result.success && result.responseObject) {
         setExpensesAll(result.responseObject.data);
@@ -88,8 +128,12 @@ export default function AllExpense() {
         setMessage(result.message);
       }
     };
+    fetchByKeyword();
+  }
+
+  useEffect(() => {
     fetchExpenses();
-  }, [endDate, startDate, month, year]);
+  }, [fetchExpenses]);
   console.log(message);
 
   // useEffect()
@@ -109,9 +153,13 @@ export default function AllExpense() {
             isMobile ? "gap-x-5" : "gap-x-2"
           }`}
         >
-          <form className="flex-1">
+          {/* Search */}
+          <div className="flex-1">
             <div className="relative">
-              <span className="absolute -translate-y-1/2 pointer-events-auto left-4 top-1/2">
+              <span
+                onClick={handleSearch}
+                className="absolute -translate-y-1/2 pointer-events-auto left-4 top-1/2 cursor-pointer"
+              >
                 <svg
                   className="fill-gray-500 dark:fill-gray-400"
                   width="20"
@@ -131,18 +179,21 @@ export default function AllExpense() {
               <input
                 // ref={}
                 type="text"
-                placeholder="Cari data Pengeluaran"
-                className="dark:bg-dark-900 h-11 w-1/12 md:w-10/12 rounded-lg border border-gray-200 bg-transparent py-2.5 pl-10 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 md:pl-12"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="Masukkan Nama pengeluaran"
+                className="dark:bg-dark-900 h-11 w-full md:w-10/12 rounded-lg border border-gray-200 bg-transparent py-2.5 pl-10 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 md:pl-12"
               />
             </div>
-          </form>
+          </div>
           {/* Button Export expenses */}
           <Button
             size="md"
             variant="outlineblue"
+            onClick={() => setIsImport(true)}
             startIcon={<DownloadIcon className="size-5" />}
           >
-            Export Excel
+            Import Excel
           </Button>
 
           {/* Button add Exppenses */}
@@ -156,12 +207,12 @@ export default function AllExpense() {
           </Button>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 max-sm:flex-col">
           {/* Dropdown Filter Type */}
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 rounded border border-gray-300 bg-white text-sm"
+            className="px-3 rounded border border-gray-300 bg-white text-sm max-sm:p-4"
           >
             <option>By Date</option>
             <option>By Month</option>
@@ -182,8 +233,11 @@ export default function AllExpense() {
                   );
                   const day = String(firstDate.getDate()).padStart(2, "0");
                   const formatted = `${year}-${month}-${day}`;
+
+                  setMonth("");
+                  setYear("");
+
                   setStartDate(formatted);
-                  console.log(formatted);
                 }}
               />
               <DatePicker
@@ -198,8 +252,9 @@ export default function AllExpense() {
                   );
                   const day = String(firstDate.getDate()).padStart(2, "0");
                   const formatted = `${year}-${month}-${day}`;
+                  setMonth("");
+                  setYear("");
                   setEndDate(formatted);
-                  console.log(formatted);
                 }}
               />
             </>
@@ -212,7 +267,11 @@ export default function AllExpense() {
                 className="px-3 py-2 rounded border border-gray-300 bg-white text-sm"
                 defaultValue="January"
                 value={month}
-                onChange={(e) => setMonth(e.target.value)}
+                onChange={(e) => {
+                  setMonth(e.target.value);
+                  setEndDate("");
+                  setStartDate("");
+                }}
               >
                 <option value="1">January</option>
                 <option value="2">February</option>
@@ -231,7 +290,11 @@ export default function AllExpense() {
                 className="px-3 py-2 rounded border border-gray-300 bg-white text-sm"
                 defaultValue={new Date().getFullYear()}
                 value={year}
-                onChange={(e) => setYear(e.target.value)}
+                onChange={(e) => {
+                  setYear(e.target.value);
+                  setEndDate("");
+                  setStartDate("");
+                }}
               >
                 {Array.from(
                   { length: 10 },
@@ -253,6 +316,7 @@ export default function AllExpense() {
             setIsEdit(false);
             setIdEditData("");
           }}
+          refreshData={fetchExpenses}
           setExpenses={handleAddExpense}
           isEdit={isEdit}
           id={idEditData}
@@ -264,9 +328,18 @@ export default function AllExpense() {
       <div>
         <TablExpense
           expenses={expensesAll}
+          deleteExpense={handleDeleteModal}
           setEditExpense={handleEditExpense}
         />
       </div>
+      {isDelete && (
+        <DeleteModal
+          id={idDeleteData}
+          changeModal={() => setIsDelete(false)}
+          deleteExpense={handleDeleteExpense}
+        />
+      )}
+      {isImport && <ModalUploadExel changeModal={() => setIsImport(false)} />}
     </div>
   );
 }
