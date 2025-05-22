@@ -11,6 +11,7 @@ import Button from "../button/Button";
 import GrosirProduk from "./GrosirProduk";
 import { GiWeight } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
+import { createProduct } from "../../../service/product";
 
 type ProductPrice = {
   normal: number;
@@ -29,6 +30,7 @@ type ProductWholesaler = {
 
 type ProductVariant = {
   imageUrl: string;
+  file?: File;
   sku: string;
   productPrices: ProductPrice;
   productWholesalers: ProductWholesaler[];
@@ -77,6 +79,21 @@ const options = [
   { value: "BARANG_PRE_ORDER", label: "Barang Pre-Order" },
 ];
 
+const categoryProducts = [
+  {
+    value: "b4788f9c-a24b-48f0-a7ba-3e86f4149248",
+    label: "Kaos",
+  },
+  {
+    value: "d290f1ee-6c54-4b01-90e6-d701748f0851",
+    label: "Kemeja",
+  },
+  {
+    value: "5c9d8a34-3a71-4de1-9b8a-fb0dc9f9e1cc",
+    label: "Hoodie",
+  },
+];
+
 export default function FormProduk() {
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [switchStates, setSwitchStates] = useState<SwichStatesType>({
@@ -89,6 +106,8 @@ export default function FormProduk() {
   const [productDescription, setProductDescription] = useState("");
   const [productWeight, setProductWeight] = useState(0);
   const [varian, setVarian] = useState<ProductVariant[]>([defaultVariant()]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleRadioChange = (value: string) => {
     setSelectedValue(value);
@@ -138,7 +157,9 @@ export default function FormProduk() {
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError("");
     const payload = {
       product: {
         name: productName,
@@ -150,7 +171,13 @@ export default function FormProduk() {
       categoryId,
       productVariants: varian,
     };
-    console.log(payload);
+    const result = await createProduct(payload);
+    setLoading(false);
+    if (result.success) {
+      console.log("Berhasil:", result.message);
+    } else {
+      setError(result.message);
+    }
   };
 
   return (
@@ -172,7 +199,7 @@ export default function FormProduk() {
               <div>
                 <Label>Kategori</Label>
                 <Select
-                  options={options}
+                  options={categoryProducts}
                   placeholder="Pilih Kategori Produk"
                   onChange={handleSelectChange}
                   className="dark:bg-dark-900"
@@ -251,8 +278,9 @@ export default function FormProduk() {
           />
           <ManagePrivorAndStorefront title="Atur Privor & Storefront" />
           <Button className="hover:bg-black" onClick={handleSubmit}>
-            Tambah Produk
+            {loading ? "Menambahkan Produk" : "Tambah Produk"}
           </Button>
+          {error && <section className="text-red-600">{error}</section>}
         </div>
       </div>
 
@@ -290,9 +318,11 @@ export default function FormProduk() {
           </ComponentCard>
         ))}
         {switchStates.varian ? (
-          <Button className="mt-5" onClick={addVariantComponent}>
-            Tambah Varian
-          </Button>
+          <div>
+            <Button className="mt-5" onClick={addVariantComponent}>
+              Tambah Varian
+            </Button>
+          </div>
         ) : null}
       </div>
     </div>

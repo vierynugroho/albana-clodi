@@ -1,9 +1,7 @@
 import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-export async function login(credentials: {
-  email: string;
-  password: string;
-}): Promise<{
+type ResponsAuth = {
   success: boolean;
   message: string;
   token?: string;
@@ -12,10 +10,15 @@ export async function login(credentials: {
     email: string;
     fullname: string;
   };
-}> {
+};
+
+export async function login(credentials: {
+  email: string;
+  password: string;
+}): Promise<ResponsAuth> {
   try {
     const response = await axios.post(
-      "https://30d0-66-96-225-94.ngrok-free.app/auth/login", //development
+      `${apiUrl}/auth/login`, //development
       credentials
     );
 
