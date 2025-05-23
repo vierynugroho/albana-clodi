@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { FaPrint, FaTruck, FaEdit } from "react-icons/fa";
+import { FaTruck, FaEdit } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import ModalRiwayatTran from "../modal/ModalRiwayatTran";
 import { FaTruckFast } from "react-icons/fa6";
 import { BiSolidPackage } from "react-icons/bi";
 import { LuPackageCheck } from "react-icons/lu";
 import { Link } from "react-router";
-import DropdownCancelOrder from "../dropdown/DropdownCancelOrder";
+import { MdDeleteForever } from "react-icons/md";
+import { IoDocumentTextOutline, IoBagHandleOutline } from "react-icons/io5";
 
-export default function OrderCard() {
+export default function CancelOrderCard() {
   const [showModal, setShowModal] = useState(false);
 
   const TrackingProgress = [
@@ -63,7 +64,6 @@ export default function OrderCard() {
       customer: "Rina (Ibu Sari)",
       statusCustumer: "RESELLER",
       admin: "dina kartika putri",
-      note: "khimar basic black XL, tunic floral pink L",
       payment: {
         total: "Rp. 450.000",
         status: "Unpaid",
@@ -132,18 +132,12 @@ export default function OrderCard() {
                 <p className="font-normal text-gray-500">Admin</p>
                 <p className="text-xl font-semibold">{order.admin}</p>
               </div>
-              <div>
-                <p className="font-normal text-gray-500">Catatan</p>
-                <p className="text-md font-light text-gray-dark">
-                  {order.note}
-                </p>
-              </div>
             </div>
 
             {/* Status Bayar */}
             <div className="space-y-2">
               <div>
-                <p className="font-semibold">Status Bayar & Total bayar</p>
+                <p className="font-normal">Status Bayar & Total bayar</p>
                 <div className="border rounded-lg p-4 my-2">
                   <p className="text-2xl font-semibold mb-2 mr-2">
                     {order.payment.total}
@@ -195,12 +189,10 @@ export default function OrderCard() {
               <p className="font-semibold text-gray-500 text-sm">
                 Produk (total {order.products.length} item)
               </p>
-              <ul className="mt-1 text-blue-700 font-semibold space-y-1">
+              <ul className="mt-1 text-black text-sm font-normal space-y-1">
                 {order.products.map((product, index) => (
                   <li key={index}>
-                    <a href="#" className="text-blue-700 hover:underline">
-                      {product}
-                    </a>
+                    <a href="#">-{product}</a>
                   </li>
                 ))}
               </ul>
@@ -209,33 +201,24 @@ export default function OrderCard() {
           <hr className="my-6 border-gray-300 dark:border-gray-700" />
 
           {/* Actions */}
-          <div className="mt-6 flex justify-between gap-2">
+          <div className="mt-6 flex justify-end gap-2">
             <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="check1"
-                className="w-6 h-10 mr-2 border-blue-600 rounded-full"
-              />
-              <button className="flex items-center gap-2 border border-blue-600 px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100 text-sm">
-                <FaPrint /> Print
+              <button className="flex items-center gap-2 text-red-600 border border-red-600 px-4 py-3 rounded-lg text-sm">
+                <MdDeleteForever />
+                Hapus Order
               </button>
-            </div>
-
-            <div className="flex gap-2">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
-                Update Resi
-              </button>
-              <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700">
-                Tandai diterima
+              <button
+                onClick={() => setShowModal(true)}
+                className="flex items-center gap-2 text-black bg-gray-100 px-4 py-3 border border-black rounded-lg text-sm">
+                <IoDocumentTextOutline />
+                Payment Detail
               </button>
               <div className="flex gap-2">
-                <Link to="/order/edit_order/:id">
-                  <button className="flex items-center gap-2 border border-blue-600 px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100 text-sm">
-                    <FaEdit /> Edit Order
+                <Link to="/order">
+                  <button className="flex items-center bg-green-600 border-green-600 gap-2 border px-4 py-3 rounded-lg text-white  text-sm">
+                    <IoBagHandleOutline /> Kembalikan Orderan
                   </button>
                 </Link>
-
-                <DropdownCancelOrder />
               </div>
             </div>
           </div>

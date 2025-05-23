@@ -32,9 +32,9 @@ export default function AddOrderFomPage() {
     { value: "lunas", label: "Sudah Bayar(Lunas)" },
   ];
 
-  const handleSelectChange = (field: string, value: string) => {
-    // setFilter((prev) => ({ ...prev, [field]: value }));
-  };
+  // const handleSelectChange = (field: string, value: string) => {
+  //   // setFilter((prev) => ({ ...prev, [field]: value }));
+  // };
 
   return (
     <div>

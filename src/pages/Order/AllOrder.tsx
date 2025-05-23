@@ -122,22 +122,7 @@ export default function AllOrderPage() {
         {/* Search and Filter Row */}
         <div className="flex flex-wrap items-center gap-2 mb-4 mt-3">
           <div className="relative">
-            {/* <select className="border px-3 py-2 rounded-xl text-sm bg-white">
-              <option value="">Pilih Filter</option>
-              <option value="orderId">Order ID</option>
-              <option value="customerName">Nama Customer</option>
-              <option value="productName">Nama Produk</option>
-              <option value="sku">SKU</option>
-              <option value="resiNumber">No Resi</option>
-              <option value="customerPhone">Telp Customer</option>
-              <option value="shipperTrackingId">Shipper Tracking ID</option>
-            </select> */}
-            <FilterOrderDropdown
-              value={""}
-              onChange={function (value: string): void {
-                throw new Error("Function not implemented.");
-              }}
-            />
+            <FilterOrderDropdown />
           </div>
           <div className="flex-1">
             <SearchOrder
