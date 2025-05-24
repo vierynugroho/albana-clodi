@@ -8,11 +8,12 @@ const ProdukPageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
       <div className="flex gap-2 items-center justify-between">
-        <Link to={"/produk"}>
+        <Link to={"/order"}>
           <button className="p-1.5 rounded-md bg-gray-200 hover:bg-gray-400 dark:hover:bg-amber-700 transition-colors">
             <IoChevronBackSharp className="w-auto h-7 dark:text-amber-50 text-gray-500" />
           </button>
         </Link>
+
         <h2
           className="text-xl font-semibold text-gray-800 dark:text-white/90"
           x-text="pageName">
@@ -47,8 +48,8 @@ const ProdukPageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
           <li>
             <Link
               className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
-              to="/produk">
-              Halaman Produk
+              to="/order">
+              Halaman order
               <svg
                 className="stroke-current"
                 width="17"
