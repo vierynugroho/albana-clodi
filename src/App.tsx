@@ -30,6 +30,7 @@ import PrintProductBarcode from "./pages/Produk/PrintProductBarcode";
 import CategoryProduk from "./pages/Produk/CategoryProduk";
 import CustomerFormPage from "./pages/Customer/CustomerFormPage";
 import AllExpense from "./pages/Expenses/Allexpense";
+import SettingPage from "./pages/SettingPage/SettingPage";
 import AddOrderFomPage from "./components/order/form/AddOrderFormPage";
 import UploadOrderPage from "./pages/Order/UploadOrderPage";
 import EditOrderFomPage from "./components/order/form/EditOrderPage";
@@ -46,7 +47,8 @@ export default function App() {
               <ProtectedRoute>
                 <AppLayout />
               </ProtectedRoute>
-            }>
+            }
+          >
             <Route index path="/" element={<Home />} />
 
             {/* Order Page */}
@@ -86,6 +88,8 @@ export default function App() {
             {/* Produk Page */}
             <Route path="/expense" element={<AllExpense />} />
 
+            {/* Setting Page */}
+            <Route path="/setting" element={<SettingPage />} />
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
