@@ -52,7 +52,9 @@ export default function AddOrderFomPage() {
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Form kiri */}
-          <ComponentCard title="Informasi Order" className="max-h-8/12">
+          <ComponentCard
+            title="Informasi Order"
+            className="max-w-full md:max-h-7/12">
             <div className="space-y-6">
               <div>
                 <Label htmlFor="namaPemesan" className="font-semibold text-md">
@@ -175,13 +177,7 @@ export default function AddOrderFomPage() {
 
           {/* Detail Order */}
           <div className="md:col-span-2 space-y-6">
-            <div className="rounded-2xl border p-4 border-gray-200 bg-white dark:border-gray-800 dark:bg-hite/[0.03]">
-              <Input placeholder="Cari produk" className="w-full my-2" />
-            </div>
-
-            <ComponentCard title="Orderan">
-              <TableAddOrder />
-            </ComponentCard>
+            <TableAddOrder />
 
             {/* Status Pembayaran */}
             <ComponentCard title="Pembayaran">

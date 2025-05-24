@@ -107,15 +107,13 @@ function SliderDashboard() {
           </div>
 
           {/* Dots */}
-          <div className="flex justify-center space-x-2">
+          <div className="flex justify-center absolute bottom-2 left-1/2 -translate-x-1/2 space-x-2 z-10">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex
-                    ? "bg-blue-500 scale-110"
-                    : "bg-gray-300"
+                  index === currentIndex ? "bg-white scale-110" : "bg-gray-400"
                 }`}
               />
             ))}

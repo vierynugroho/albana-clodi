@@ -13,6 +13,8 @@ import { DownloadIcon } from "../../icons";
 import { FaPlus } from "react-icons/fa6";
 import OptionDropdownOrder from "../../components/order/dropdown/OptionDropdownOrder";
 import FilterOrderDropdown from "../../components/order/filter/FilterOrderDropdown";
+import OrderToolbar from "../../components/order/orderToolbar";
+import { getOrders, OrderItem } from "../../service/order/index";
 
 type FilterState = {
   pembayaran: string;
@@ -35,6 +37,28 @@ export default function AllOrderPage() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>("");
+
+  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchOrders() {
+      setLoading(true);
+      const result = await getOrders();
+
+      if (result.success && Array.isArray(result.responseObject)) {
+        setOrders(result.responseObject);
+        console.log("Data orders:", result.responseObject);
+      } else {
+        // console.log("Gagal mengambil data orders:", result.message);
+        setOrders([]); // atau tampilkan pesan error di UI
+      }
+
+      setLoading(false);
+    }
+
+    fetchOrders();
+  }, []);
 
   const [filterOrder, setFilterOrder] = useState<FilterState>({
     pembayaran: "",
@@ -132,9 +156,6 @@ export default function AllOrderPage() {
             />
           </div>
           <div className="flex gap-2 ml-auto">
-            {/* <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded">
-              <FaPlus size={14} /> Tambah Order
-            </button> */}
             <Link to={"/order/form_add_order"}>
               <div className="mx-auto w-full flex justify-start gap-3">
                 <Button
@@ -175,7 +196,9 @@ export default function AllOrderPage() {
 
           {/* Info */}
           <div className="flex justify-between items-center mt-6">
-            <p className="text-2xl font-medium">279 order ditemukan</p>
+            <p className="text-2xl font-medium">
+              {orders.length} order ditemukan
+            </p>
             <div className="flex justify-between items-center bg-white p-3.5 rounded-lg">
               <p className="text-md font-light">
                 Sisa kuota order:{" "}
@@ -190,9 +213,10 @@ export default function AllOrderPage() {
             </div>
           </div>
         </div>
-        <div>
-          <OrderCard />
+        <div className="mb-6">
+          <OrderCard orders={orders} />
         </div>
+        <OrderToolbar />
       </div>
     </div>
   );
