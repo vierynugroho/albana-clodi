@@ -1,23 +1,26 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaBluetooth } from "react-icons/fa";
 import {
   SettingFeatureValue,
-  PrintSetting,
+  TPrintSetting,
   SettingOptionValue,
-} from "../../components/print-label/PrintType";
+  TReceiptData,
+} from "../../service/order/order.type";
 import { SettingOptionCard } from "../../components/print-label/card/SettingOptionCard";
 import { SettingFeatureCard } from "../../components/print-label/card/SettingFeatureCard";
 import PageMeta from "../../components/common/PageMeta";
 import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/ui/button/Button";
 import { PreviewOutput } from "../../components/print-label/preview/PreviewOutput";
+import { getReceiptByOrderId } from "../../service/order";
 
 export default function PrintSettingsPage() {
   const [selectedFeature, setselectedFeature] = useState("shipping");
   const [selectedOption, setselectedOption] = useState<SettingOptionValue>({});
+  const [receiptData, setReceiptData] = useState<TReceiptData | null>(null);
   const printRef = useRef<HTMLDivElement>(null);
 
-  const options: PrintSetting[] = [
+  const options: TPrintSetting[] = [
     { id: "shipping", label: "Shipping Label" },
     { id: "invoice", label: "Invoice" },
     {
@@ -103,6 +106,20 @@ export default function PrintSettingsPage() {
   const availableFeatures = features[selectedFeature] || [];
   const selectedFeatures = selectedOption[selectedFeature] || [];
 
+  // TODO: Replace this with actual orderId source, e.g., from route params or props
+  const orderId = "69b8e1f6-ad36-4f17-b6b0-9cf065991986";
+
+  useEffect(() => {
+    async function fetchReceipt() {
+      const response = await getReceiptByOrderId(orderId);
+      if (response.success) {
+        setReceiptData(response.responseObject);
+      } 
+    }
+
+    fetchReceipt();
+  }, [orderId]);
+
   // Handle Print
   const handlePrint = () => {
     if (!printRef.current) return;
@@ -147,6 +164,7 @@ export default function PrintSettingsPage() {
         <PreviewOutput
           selectedFeature={selectedFeature}
           selectedFeatures={selectedFeatures}
+          data={receiptData ?? undefined}
         />
       </div>
     </div>

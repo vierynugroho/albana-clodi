@@ -1,55 +1,79 @@
 import Barcode from "react-barcode";
-
-interface OrderItem {
-    name: string;
-    code: string;
-    quantity: number;
-}
+import { TProduct } from "../../service/order/order.type";
+import { formatDateIndo } from "../../utils/format-date.utils";
 
 interface OrderLabelProps {
-    date: string;
-    items: OrderItem[];
-    selectedShippingFields: string[];
+  date: string;
+  data: TProduct[];
+  selectedShippingFields: string[];
 }
 
-const OrderLabel: React.FC<OrderLabelProps> = ({ date, items, selectedShippingFields }) => {
-    const has = (feature: string) => selectedShippingFields.includes(feature);
-    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+const OrderLabel: React.FC<OrderLabelProps> = ({
+  date,
+  data,
+  selectedShippingFields,
+}) => {
+  const has = (feature: string) => selectedShippingFields.includes(feature);
 
-    return (
-        <div style={{ fontFamily: "Arial, sans-serif", fontSize: "14px" }}>
-            <p style={{ fontWeight: "bold" }}>Order
-                {has("Tanggal Order") && (
-                    <span> ({date}) </span>
-                )}
-            </p>
-            {items.map((item, index) => (
-                <div key={index} style={{ marginBottom: "10px" }}>
-                    {has("Item Produk") && (
-                        <div className="flex justify-between">
-                            <span>- {item.name}</span>
-                            <span>x {item.quantity}</span>
-                        </div>
-                    )}
-                    {has("Barcode SKU") && (
-                        <Barcode
-                            value={item.code}
-                            width={1.5}
-                            height={30}
-                            fontSize={12}
-                            displayValue={has("Barcode SKU Text")}
-                        />
-                    )}
-                    {has("Barcode SKU Text") && <div>{item.code}</div>}
-                </div>
+  const variantItems = data.flatMap(
+    (item) =>
+      item.product_variants?.map((variant) => {
+        const priceType = item.price_type;
+        const prices = variant.productPrices?.[0];
+
+        let price = prices?.normal ?? 0;
+        if (priceType === "reseller") price = prices?.reseller ?? price;
+        else if (priceType === "agent") price = prices?.agent ?? price;
+        else if (priceType === "customer" || priceType === "dropshipper")
+          price = prices?.normal ?? price;
+
+        return {
+          name: `${item.product_name} | ${variant.sku}`,
+          qty: 1,
+          price,
+          barcode: variant.barcode ?? "Tidak ada barcode",
+        };
+      }) ?? []
+  );
+
+  const totalQuantity = variantItems.length;
+
+  return (
+    <div>
+      <div className="font-bold">
+        Order
+        {has("Tanggal Order") && <span> ( {formatDateIndo(date)} </span>}
+      </div>
+      {variantItems.map((item, index) => (
+        <div key={index} style={{ marginBottom: "10px" }}>
+          {has("Item Produk") && (
+            <div className="flex justify-between">
+              <span>- {item.name}</span>
+              <span>x {item.qty}</span>
+            </div>
+          )}
+          {has("Barcode SKU") &&
+            (!item.barcode || item.barcode === "Tidak ada barcode" ? (
+              <div className="text-center">-</div>
+            ) : (
+              <Barcode
+                value={item.barcode}
+                width={1.5}
+                height={30}
+                fontSize={12}
+                displayValue={has("Barcode SKU Text")}
+              />
             ))}
-            {has("Total Item") && (
-                <p style={{ fontWeight: "bold" }}>
-                    Total Item: <span style={{ float: "right" }}>{totalQuantity}</span>
-                </p>
-            )}
+          {has("Barcode SKU Text") && <div>{item.barcode}</div>}
         </div>
-    );
+      ))}
+      {has("Total Item") && (
+        <div className="font-bold">
+          Total Item: <span className="text-right">{totalQuantity}</span>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default OrderLabel;

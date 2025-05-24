@@ -1,5 +1,5 @@
 import React from "react";
-import { PrintSetting } from "../PrintType";
+import { PrintSetting } from "../../../service/order/order.type";
 
 interface Props {
   options: PrintSetting[];

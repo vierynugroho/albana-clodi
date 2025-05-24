@@ -1,4 +1,4 @@
-export interface PrintSetting {
+export interface TPrintSetting {
   id: string;
   label: string;
   icon?: React.ReactNode;
@@ -7,15 +7,20 @@ export interface PrintSetting {
 export type SettingOptionValue = Record<string, string[]>;
 export type SettingFeatureValue = Record<string, string[]>;
 
+export interface TPreviewProps {
+    features: string[]
+    data?: TReceiptData
+}
+
 // Receipt Response Type
-export interface ReceiptResponse {
+export interface TReceiptResponse {
   success: boolean;
   message: string;
-  responseObject: ReceiptData;
+  responseObject: TReceiptData;
   statusCode: number;
 }
 
-export interface ReceiptData {
+export interface TReceiptData {
   order_id: string;
   order_code: string;
   admin_name: string;
@@ -23,13 +28,13 @@ export interface ReceiptData {
   tracking_number: string;
   payment_status: string;
   payment_method: string;
-  products: Product[];
+  products: TProduct[];
   total_items: number;
   total_product_price: number;
   final_price: number;
   notes: string;
   weight: number;
-  discount: Discount;
+  discount: TDiscount;
   insurance_fee: number;
   packaging_fee: number;
   shipping_cost: number;
@@ -40,20 +45,20 @@ export interface ReceiptData {
   delivery_place: string;
   delivery_target: string;
   customer_type: string;
-  customer_info: CustomerInfo;
+  customer_info: TCustomerInfo;
 }
 
-export interface Product {
+export interface TProduct {
   product_name: string;
   product_qty: number;
   product_price: number;
   product_total: number;
   product_barcode: string;
-  product_variants: ProductVariant[];
+  product_variants: TProductVariant[];
   price_type: string;
 }
 
-export interface ProductVariant {
+export interface TProductVariant {
   id: string;
   productId: string;
   sku: string;
@@ -64,10 +69,11 @@ export interface ProductVariant {
   barcode: string | null;
   createdAt: string;
   updatedAt: string;
-  productPrices: ProductPrice[];
+  weight?: string;
+  productPrices: TProductPrice[];
 }
 
-export interface ProductPrice {
+export interface TProductPrice {
   id: string;
   productVariantId: string;
   normal: number;
@@ -79,14 +85,14 @@ export interface ProductPrice {
   updatedAt: string;
 }
 
-export interface Discount {
+export interface TDiscount {
   type: string;
   value: number;
   persen: number;
   nominal: number;
 }
 
-export interface CustomerInfo {
+export interface TCustomerInfo {
   name: string;
   address: string;
   phone: string;
