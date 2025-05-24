@@ -12,7 +12,7 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
     <div className="grid grid-cols-12 gap-4 gap-x-8 p-5 text-sm">
       {/* Logo dan Shop Info */}
       {(has("Shop Logo") || has("Shop Info")) && (
-        <div className="col-span-2 flex flex-col i-center justify-center text-center space-y-2">
+        <div className="col-span-2 flex flex-col i-center justify-center items-center text-center space-y-2">
           {has("Shop Logo") && (
             <img src={Logo} alt="Logo" className="w-20 h-20 center" />
           )}
@@ -122,8 +122,8 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
       </div>
       {/* Fragile */}
       {has("Fragile Sign") && (
-        <div className="col-span-2 flex flex-col justify-center i-center">
-          <img src={Fragile} alt="Fragile" />
+        <div className="col-span-2 flex flex-col justify-center items-center">
+          <img src={Fragile} alt="Fragile" className="w-32" />
           <div className="font-bold text-3xl">FRAGILE</div>
           <div>JANGAN DIBANTING!!!!</div>
         </div>

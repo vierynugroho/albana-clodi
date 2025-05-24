@@ -42,7 +42,7 @@ const OrderLabel: React.FC<OrderLabelProps> = ({
     <div>
       <div className="font-bold">
         Order
-        {has("Tanggal Order") && <span> ( {formatDateIndo(date)} </span>}
+        {has("Tanggal Order") && <span> ( {formatDateIndo(date)} ) </span>}
       </div>
       {variantItems.map((item, index) => (
         <div key={index} style={{ marginBottom: "10px" }}>

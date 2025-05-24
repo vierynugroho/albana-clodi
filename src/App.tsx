@@ -120,7 +120,7 @@ export default function App() {
           <Route path="/signup" element={<SignUp />} />
 
           {/* Print Label  */}
-          <Route path="/order/print-label" element={<PrintLabelPage />} />
+          <Route path="/order/print-label/:id" element={<PrintLabelPage />} />
           
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

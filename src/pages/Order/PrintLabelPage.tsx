@@ -13,8 +13,10 @@ import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/ui/button/Button";
 import { PreviewOutput } from "../../components/print-label/preview/PreviewOutput";
 import { getReceiptByOrderId } from "../../service/order";
+import { useParams } from "react-router-dom";
 
 export default function PrintSettingsPage() {
+  const { id: id } = useParams<{ id: string }>();
   const [selectedFeature, setselectedFeature] = useState("shipping");
   const [selectedOption, setselectedOption] = useState<SettingOptionValue>({});
   const [receiptData, setReceiptData] = useState<TReceiptData | null>(null);
@@ -106,19 +108,17 @@ export default function PrintSettingsPage() {
   const availableFeatures = features[selectedFeature] || [];
   const selectedFeatures = selectedOption[selectedFeature] || [];
 
-  // TODO: Replace this with actual orderId source, e.g., from route params or props
-  const orderId = "69b8e1f6-ad36-4f17-b6b0-9cf065991986";
-
   useEffect(() => {
     async function fetchReceipt() {
-      const response = await getReceiptByOrderId(orderId);
+      if (!id) return;
+      const response = await getReceiptByOrderId(id);
       if (response.success) {
         setReceiptData(response.responseObject);
-      } 
+      }
     }
 
     fetchReceipt();
-  }, [orderId]);
+  }, [id]);
 
   // Handle Print
   const handlePrint = () => {
@@ -142,8 +142,10 @@ export default function PrintSettingsPage() {
       <PageTitle title="Pengaturan Cetak" />
 
       <div className="flex justify-end items-center gap-2">
-        <Button>Simpan</Button>
-        <Button onClick={handlePrint}>Cetak</Button>
+        <Button variant="outline">Simpan</Button>
+        <Button variant="primary" onClick={handlePrint}>
+          Cetak
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -165,6 +167,7 @@ export default function PrintSettingsPage() {
           selectedFeature={selectedFeature}
           selectedFeatures={selectedFeatures}
           data={receiptData ?? undefined}
+          className={selectedFeature === "thermal-56" ? "inline-block" : ""}
         />
       </div>
     </div>

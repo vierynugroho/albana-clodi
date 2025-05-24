@@ -26,7 +26,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
 
   return (
-    <div className="text-sm">
+    <div className="text-sm w-full">
       <div className="grid grid-cols-12 gap-4 gap-x-8 p-5">
         <div className="col-span-9 flex items-start gap-5">
           <img src={Logo} alt="" className="w-20" />
@@ -68,6 +68,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
           {formatDateIndo(data?.order_date ?? "")} )
         </div>
       </div>
+      {/* tabel orderan  */}
       <table className="w-full border border-black">
         <thead className="bg-black text-white">
           <tr>

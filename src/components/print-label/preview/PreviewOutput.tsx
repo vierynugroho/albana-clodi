@@ -6,10 +6,16 @@ import ThermalPreview from "./ThermalPreview";
 interface PreviewOutputProps {
   selectedFeature: string;
   selectedFeatures: string[];
-  data?: TReceiptData; // Optional data prop for future use
+  data?: TReceiptData;
+  className?: string;
 }
 
-export const PreviewOutput: React.FC<PreviewOutputProps> = ({ selectedFeature, selectedFeatures, data }) => {
+export const PreviewOutput: React.FC<PreviewOutputProps> = ({
+  selectedFeature,
+  selectedFeatures,
+  data,
+  className = "",
+}) => {
   const renderPreview = () => {
     switch (selectedFeature) {
       case "shipping":
@@ -23,7 +29,7 @@ export const PreviewOutput: React.FC<PreviewOutputProps> = ({ selectedFeature, s
   };
 
   return (
-    <div className="bg-white border border-black inline-block">
+    <div className={`bg-white border border-black ${className}`}>
       {renderPreview()}
     </div>
   );
