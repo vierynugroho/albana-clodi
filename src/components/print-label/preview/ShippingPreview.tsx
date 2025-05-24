@@ -122,7 +122,7 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
       </div>
       {/* Fragile */}
       {has("Fragile Sign") && (
-        <div className="col-span-2 flex flex-col justify-center items-center">
+        <div className="col-span-2 flex flex-col justify-center items-center text-center">
           <img src={Fragile} alt="Fragile" className="w-32" />
           <div className="font-bold text-3xl">FRAGILE</div>
           <div>JANGAN DIBANTING!!!!</div>

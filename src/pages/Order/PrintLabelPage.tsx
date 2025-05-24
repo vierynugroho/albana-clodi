@@ -14,13 +14,19 @@ import Button from "../../components/ui/button/Button";
 import { PreviewOutput } from "../../components/print-label/preview/PreviewOutput";
 import { getReceiptByOrderId } from "../../service/order";
 import { useParams } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
 
 export default function PrintSettingsPage() {
   const { id: id } = useParams<{ id: string }>();
   const [selectedFeature, setselectedFeature] = useState("shipping");
   const [selectedOption, setselectedOption] = useState<SettingOptionValue>({});
   const [receiptData, setReceiptData] = useState<TReceiptData | null>(null);
-  const printRef = useRef<HTMLDivElement>(null);
+  const componentRef = useRef<HTMLDivElement>(null);
+
+  const handlePrintReact = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: `${selectedFeature} - ALBANA GROSIR`,
+  });
 
   const options: TPrintSetting[] = [
     { id: "shipping", label: "Shipping Label" },
@@ -120,18 +126,6 @@ export default function PrintSettingsPage() {
     fetchReceipt();
   }, [id]);
 
-  // Handle Print
-  const handlePrint = () => {
-    if (!printRef.current) return;
-
-    const printContent = printRef.current.innerHTML;
-    const originalContent = document.body.innerHTML;
-
-    document.body.innerHTML = printContent;
-    window.print();
-    document.body.innerHTML = originalContent;
-    window.location.reload();
-  };
 
   return (
     <div className="p-5 md:p-10 space-y-5">
@@ -143,7 +137,7 @@ export default function PrintSettingsPage() {
 
       <div className="flex justify-end items-center gap-2">
         <Button variant="outline">Simpan</Button>
-        <Button variant="primary" onClick={handlePrint}>
+        <Button variant="primary" onClick={handlePrintReact}>
           Cetak
         </Button>
       </div>
@@ -162,7 +156,7 @@ export default function PrintSettingsPage() {
         />
       </div>
 
-      <div ref={printRef} id="print-area">
+      <div id="print-area" ref={componentRef} >
         <PreviewOutput
           selectedFeature={selectedFeature}
           selectedFeatures={selectedFeatures}
