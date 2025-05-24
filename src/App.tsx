@@ -30,6 +30,7 @@ import PrintProductBarcode from "./pages/Produk/PrintProductBarcode";
 import CategoryProduk from "./pages/Produk/CategoryProduk";
 import CustomerFormPage from "./pages/Customer/CustomerFormPage";
 import AllExpense from "./pages/Expenses/Allexpense";
+import PrintLabelPage from "./pages/Order/PrintLabelPage";
 
 export default function App() {
   return (
@@ -72,7 +73,7 @@ export default function App() {
             <Route path="/report" element={<AllReportPage />} />
 
             {/* Produk Page */}
-            <Route path="/expense" element={<AllExpense  />} />
+            <Route path="/expense" element={<AllExpense />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
@@ -102,6 +103,9 @@ export default function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
 
+          {/* Print Label  */}
+          <Route path="/order/print-label" element={<PrintLabelPage />} />
+          
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
