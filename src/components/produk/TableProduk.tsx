@@ -61,6 +61,7 @@ export default function TableProduk() {
   }, []);
 
   console.log(loading);
+  console.log(products)
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -125,7 +126,7 @@ export default function TableProduk() {
                 <TableRow key={produk.id}>
                   <TableCell className="px-5 py-4 sm:px-5 text-start">
                     <Checkbox
-                      id={produk.id.toString()}
+                      id={produk.id}
                       checked={selectedItem.includes(produk.id)}
                       onChange={(checked) =>
                         checkboxHandler(checked, produk.id)

@@ -30,6 +30,7 @@ import PrintProductBarcode from "./pages/Produk/PrintProductBarcode";
 import CategoryProduk from "./pages/Produk/CategoryProduk";
 import CustomerFormPage from "./pages/Customer/CustomerFormPage";
 import AllExpense from "./pages/Expenses/Allexpense";
+import SettingPage from "./pages/SettingPage/SettingPage";
 
 export default function App() {
   return (
@@ -43,7 +44,8 @@ export default function App() {
               <ProtectedRoute>
                 <AppLayout />
               </ProtectedRoute>
-            }>
+            }
+          >
             <Route index path="/" element={<Home />} />
 
             {/* Order Page */}
@@ -66,14 +68,19 @@ export default function App() {
 
             {/* Customer Page */}
             <Route path="/customer" element={<AllCustomerPage />} />
-            <Route path="/customer/form_customer" element={<CustomerFormPage />} />
+            <Route
+              path="/customer/form_customer"
+              element={<CustomerFormPage />}
+            />
 
             {/* Report Page */}
             <Route path="/report" element={<AllReportPage />} />
 
             {/* Produk Page */}
-            <Route path="/expense" element={<AllExpense  />} />
+            <Route path="/expense" element={<AllExpense />} />
 
+            {/* Setting Page */}
+            <Route path="/setting" element={<SettingPage />} />
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
