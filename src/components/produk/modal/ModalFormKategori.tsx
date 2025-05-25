@@ -53,6 +53,7 @@ export default function ModalFormKategory({
   async function addCategory() {
     const result = await createCategory({ name: inputCategory });
     if (result.success) {
+      fechCategory();
       toast.success(result.message, {
         style: { marginTop: "10vh", zIndex: 100000 },
       });

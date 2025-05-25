@@ -9,14 +9,8 @@ import {
 import { CiEdit } from "react-icons/ci";
 import { TiDelete } from "react-icons/ti";
 import { FaWhatsapp } from "react-icons/fa";
+import { Customer } from "../../service/customer";
 
-type Customer = {
-  id: string;
-  name: string;
-  category: string;
-  phone: string;
-  address: string;
-};
 type Props = {
   customers: Customer[];
 };
@@ -86,7 +80,7 @@ export default function TableCustomer({ customers }: Props) {
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                   <div className="flex gap-2">
                     <FaWhatsapp size={20} className="text-green-600" />
-                    {customer.phone}
+                    {customer.phoneNumber}
                   </div>
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">

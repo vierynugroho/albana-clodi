@@ -18,7 +18,7 @@ type ProductWholesaler = {
 };
 
 export type ProductVariant = {
-  imageUrl: File | null;
+  imageUrl: File | null | string;
   sku: string;
   productPrices: ProductPrice;
   productWholesalers?: ProductWholesaler[];
@@ -37,7 +37,7 @@ type ProductDiscount = {
 
 export type CreateProductRequest = {
   product: {
-    categoryId: string;
+    categoryId?: string;
     name: string;
     type: string;
     description: string;
@@ -104,7 +104,7 @@ type ProductResponse = {
 
 export type ArrayProduct = {
   product: ProductNew;
-  variant: Variant;
+  variant: Variant[];
   price: Price;
 };
 
@@ -112,6 +112,45 @@ type ResponseSucces = {
   success: boolean;
   message: string;
   responseObject?: ProductResponse;
+  statusCode?: number;
+};
+
+type ResponseDetailProduk = {
+  id: string;
+  categoryId: string | null;
+  name: string;
+  type: "BARANG_STOK_SENDIRI" | string; // bisa diubah jadi union jika ada lebih dari 1 kemungkinan nilai
+  description: string;
+  weight: number;
+  isPublish: boolean;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  category: null | {
+    id: string;
+    name: string;
+    createdAt: string; // ISO date string
+    updatedAt: string; // ISO date string
+  };
+  ProductDiscount: [] | ProductDiscount[];
+  productVariants: {
+    id: string;
+    productId: string;
+    sku: string;
+    stock: number;
+    size: string;
+    color: string;
+    imageUrl: string;
+    barcode: string;
+    createdAt: string; // ISO date string
+    updatedAt: string; // ISO date string
+    productPrices: ProductPrice;
+  }[];
+};
+
+type SuccesResponseDetailProduk = {
+  success: boolean;
+  message: string;
+  responseObject?: ResponseDetailProduk;
   statusCode?: number;
 };
 
@@ -153,6 +192,48 @@ const convertToFormData = (data: CreateProductRequest): FormData => {
   return formData;
 };
 
+export async function getDetailProduct(
+  id: string
+): Promise<SuccesResponseDetailProduk> {
+  try {
+    const { data } = await axios.get(`${apiUrl}/products/${id}`, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (data?.responseObject?.productVariants) {
+      data.responseObject.productVariants =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data.responseObject.productVariants.map((variant: any) => ({
+          ...variant,
+          productPrices: variant.productPrices?.[0] || null, // Ambil satu harga
+        }));
+    }
+
+    return data;
+  } catch (error) {
+    let message = "Terjadi kesalahan";
+    if (axios.isAxiosError(error)) {
+      console.log(error.response);
+      if (error.response) {
+        message = error.response.data.message || "Gagal menambakan produk";
+      } else if (error.request) {
+        message = "Tidak dapat menghubungi server";
+      } else {
+        message = error.message;
+      }
+    } else {
+      message = (error as Error).message;
+    }
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
 export async function createProduct(
   credentials: CreateProductRequest
 ): Promise<ResponseSucces> {
@@ -162,6 +243,48 @@ export async function createProduct(
       console.log(`${key}:`, value);
     });
     const response = await axios.post(`${apiUrl}/products`, dataRequest, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return {
+      success: true,
+      message: response.data.message ?? "Produk berhasil ditambahkan",
+      responseObject: response.data,
+    };
+  } catch (error) {
+    let message = "Terjadi kesalahan";
+    if (axios.isAxiosError(error)) {
+      console.log(error.response);
+      if (error.response) {
+        message = error.response.data.message || "Gagal menambakan produk";
+      } else if (error.request) {
+        message = "Tidak dapat menghubungi server";
+      } else {
+        message = error.message;
+      }
+    } else {
+      message = (error as Error).message;
+    }
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
+export async function editProduct(
+  credentials: CreateProductRequest,
+  id: string
+): Promise<ResponseSucces> {
+  try {
+    const dataRequest = convertToFormData(credentials);
+    dataRequest.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+    const response = await axios.put(`${apiUrl}/products/${id}`, dataRequest, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,

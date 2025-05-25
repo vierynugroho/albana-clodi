@@ -32,6 +32,7 @@ export default function CategoryProduk() {
   }
 
   function changeModal() {
+    setIsEdit(false);
     setModal((prevModal) => !prevModal);
   }
 
