@@ -1,25 +1,72 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import Input from "../../form/input/InputField";
+import {
+  CategoryProduct,
+  createCategory,
+  editCategory,
+} from "../../../service/product/category";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {
   changeModal: () => void;
-  setCategories: (value: string, label: string) => void;
+  fechCategory: () => void;
+  isEdit: boolean;
+  detailCategory: CategoryProduct | undefined;
 };
 
 export default function ModalFormKategory({
   changeModal,
-  setCategories,
+  fechCategory,
+  isEdit,
+  detailCategory,
 }: Props) {
   const [inputCategory, setInputCategory] = useState("");
 
-  function addCategory(value: string) {
-    setCategories(Date.now().toString(), value);
+  async function handleEditCategory() {
+    if (isEdit && detailCategory) {
+      const result = await editCategory({
+        id: detailCategory.id,
+        name: inputCategory,
+      });
+      if (result.success) {
+        fechCategory();
+        toast.success(result.message, {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      } else {
+        toast.error(result.message, {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      }
+
+      changeModal();
+    }
+  }
+  useEffect(() => {
+    if (isEdit && detailCategory) {
+      setInputCategory(detailCategory.name);
+      fechCategory();
+    }
+  }, [isEdit, detailCategory, fechCategory]);
+
+  async function addCategory() {
+    const result = await createCategory({ name: inputCategory });
+    if (result.success) {
+      toast.success(result.message, {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
+    } else {
+      toast.error(result.message, {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
+    }
     changeModal();
   }
 
   return ReactDOM.createPortal(
     <div className="fixed z-[100000] inset-0 overflow-y-auto ">
+      <Toaster />
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 transition-opacity">
           <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -58,10 +105,10 @@ export default function ModalFormKategory({
             <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
               <button
                 type="button"
-                className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-brand-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-brand-300 focus:outline-none focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                onClick={() => addCategory(inputCategory)}
+                className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-brand-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-brand-300 focus:outline-none focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5 cursor-pointer"
+                onClick={() => (isEdit ? handleEditCategory() : addCategory())}
               >
-                Tambah
+                {isEdit ? "Edit" : "Tambah"}
               </button>
             </span>
             <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">

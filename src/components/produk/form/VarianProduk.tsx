@@ -11,19 +11,11 @@ export type ProductPrice = {
   member: number;
 };
 
-type ProductWholesaler = {
-  lowerLimitItem: number;
-  upperLimitItem: number;
-  unitPrice: number;
-  wholesalerPrice: number;
-};
-
 export type ProductVariant = {
-  imageUrl: string;
+  imageUrl: File | null;
   image?: File;
   sku: string;
   productPrices: ProductPrice;
-  productWholesalers: ProductWholesaler[];
   barcode?: string;
   size?: string;
   color?: string;

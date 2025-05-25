@@ -8,37 +8,9 @@ import ManageProduk from "../switch/ManageProduk";
 import ManagePrivorAndStorefront from "../switch/ManagePrivorAndStorefront";
 import VarianProduk from "./VarianProduk";
 import Button from "../button/Button";
-import GrosirProduk from "./GrosirProduk";
 import { GiWeight } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
-import { createProduct } from "../../../service/product";
-
-type ProductPrice = {
-  normal: number;
-  buy: number;
-  reseller: number;
-  agent: number;
-  member: number;
-};
-
-type ProductWholesaler = {
-  lowerLimitItem: number;
-  upperLimitItem: number;
-  unitPrice: number;
-  wholesalerPrice: number;
-};
-
-type ProductVariant = {
-  imageUrl: string;
-  file?: File;
-  sku: string;
-  productPrices: ProductPrice;
-  productWholesalers: ProductWholesaler[];
-  barcode?: string;
-  size?: string;
-  color?: string;
-  stock: number | null;
-};
+import { createProduct, ProductVariant } from "../../../service/product";
 
 type SwichStatesType = {
   varian: boolean;
@@ -46,22 +18,12 @@ type SwichStatesType = {
   grosir: boolean;
 };
 
-const defaultWholesalePrices: ProductWholesaler[] = Array.from(
-  { length: 5 },
-  () => ({
-    lowerLimitItem: 0,
-    upperLimitItem: 0,
-    unitPrice: 0,
-    wholesalerPrice: 0,
-  })
-);
-
 const defaultVariant = (): ProductVariant => ({
   sku: "",
   stock: 0,
   size: "",
   color: "",
-  imageUrl: "",
+  imageUrl: null ,
   barcode: "",
   productPrices: {
     normal: 0,
@@ -70,7 +32,6 @@ const defaultVariant = (): ProductVariant => ({
     agent: 0,
     member: 0,
   },
-  productWholesalers: defaultWholesalePrices,
 });
 
 const options = [
@@ -106,6 +67,7 @@ export default function FormProduk() {
   const [productDescription, setProductDescription] = useState("");
   const [productWeight, setProductWeight] = useState(0);
   const [varian, setVarian] = useState<ProductVariant[]>([defaultVariant()]);
+  const [diskon, setDiskon] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -167,10 +129,17 @@ export default function FormProduk() {
         type: selectedValue,
         isPublish: true,
         weight: productWeight,
+        categoryId,
       },
-      categoryId,
+      productDiscount: {
+        type: "PERCENTAGE",
+        value: Number(diskon),
+        startDate: "",
+        endData: "",
+      },
       productVariants: varian,
     };
+    console.log(payload);
     const result = await createProduct(payload);
     setLoading(false);
     if (result.success) {
@@ -251,7 +220,9 @@ export default function FormProduk() {
                     <Label>Diskon</Label>
                     <div className="relative">
                       <Input
-                        placeholder="Diskon (10%)"
+                        value={diskon}
+                        onChange={(e) => setDiskon(e.target.value)}
+                        placeholder="10(nilai persen)"
                         type="number"
                         min="0"
                         className="pl-[62px] appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
@@ -297,7 +268,7 @@ export default function FormProduk() {
         </div>
 
         {/* Variant Produk */}
-        {varian.map((row, index) => (
+        {varian.map((_, index) => (
           <ComponentCard
             key={index + 1}
             title={`Variant ${index + 1}`}
@@ -307,13 +278,6 @@ export default function FormProduk() {
               setVarian={setVarian}
               index={index}
               onDelete={deleteVariant}
-            />
-
-            <GrosirProduk
-              variantIndex={index}
-              rows={row.productWholesalers}
-              setRows={() => {}}
-              setVarian={setVarian}
             />
           </ComponentCard>
         ))}
