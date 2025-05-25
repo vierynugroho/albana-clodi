@@ -34,10 +34,10 @@ type FilterState = {
 export default function AllOrderPage() {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [keyword, setKeyword] = useState<string>("");
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  // const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>("");
-
+  // const [selectedFilter, setSelectedFilter] = useState<string>("");
+  const [deliveryPlaces, setDeliveryPlaces] = useState<DeliveryPlace[]>([]);
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,9 +48,7 @@ export default function AllOrderPage() {
 
       if (result.success && Array.isArray(result.responseObject)) {
         setOrders(result.responseObject);
-        console.log("Data orders:", result.responseObject);
       } else {
-        // console.log("Gagal mengambil data orders:", result.message);
         setOrders([]); // atau tampilkan pesan error di UI
       }
 
@@ -58,6 +56,23 @@ export default function AllOrderPage() {
     }
 
     fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    async function fetchDeliveryPlaces() {
+      setLoading(true);
+      const result = await getDeliveryPlaces();
+
+      if (result.success && Array.isArray(result.responseObject)) {
+        setDeliveryPlaces(result.responseObject);
+      } else {
+        setDeliveryPlaces([]);
+      }
+
+      setLoading(false);
+    }
+
+    fetchDeliveryPlaces();
   }, []);
 
   const [filterOrder, setFilterOrder] = useState<FilterState>({
@@ -103,25 +118,25 @@ export default function AllOrderPage() {
     [navigate]
   );
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedFilter(event.target.value);
-    // 🔍 Optional: panggil fungsi filter data berdasarkan nilai ini
-    console.log("Filter dipilih:", event.target.value);
-  };
+  // const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setSelectedFilter(event.target.value);
+  //   // 🔍 Optional: panggil fungsi filter data berdasarkan nilai ini
+  //   console.log("Filter dipilih:", event.target.value);
+  // };
 
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-    };
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     const mobile = window.innerWidth < 768;
+  //     setIsMobile(mobile);
+  //   };
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
+  //   handleResize();
+  //   window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
 
   return (
     <div>

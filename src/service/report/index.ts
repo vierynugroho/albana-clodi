@@ -76,18 +76,19 @@ type ResponseSucces = {
 };
 export async function getReport(query?: ExpenseQuery): Promise<ResponseSucces> {
   try {
+    const token = localStorage.getItem("token");
     const [expenses, orders, products] = await Promise.all([
       axios.get(`${apiUrl}/reports/expenses`, {
         params: query,
-        headers: { "ngrok-skip-browser-warning": "true" },
+        headers: { "ngrok-skip-browser-warning": "true", Authorization: token },
       }),
       axios.get(`${apiUrl}/reports/orders`, {
         params: query,
-        headers: { "ngrok-skip-browser-warning": "true" },
+        headers: { "ngrok-skip-browser-warning": "true", Authorization: token },
       }),
       axios.get(`${apiUrl}/reports/products`, {
         params: query,
-        headers: { "ngrok-skip-browser-warning": "true" },
+        headers: { "ngrok-skip-browser-warning": "true", Authorization: token },
       }),
     ]);
 
@@ -124,10 +125,12 @@ export async function getPaymentTransaction(
   query?: ExpenseQuery
 ): Promise<ResponsePaymentTransaction> {
   try {
+    const token = localStorage.getItem("token");
     const { data } = await axios.get(
       `${apiUrl}/reports/payments-transactions`,
       {
         params: query,
+        headers: { "ngrok-skip-browser-warning": "true", Authorization: token },
       }
     );
 
@@ -153,9 +156,11 @@ export async function getPaymentTransaction(
 export async function ProductSolds(
   query?: ExpenseQuery
 ): Promise<ResponseProdcutSold> {
+  const token = localStorage.getItem("token");
   try {
     const { data } = await axios.get(`${apiUrl}/reports/products-sold`, {
       params: query,
+      headers: { "ngrok-skip-browser-warning": "true", Authorization: token },
     });
 
     return data;

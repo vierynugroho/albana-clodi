@@ -150,8 +150,13 @@ type ResponseSucces = {
 
 export async function getOrders(query?: OrderQuery): Promise<ResponseSucces> {
   try {
+    const token = localStorage.getItem("token"); // atau dari sumber lain sesuai implementasi kamu
+
     const { data } = await axios.get(`${apiUrl}/orders`, {
       params: query,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     return data;

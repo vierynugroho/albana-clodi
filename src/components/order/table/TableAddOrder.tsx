@@ -15,7 +15,8 @@ import ComponentCard from "../../common/ComponentCard.tsx";
 
 export default function TableAddOrder() {
   const [showModal, setShowModal] = useState(false);
-  const orders = []; // Ganti dengan data order Anda
+
+  const orders = [];
 
   return (
     <>

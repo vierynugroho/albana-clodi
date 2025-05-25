@@ -2,43 +2,196 @@ import PageMeta from "../../common/PageMeta.tsx";
 import OrderPageBreadcrumb from "../../../pages/Order/OrderPageBreadcrumb.tsx";
 import ComponentCard from "../../common/ComponentCard.tsx";
 import Label from "../../form/Label.tsx";
-import Input from "../../form/input/InputField.tsx";
 import Select from "../../form/Select.tsx";
 import DatePicker from "../../form/date-picker.tsx";
 import TableAddOrder from "../table/TableAddOrder.tsx";
 import Button from "../../ui/button/Button.tsx";
 import { IoIosSave } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalAddCustomer from "../modal/ModalAddcustomer.tsx";
+import { Customers, getCustomers } from "../../../service/customer/index.tsx";
+import {
+  DeliveryPlace,
+  getDeliveryPlaces,
+} from "../../../service/DeliveryPalce/index.ts";
+import {
+  SalesChannel,
+  getSalesChannels,
+} from "../../../service/SalesChannels/index.tsx";
 
 export default function AddOrderFomPage() {
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [customers, setCustomers] = useState<Customers[]>([]);
+  const [deliveryPlaces, setDeliveryPlaces] = useState<DeliveryPlace[]>([]);
+  const [salesChannels, setSalesChannels] = useState<SalesChannel[]>([]);
 
-  const salesChannelsOptions = [
-    { value: "shopee", label: "Shopee" },
-    { value: "tokopedia", label: "Tokopedia" },
-  ];
+  const [selectedCustomer, setSelectedCustomer] = useState<Customers | null>(
+    null
+  );
 
-  const senderOptions = [
-    {
-      value: "fina albanaa | Sanan Wetan, Kota Blitar",
-      label: "fina albanaa | Sanan Wetan, Kota Blitar",
-    },
-  ];
+  const [selectedDeliveryCustomer, setSelectedDeliveryCustomer] =
+    useState<Customers | null>(null);
+
+  const [keyword, setKeyword] = useState("");
+  const [orderData, setOrderData] = useState({
+    ordererCustomerId: "",
+    deliveryTargetCustomerId: "",
+    deliveryPlaceId: "",
+    salesChannelId: "",
+    orderDate: "",
+    note: "",
+  });
+
+  const [selectedSender, setSelectedSender] = useState("");
+  const [selectedSalesChannel, setSelectedSalesChannel] = useState("");
+  const [orderDate, setOrderDate] = useState("");
+
+  const [note, setNote] = useState("");
+  const [deliveryKeyword, setDeliveryKeyword] = useState("");
+
+  useEffect(() => {
+    async function fetchCustomer() {
+      setLoading(true);
+      try {
+        const result = await getCustomers();
+        console.log("result", result);
+
+        if (
+          result?.success &&
+          result?.responseObject &&
+          Array.isArray(result.responseObject)
+        ) {
+          setCustomers(result.responseObject);
+          console.log("Result Data:", result.responseObject);
+        } else {
+          console.error("Gagal mengambil data pengirim: Response tidak valid");
+          setCustomers([]);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data pengirim:", error);
+        setCustomers([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCustomer();
+  }, []);
+
+  useEffect(() => {
+    async function fetchDeliveryPlaces() {
+      setLoading(true);
+      try {
+        const result = await getDeliveryPlaces();
+        console.log("result", result);
+
+        if (
+          result?.success &&
+          result?.responseObject &&
+          Array.isArray(result.responseObject)
+        ) {
+          setDeliveryPlaces(result.responseObject);
+          console.log("Data Delivery:", result.responseObject);
+        } else {
+          console.error("Gagal mengambil data pengirim: Response tidak valid");
+          setDeliveryPlaces([]);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data pengirim:", error);
+        setDeliveryPlaces([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchDeliveryPlaces();
+  }, []);
+
+  useEffect(() => {
+    async function fetchSalesChannels() {
+      try {
+        const result = await getSalesChannels();
+        if (
+          result?.success &&
+          result?.responseObject &&
+          Array.isArray(result.responseObject)
+        ) {
+          setSalesChannels(result.responseObject);
+        } else {
+          setSalesChannels([]);
+          console.error(
+            "Gagal mengambil data sales channel: Response tidak valid"
+          );
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data sales channel:", error);
+        setSalesChannels([]);
+      }
+    }
+    fetchSalesChannels();
+  }, []);
+
+  const handleSelectChange = (selected: string) => {
+    setSelectedSalesChannel(selected);
+    setOrderData((prev) => ({
+      ...prev,
+      salesChannelId: selected,
+    }));
+    console.log("Sales Channel terpilih:", selected);
+  };
+
+  const handleSelect = (customer: Customers) => {
+    setSelectedCustomer(customer);
+    setKeyword(customer.name);
+    setCustomers([]);
+    setOrderData((prev) => ({
+      ...prev,
+      ordererCustomerId: customer.id,
+    }));
+    console.log("Customer dipilih:", customer);
+  };
+
+  const handleDeliverySelect = (customer: Customers) => {
+    setSelectedDeliveryCustomer(customer);
+    setDeliveryKeyword(customer.name);
+    setCustomers([]);
+    setOrderData((prev) => ({
+      ...prev,
+      deliveryTargetCustomerId: customer.id,
+    }));
+  };
+
+  const handleSenderSelect = (value: string) => {
+    setSelectedSender(value);
+    setOrderData((prev) => ({
+      ...prev,
+      deliveryPlaceId: value,
+    }));
+  };
+
+  const handleDateChange = (dateString: string) => {
+    setOrderDate(dateString);
+    setOrderData((prev) => ({
+      ...prev,
+      orderDate: dateString,
+    }));
+  };
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setNote(value);
+    setOrderData((prev) => ({
+      ...prev,
+      note: value,
+    }));
+  };
 
   const paymentOptions = [
     { value: "belum-bayar", label: "Belum Bayar" },
     { value: "cicilan", label: "Cicilan" },
     { value: "lunas", label: "Sudah Bayar(Lunas)" },
   ];
-
-  function handleSelectChange(value: string): void {
-    throw new Error("Function not implemented.");
-  }
-
-  // const handleSelectChange = (field: string, value: string) => {
-  //   // setFilter((prev) => ({ ...prev, [field]: value }));
-  // };
 
   return (
     <div>
@@ -52,20 +205,50 @@ export default function AddOrderFomPage() {
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Form kiri */}
-          <ComponentCard
-            title="Informasi Order"
-            className="max-w-full md:max-h-7/12">
+          <ComponentCard title="Informasi Order" className="md:max-h-8/12">
             <div className="space-y-6">
               <div>
                 <Label htmlFor="namaPemesan" className="font-semibold text-md">
                   Nama Pemesan
                 </Label>
                 <div className="flex gap-2">
-                  <Input
-                    id="namaPemesan"
-                    placeholder="Cari customer"
-                    className="w-full"
-                  />
+                  <div className="relative w-full">
+                    <input
+                      id="namaPemesan"
+                      placeholder="Cari customer"
+                      className="w-full border rounded px-3 py-2"
+                      value={keyword}
+                      onChange={(e) => {
+                        setKeyword(e.target.value);
+                        setSelectedCustomer(null);
+                      }}
+                    />
+
+                    {!loading && customers.length > 0 && (
+                      <ul className="absolute top-full mt-1 left-0 bg-white border rounded shadow w-full z-10 max-h-60 overflow-y-auto">
+                        {customers.map((customer) => (
+                          <li
+                            key={customer.id}
+                            onClick={() => handleSelect(customer)}
+                            className="px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                            <span className="text-md font-semibold text-red-700">
+                              {customer.name}
+                            </span>{" "}
+                            <span className="block text-sm font-normal">
+                              {customer.address}
+                            </span>
+                            ,
+                            <span className="text-sm font-normal">
+                              {customer.subdistrict}
+                            </span>
+                            <span className="text-sm font-normal">
+                              , {customer.postalCode}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                   <button
                     onClick={() => setShowModal(true)}
                     className="btn-secondary border p-2 text-sm rounded-lg">
@@ -82,11 +265,36 @@ export default function AddOrderFomPage() {
                   Dikirim Kepada
                 </Label>
                 <div className="flex gap-2">
-                  <Input
-                    id="namaPemesan"
-                    placeholder="Cari customer"
-                    className="w-full "
-                  />
+                  <div className="relative w-full">
+                    <input
+                      id="dikirimKepada"
+                      placeholder="Cari customer"
+                      className="w-full border rounded px-3 py-2"
+                      value={deliveryKeyword}
+                      onChange={(e) => {
+                        setDeliveryKeyword(e.target.value);
+                        setSelectedDeliveryCustomer(null);
+                      }}
+                    />
+
+                    {!loading && customers.length > 0 && (
+                      <ul className="absolute top-full mt-1 left-0 bg-white border rounded shadow w-full z-10 max-h-60 overflow-y-auto">
+                        {customers.map((customer) => (
+                          <li
+                            key={customer.id}
+                            onClick={() => handleDeliverySelect(customer)}
+                            className="px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                            <span className="text-md font-semibold text-red-700">
+                              {customer.name}
+                            </span>{" "}
+                            <span className="block">{customer.address}</span>,
+                            <span>{customer.subdistrict}</span>
+                            <span>, {customer.postalCode}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                   <button
                     onClick={() => setShowModal(true)}
                     className="btn-secondary border p-2 text-sm rounded-md">
@@ -106,8 +314,13 @@ export default function AddOrderFomPage() {
                   Pengiriman Dari
                 </Label>
                 <Select
-                  options={senderOptions}
-                  onChange={handleSelectChange}
+                  options={
+                    deliveryPlaces.map((place) => ({
+                      value: place.id,
+                      label: `${place.name} | ${place.address}, ${place.subdistrict}`,
+                    })) || []
+                  }
+                  onChange={(value) => handleSenderSelect(value as string)}
                   placeholder="Pilih Pengirim"
                   className="w-full h-10 pr-10 rounded-md border border-gray-300 dark:bg-dark-900"
                 />
@@ -129,9 +342,15 @@ export default function AddOrderFomPage() {
                   id="date-picker"
                   label="Tanggal Order"
                   placeholder="Select a date"
-                  onChange={(dates, currentDateString) => {
-                    // Handle your logic
-                    console.log({ dates, currentDateString });
+                  onChange={(dates: Date[]) => {
+                    if (dates.length > 0) {
+                      const dateString = dates[0].toISOString().split("T")[0];
+                      setOrderDate(dateString);
+                      setOrderData((prev) => ({
+                        ...prev,
+                        orderDate: dateString,
+                      }));
+                    }
                   }}
                 />
               </div>
@@ -139,7 +358,12 @@ export default function AddOrderFomPage() {
               <div className="relative">
                 <Label className="font-semibold text-md">Sales Channel</Label>
                 <Select
-                  options={salesChannelsOptions}
+                  options={
+                    salesChannels?.map((channel) => ({
+                      value: channel.id,
+                      label: channel.name,
+                    })) || []
+                  }
                   placeholder="Pilih sales Channels"
                   onChange={handleSelectChange}
                   className="dark:bg-dark-900"
@@ -164,6 +388,8 @@ export default function AddOrderFomPage() {
                 <textarea
                   id="note"
                   className="input h-30 w-full border border-gray-400 rounded-lg bg-gray-100"
+                  value={note}
+                  onChange={handleNoteChange}
                 />
                 <div className="mt-2">
                   <label className="inline-flex items-center">
@@ -187,10 +413,8 @@ export default function AddOrderFomPage() {
                 </label>
                 <div className="relative my-4">
                   <Select
-                    onChange={(value) =>
-                      handleSelectChange("paymentStatus", value)
-                    }
-                    options={[...paymentOptions]}
+                    onChange={handleSelectChange}
+                    options={paymentOptions}
                     className="w-full h-10 pr-10 pl-3 rounded-md border border-gray-300 dark:bg-dark-900 dark:text-white text-sm appearance-none"
                   />
 

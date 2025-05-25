@@ -67,10 +67,11 @@ export async function getExpenses(
   query?: ExpenseQuery
 ): Promise<ResponseSucces> {
   try {
+    const token = localStorage.getItem("token");
     const { data } = await axios.get(`${apiUrl}/expenses`, {
       params: query,
       headers: {
-        "ngrok-skip-browser-warning": "true",
+        Authorization: `Bearer ${token}`,
       },
     });
 
