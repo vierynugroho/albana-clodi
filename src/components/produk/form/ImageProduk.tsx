@@ -21,7 +21,7 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
       preview: URL.createObjectURL(file),
     });
     setImage(previewFile);
-    onChange(index, previewFile, "image" as keyof ProductVariant);
+    onChange(index, previewFile, "imageUrl" as keyof ProductVariant);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
