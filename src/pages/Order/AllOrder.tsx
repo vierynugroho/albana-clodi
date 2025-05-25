@@ -5,7 +5,7 @@ import PageMeta from "../../components/common/PageMeta";
 import OrderCard from "../../components/order/card/OrderCard";
 import { TbFilterDiscount } from "react-icons/tb";
 import Button from "../../components/ui/button/Button";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import SearchOrder from "../../components/order/filter/SearchOrder";
 import FilterOrder from "../../components/order/filter/FilterOrder";
 import FilterStatusOrder from "../../components/order/filter/FilterStatusOrder";
@@ -16,98 +16,127 @@ import FilterOrderDropdown from "../../components/order/filter/FilterOrderDropdo
 import OrderToolbar from "../../components/order/orderToolbar";
 import { getOrders, OrderItem } from "../../service/order/index";
 
-type FilterState = {
-  pembayaran: string;
-  pengiriman: string;
-  admin: string;
-  bank: string;
-  kurir: string;
-  pickup: string;
-  salesChannels: string;
-  kategoriCustomer: string;
-  gudang: string;
-  produk: string;
-  printLabel: string;
-  tanggal: string;
+export type FilterState = {
+  ordererCustomerId?: string;
+  deliveryTargetCustomerId?: string;
+  salesChannelId?: string;
+  deliveryPlaceId?: string;
+  orderDate?: string;
+  orderStatus?: string;
+  orderMonth?: string;
+  orderYear?: string;
+  startDate?: string;
+  endDate?: string;
+  customerCategory?: string;
+  paymentStatus?: string;
+  productId?: string;
+  paymentMethodId?: string;
+  search?: string;
+  sort?: string;
+  order?: "asc" | "desc";
 };
+
 
 export default function AllOrderPage() {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [keyword, setKeyword] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>("");
 
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchOrders() {
-      setLoading(true);
-      const result = await getOrders();
+ const [filterOrder, setFilterOrder] = useState<FilterState>({
+  ordererCustomerId: "",
+  deliveryTargetCustomerId: "",
+  salesChannelId: "",
+  deliveryPlaceId: "",
+  orderDate: "",
+  orderStatus: "",
+  orderMonth: "",
+  orderYear: "",
+  startDate: "",
+  endDate: "",
+  customerCategory: "",
+  paymentStatus: "",
+  productId: "",
+  paymentMethodId: "",
+  search: "",
+  sort: "",
+  order: "desc",
+});
 
-      if (result.success && Array.isArray(result.responseObject)) {
-        setOrders(result.responseObject);
-        console.log("Data orders:", result.responseObject);
-      } else {
-        // console.log("Gagal mengambil data orders:", result.message);
-        setOrders([]); // atau tampilkan pesan error di UI
-      }
 
-      setLoading(false);
-    }
-
-    fetchOrders();
-  }, []);
-
-  const [filterOrder, setFilterOrder] = useState<FilterState>({
-    pembayaran: "",
-    pengiriman: "",
-    admin: "",
-    bank: "",
-    kurir: "",
-    pickup: "",
-    salesChannels: "",
-    kategoriCustomer: "",
-    gudang: "",
-    produk: "",
-    printLabel: "semua",
-    tanggal: "order",
-  });
-
+  const location = useLocation();
   const navigate = useNavigate();
 
-  // Handle Search and Filter Query
-  const handleSearchAndFilter = useCallback(
-    (keyword: string, filter: FilterState) => {
-      const params = new URLSearchParams();
-      // for search
-      params.set("keyword", keyword.toLowerCase());
+const handleSearchAndFilter = useCallback(
+  (keyword: string, filter: FilterState) => {
+    const params = new URLSearchParams();
 
-      // for filter
-      params.set("pembayaran", filter.pembayaran);
-      params.set("pengiriman", filter.pengiriman);
-      params.set("admin", filter.admin);
-      params.set("bank", filter.bank);
-      params.set("kurir", filter.kurir);
-      params.set("pickup", filter.pickup);
-      params.set("salesChannels", filter.salesChannels);
-      params.set("kategoriCustomer", filter.kategoriCustomer);
-      params.set("gudang", filter.gudang);
-      params.set("produk", filter.produk);
-      params.set("printLabel", filter.printLabel);
-      params.set("tanggal", filter.tanggal);
+    if (keyword) params.set("search", keyword.toLowerCase());
 
-      navigate(`?${params.toString()}`);
-    },
-    [navigate]
-  );
+    Object.entries(filter).forEach(([key, value]) => {
+      if (value) params.set(key, value);
+    });
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedFilter(event.target.value);
-    // 🔍 Optional: panggil fungsi filter data berdasarkan nilai ini
-    console.log("Filter dipilih:", event.target.value);
-  };
+    navigate(`?${params.toString()}`);
+  },
+  [navigate]
+);
+
+useEffect(() => {
+  async function fetchFilteredOrders() {
+    setLoading(true);
+    const params = new URLSearchParams(location.search);
+
+    const filterFromURL: FilterState = {
+      ordererCustomerId: params.get("ordererCustomerId") || "",
+      deliveryTargetCustomerId: params.get("deliveryTargetCustomerId") || "",
+      salesChannelId: params.get("salesChannelId") || "",
+      deliveryPlaceId: params.get("deliveryPlaceId") || "",
+      orderDate: params.get("orderDate") || "",
+      orderStatus: params.get("orderStatus") || "",
+      orderMonth: params.get("orderMonth") || "",
+      orderYear: params.get("orderYear") || "",
+      startDate: params.get("startDate") || "",
+      endDate: params.get("endDate") || "",
+      customerCategory: params.get("customerCategory") || "",
+      paymentStatus: params.get("paymentStatus") || "",
+      productId: params.get("productId") || "",
+      paymentMethodId: params.get("paymentMethodId") || "",
+      search: params.get("search") || "",
+      sort: params.get("sort") || "",
+      order: (params.get("order") as "asc" | "desc") || "desc",
+    };
+
+    setFilterOrder(filterFromURL);
+    const result = await getOrders(filterFromURL);
+
+    if (result.success && Array.isArray(result.responseObject)) {
+      setOrders(result.responseObject);
+    } else {
+      setOrders([]);
+    }
+
+    setLoading(false);
+  }
+
+  fetchFilteredOrders();
+}, [location.search]);
+
+
+useEffect(() => {
+  if (!location.search) {
+    const savedFilter = localStorage.getItem("orderFilter");
+    if (savedFilter) {
+      const parsedFilter: FilterState = JSON.parse(savedFilter);
+      setFilterOrder(parsedFilter);
+      handleSearchAndFilter(keyword, parsedFilter);
+    }
+  }
+}, [handleSearchAndFilter, keyword, location.search]);
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -134,9 +163,8 @@ export default function AllOrderPage() {
 
       <div className="py-2 bg-gray-50">
         <div
-          className={`flex flex-wrap gap-2 ${
-            window.innerWidth <= 768 ? "overflow-x-auto" : ""
-          }`}>
+          className={`flex flex-wrap gap-2 ${window.innerWidth <= 768 ? "overflow-x-auto" : ""
+            }`}>
           <FilterStatusOrder
             selectedStatuses={selectedStatuses}
             onChange={setSelectedStatuses}

@@ -1,22 +1,9 @@
+import { useNavigate } from "react-router-dom";
+import { FilterState } from "../../../pages/Order/AllOrder";
 import DatePicker from "../../form/date-picker";
 import Label from "../../form/Label";
 import Select from "../../form/Select";
 import Button from "../../ui/button/Button";
-
-type FilterState = {
-  pembayaran: string;
-  pengiriman: string;
-  admin: string;
-  bank: string;
-  kurir: string;
-  pickup: string;
-  salesChannels: string;
-  kategoriCustomer: string;
-  gudang: string;
-  produk: string;
-  printLabel: string;
-  tanggal: string;
-};
 
 type Props = {
   filter: FilterState;
@@ -24,96 +11,95 @@ type Props = {
   onFilter: () => void;
 };
 export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
-  const paymentOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "belum-bayar", label: "Belum Bayar" },
-    { value: "cicilan", label: "Cicilan" },
-    { value: "lunas", label: "Lunas" },
-  ];
 
-  const deliveryOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "belum-diproses", label: "Belum Diproses" },
-    { value: "belum-ada-resi", label: "Belum Ada Resi" },
-    { value: "dalam-pengiriman", label: "Dalam Pengiriman" },
-    { value: "sampai-tujuan", label: "Sampai Tujuan" },
-  ];
-
-  const adminOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "privor-storefront", label: "privor storefront" },
-    { value: "fina-harya-muslikhak", label: "fina harya muslikhak" },
-  ];
-
-  const bankOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "cash", label: "Cash" },
-  ];
-
-  const kurirOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "jne", label: "JNE" },
-    { value: "pos", label: "POS" },
-  ];
-
-  const pickupOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "siap-kirim", label: "Siap Kirim" },
-    { value: "pickup-request", label: "Pickup Request" },
-    { value: "dikirim", label: "Dikirim" },
-  ];
-
-  const salesChannelsOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "shopee", label: "Shopee" },
-    { value: "tokopedia", label: "Tokopedia" },
-  ];
-  const WarehouseOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "gudang-utama", label: "Gudang Utama" },
-  ];
-  const ProdukOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "produk-sendiri", label: "Produk Sendiri" },
-    { value: "supplier-lain", label: "Supplier Lain" },
-    { value: "produk-preorder", label: "Produk Pre-Order" },
-  ];
-  const printLabelOptions = [
-    { value: "semua", label: "Semua" },
-    { value: "printed", label: "Printed" },
-    { value: "unprinted", label: "Unprinted" },
-  ];
-
-  const tanggalOptions = [
-    { value: "order", label: "Order" },
-    { value: "bayar", label: "Bayar" },
-  ];
-
+  const navigate = useNavigate();
   const filters = [
-    { label: "Pembayaran", name: "pembayaran", options: paymentOptions },
-    { label: "Pengiriman", name: "pengiriman", options: deliveryOptions },
-    { label: "Admin", name: "admin", options: adminOptions },
-    { label: "Bank", name: "bank", options: bankOptions },
-    { label: "Kurir", name: "kurir", options: kurirOptions },
-    { label: "Pickup", name: "pickup", options: pickupOptions },
-    { label: "Kurir", name: "kurir", options: kurirOptions },
     {
-      label: "Sales Channels",
-      name: "sales-channels",
-      options: salesChannelsOptions,
+      label: "Status Order",
+      name: "orderStatus",
+      options: [
+        { value: "", label: "Semua" },
+        { value: "belum-diproses", label: "Belum Diproses" },
+        { value: "diproses", label: "Diproses" },
+        { value: "dikirim", label: "Dikirim" },
+        { value: "selesai", label: "Selesai" },
+      ],
     },
     {
       label: "Kategori Customer",
-      name: "kategori-customer",
-      options: salesChannelsOptions,
+      name: "customerCategory",
+      options: [
+        { value: "", label: "Semua" },
+        { value: "RESELLER", label: "Reseller" },
+        { value: "ENDUSER", label: "End User" },
+      ],
     },
-    { label: "Gudang", name: "gudang", options: WarehouseOptions },
-    { label: "Produk", name: "produk", options: ProdukOptions },
+    {
+      label: "Status Pembayaran",
+      name: "paymentStatus",
+      options: [
+        { value: "", label: "Semua" },
+        { value: "belum-bayar", label: "Belum Bayar" },
+        { value: "cicilan", label: "Cicilan" },
+        { value: "lunas", label: "Lunas" },
+      ],
+    },
+    {
+      label: "Sales Channel",
+      name: "salesChannelId",
+      options: [
+        { value: "", label: "Semua" },
+        { value: "shopee", label: "Shopee" },
+        { value: "tokopedia", label: "Tokopedia" },
+      ],
+    },
+    {
+      label: "Tempat Pengiriman",
+      name: "deliveryPlaceId",
+      options: [
+        { value: "", label: "Semua" },
+        { value: "gudang-utama", label: "Gudang Utama" },
+      ],
+    },
+    {
+      label: "Produk",
+      name: "productId",
+      options: [
+        { value: "", label: "Semua" },
+        { value: "produk-sendiri", label: "Produk Sendiri" },
+        { value: "supplier-lain", label: "Supplier Lain" },
+        { value: "produk-preorder", label: "Produk Pre-Order" },
+      ],
+    },
+    {
+      label: "Metode Pembayaran",
+      name: "paymentMethodId",
+      options: [
+        { value: "", label: "Semua" },
+        { value: "cash", label: "Cash" },
+        { value: "bank-transfer", label: "Transfer Bank" },
+      ],
+    },
   ];
-
   const toggleFilters = [
-    { label: "Print Label", name: "printLabel", options: printLabelOptions },
-    { label: "Tanggal", name: "tanggal", options: tanggalOptions },
+    {
+      label: "Print Label",
+      name: "printLabel",
+      options: [
+        { value: "", label: "Semua" },
+        { value: "printed", label: "Printed" },
+        { value: "unprinted", label: "Unprinted" },
+      ],
+    },
+    {
+      label: "Tanggal",
+      name: "tanggal",
+      options: [
+        { value: "", label: "Semua" },
+        { value: "order", label: "Order" },
+        { value: "bayar", label: "Bayar" },
+      ],
+    },
   ];
 
   const handleSelectChange = (field: string, value: string) => {
@@ -121,30 +107,38 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
   };
 
   const resetFilters = () => {
-    setFilter({
-      pembayaran: "",
-      pengiriman: "",
-      admin: "",
-      bank: "",
-      kurir: "",
-      pickup: "",
-      salesChannels: "",
-      kategoriCustomer: "",
-      gudang: "",
-      produk: "",
-      printLabel: "semua",
-      tanggal: "order",
-    });
-    const newUrl = window.location.origin + window.location.pathname;
-    window.history.replaceState({}, document.title, newUrl);
-    window.location.reload();
+    const defaultFilter: FilterState = {
+      ordererCustomerId: "",
+      deliveryTargetCustomerId: "",
+      salesChannelId: "",
+      deliveryPlaceId: "",
+      orderDate: "",
+      orderStatus: "",
+      orderMonth: "",
+      orderYear: "",
+      startDate: "",
+      endDate: "",
+      customerCategory: "",
+      paymentStatus: "",
+      productId: "",
+      paymentMethodId: "",
+      search: "",
+      sort: "",
+      order: "desc",
+    };
+
+    setFilter(defaultFilter);
+    localStorage.removeItem("orderFilter");
+
+  navigate("?", { replace: true });
+
+  onFilter();
+
+    onFilter(); 
   };
 
   const saveFilter = () => {
-    const filterData = JSON.stringify(
-      localStorage.getItem("orderFilter") || {}
-    );
-    localStorage.setItem("orderFilter", filterData);
+    localStorage.setItem("orderFilter", JSON.stringify(filter));
   };
 
   return (
@@ -175,6 +169,7 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
                       placeholder={`Pilih ${label}`}
                       onChange={(value) => handleSelectChange(name, value)}
                       className="w-full h-10 pr-10 rounded-md border border-gray-300 dark:bg-dark-900"
+                      defaultValue={filter[name as keyof FilterState] || ""}
                     />
                     <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                       <svg
@@ -208,15 +203,14 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
                       onClick={() =>
                         setFilter((prev) => ({ ...prev, [name]: value }))
                       }
-                      className={`rounded-full px-4 py-1 text-sm ${
-                        name in filter &&
+                      className={`rounded-full px-4 py-1 text-sm ${name in filter &&
                         filter[name as keyof FilterState] === value
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-black"
-                      }`}
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-black"
+                        }`}
                       variant={
                         name in filter &&
-                        filter[name as keyof FilterState] === value
+                          filter[name as keyof FilterState] === value
                           ? "primary"
                           : "outline"
                       }>
@@ -231,12 +225,17 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
               <Label className="text-left font-bold">Range Tanggal</Label>
               <DatePicker
                 id="date-picker"
-                placeholder="Select a date"
-                onChange={(dates, currentDateString) => {
-                  // Handle your logic
-                  console.log({ dates, currentDateString });
+                placeholder="Pilih Tanggal"
+                onChange={(_, currentDateString) => {
+                  const [start, end] = currentDateString || [];
+                  setFilter((prev) => ({
+                    ...prev,
+                    startDate: start || "",
+                    endDate: end || "",
+                  }));
                 }}
               />
+
             </div>
           </div>
         </div>

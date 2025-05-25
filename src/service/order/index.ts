@@ -150,8 +150,12 @@ type ResponseSucces = {
 
 export async function getOrders(query?: OrderQuery): Promise<ResponseSucces> {
   try {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwYjJhN2FlLTAzZjgtNDU3Yy04NmM4LTIzNWEyMmY1MTc5NSIsImlhdCI6MTc0ODIwNDc3OCwiZXhwIjoxNzQ4MjkxMTc4fQ.YFSh9NPUPBlAmkvyfuvbyC556StvK2NdI7clycGq7Zw";
     const { data } = await axios.get(`${apiUrl}/orders`, {
       params: query,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     return data;
