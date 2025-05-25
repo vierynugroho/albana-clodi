@@ -8,6 +8,7 @@ import Button from '../../ui/button/Button';
 import CustomerCategoryList from '../categoryCustomer/CustomerCategoryList';
 import { City, District, getCities, getDistricts, getProvinces, getVillages, Province, Village } from '../../../service/region';
 import { createCustomer } from '../../../service/customer';
+import toast, { Toaster } from 'react-hot-toast';
 
 type FormCustomer = {
 	category: string;
@@ -142,7 +143,6 @@ export default function FormCustomer() {
 			village: formData.villageName,
 			district: formData.districtName,
 			city: formData.cityName,
-			subdistrict: formData.districtName,
 			postalCode: formData.postalCode,
 			phoneNumber: formData.phoneNumber,
 			email: formData.email,
@@ -156,8 +156,28 @@ export default function FormCustomer() {
 			.then((response) => {
 				if (response.success) {
 					console.log('Customer berhasil ditambahkan');
-					// Reset form atau navigasi ke halaman lain
+					toast.success('Customer berhasil ditambahkan');
+					setFormData({
+						id: '',
+						name: '',
+						category: '',
+						address: '',
+						provinceId: '',
+						provinceName: '',
+						cityId: '',
+						cityName: '',
+						districtId: '',
+						districtName: '',
+						villageId: '',
+						villageName: '',
+						postalCode: '',
+						phoneNumber: '',
+						email: '',
+					});
+					// Redirect ke halaman customer setelah berhasil menambahkan
+					window.location.href = '/customer';
 				} else {
+					toast.error('Customer gagal ditambahkan');
 					console.error('Gagal menambahkan customer:', response.message);
 				}
 			})
@@ -168,6 +188,7 @@ export default function FormCustomer() {
 
 	return (
 		<div className='flex gap-4 l'>
+			<Toaster />
 			<div className='flex gap-5 w-full max-md:flex-col'>
 				<ComponentCard
 					title='Informasi Customer'
