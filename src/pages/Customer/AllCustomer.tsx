@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
@@ -6,48 +6,37 @@ import { FaFilter } from "react-icons/fa";
 import TableCustomer from "../../components/customer/TableCustomer";
 import { Link } from "react-router";
 import ModalCustomerKategory from "../../components/customer/modal/ModalFilterCustomer";
-
-const customer = [
-  {
-    id: "CUST001",
-    name: "Bapak Wahyudi Akbar Doe",
-    category: "Retail",
-    phone: "081234567890",
-    address: "Jl. Merdeka No. 1, Jakarta",
-  },
-  {
-    id: "CUST002",
-    name: "Jane Smith",
-    category: "Wholesale",
-    phone: "082345678901",
-    address: "Jl. Sudirman No. 10, Bandung",
-  },
-  {
-    id: "CUST003",
-    name: "Ahmad Fauzi",
-    category: "Retail",
-    phone: "083456789012",
-    address: "Jl. Pemuda No. 15, Surabaya",
-  },
-  {
-    id: "CUST004",
-    name: "Linda Hartono",
-    category: "Distributor",
-    phone: "084567890123",
-    address: "Jl. Diponegoro No. 7, Yogyakarta",
-  },
-  {
-    id: "CUST005",
-    name: "Michael Tan",
-    category: "Wholesale",
-    phone: "085678901234",
-    address: "Jl. Gajah Mada No. 3, Medan",
-  },
-];
+import { Customer, getCustomers } from "../../service/customer";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function AllCustomerPage() {
   const [filter, setFilter] = useState<boolean>(false);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasFetched = useRef(false);
+
+  const fetchCustomers = useCallback(async () => {
+    const result = await getCustomers();
+    if (result.success && result.responseObject) {
+      setCustomers(result.responseObject.data);
+      if (!hasFetched.current) {
+        toast.success(result.message, {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      }
+    } else {
+      if (!hasFetched.current) {
+        toast.error(result.message, {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      }
+    }
+    hasFetched.current = true;
+  }, []);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   function changeModal() {
     setFilter((prevFilter) => !prevFilter);
@@ -55,6 +44,7 @@ export default function AllCustomerPage() {
 
   return (
     <div>
+      <Toaster />
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
@@ -109,7 +99,7 @@ export default function AllCustomerPage() {
           </div>
           {/* check if the filter value is true or false */}
           {filter ? <ModalCustomerKategory changeModal={changeModal} /> : null}
-          <TableCustomer customers={customer} />
+          <TableCustomer customers={customers} />
         </div>
       </div>
     </div>

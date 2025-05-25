@@ -61,7 +61,9 @@ export default function TableProduk() {
   }, []);
 
   console.log(loading);
-  console.log(products);
+  // if (products) {
+  //   console.log(products[0].variant[0].stock);
+  // }
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -149,10 +151,12 @@ export default function TableProduk() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {produk.variant.stock}
+                    {produk.variant.reduce((sum, item) => sum + item.stock, 0)}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    <div className="flex -space-x-2">1</div>
+                    <div className="flex -space-x-2">
+                      {produk.variant.length}
+                    </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <Badge size="sm" color={"success"}>
