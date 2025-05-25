@@ -1,4 +1,4 @@
-import { TReceiptData } from "../../../service/order/order.type";
+import { TReceiptData } from "../../../service/order/print/order.type";
 import InvoicePreview from "./InvoicePreview";
 import ShippingPreview from "./ShippingPreview";
 import ThermalPreview from "./ThermalPreview";

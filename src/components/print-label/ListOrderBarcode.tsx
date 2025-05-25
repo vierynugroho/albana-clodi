@@ -1,5 +1,5 @@
 import Barcode from "react-barcode";
-import { TProduct } from "../../service/order/order.type";
+import { TProduct } from "../../service/order/print/order.type";
 import { formatDateIndo } from "../../utils/format-date.utils";
 
 interface OrderLabelProps {

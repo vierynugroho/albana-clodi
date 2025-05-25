@@ -3,7 +3,7 @@ import Logo from "../../../../public/images/logo/albana-clodi-logo.svg";
 import Fragile from "../../../../public/images/icons/fragile.png";
 import Barcode from "react-barcode";
 import OrderLabel from "../ListOrderBarcode";
-import { TPreviewProps } from "../../../service/order/order.type";
+import { TPreviewProps } from "../../../service/order/print/order.type";
 
 const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);

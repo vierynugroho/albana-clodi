@@ -5,14 +5,14 @@ import {
   TPrintSetting,
   SettingOptionValue,
   TReceiptData,
-} from "../../service/order/order.type";
+} from "../../service/order/print/order.type";
 import { SettingOptionCard } from "../../components/print-label/card/SettingOptionCard";
 import { SettingFeatureCard } from "../../components/print-label/card/SettingFeatureCard";
 import PageMeta from "../../components/common/PageMeta";
 import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/ui/button/Button";
 import { PreviewOutput } from "../../components/print-label/preview/PreviewOutput";
-import { getReceiptByOrderId } from "../../service/order";
+import { getReceiptByOrderId } from "../../service/order/print";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 

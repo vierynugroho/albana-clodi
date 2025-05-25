@@ -1,6 +1,6 @@
 import React from "react";
 import Logo from "../../../../public/images/logo/albana-clodi-logo.svg";
-import { TPreviewProps, TProduct } from "../../../service/order/order.type";
+import { TPreviewProps, TProduct } from "../../../service/order/print/order.type";
 import { formatDateTimeIndo } from "../../../utils/format-date.utils";
 import { formatDate } from "@fullcalendar/core/index.js";
 import { formatPrice } from "../../../utils/format-price.utils";
