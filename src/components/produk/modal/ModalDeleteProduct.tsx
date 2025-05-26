@@ -1,25 +1,25 @@
 import ReactDOM from "react-dom";
-import { deleteCategory } from "../../../service/product/category";
 import toast, { Toaster } from "react-hot-toast";
+import { deleteProduct } from "../../../service/product";
 
 type DeleteModalProps = {
   id: string;
-  fechCategory: () => void;
+  fetchProduk: () => void;
   changeModal: () => void;
 };
 
-export default function ModalDeleteCategory({
+export default function ModalDeleteProduct({
   id,
-  fechCategory,
+  fetchProduk,
   changeModal,
 }: DeleteModalProps) {
-  async function fetchdeleteCategory(id: string) {
-    const result = await deleteCategory(id);
+  async function fetchdeleteProduk(id: string) {
+    const result = await deleteProduct(id);
     if (result.success) {
       toast.success(result.message, {
         style: { marginTop: "10vh", zIndex: 100000 },
       });
-      fechCategory();
+      fetchProduk();
     } else {
       toast.error(result.message, {
         style: { marginTop: "10vh", zIndex: 100000 },
@@ -56,7 +56,7 @@ export default function ModalDeleteCategory({
               </svg>
             </div>
             <h3 className="mt-4 text-lg leading-6 font-semibold text-gray-900">
-              Yakin ingin menghapus Category ini?
+              Yakin ingin menghapus Produk ini?
             </h3>
             <p className="mt-2 text-sm text-gray-600">
               Tindakan ini bersifat permanen dan tidak dapat dibatalkan.
@@ -68,9 +68,9 @@ export default function ModalDeleteCategory({
               <button
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-700 text-base font-semibold text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out sm:text-sm"
-                onClick={() => fetchdeleteCategory(id)}
+                onClick={() => fetchdeleteProduk(id)}
               >
-                Hapus Category
+                Hapus Produk
               </button>
             </span>
             <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">

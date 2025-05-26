@@ -10,9 +10,14 @@ type DropzoneProps = {
     value: File,
     label: keyof ProductVariant | keyof ProductPrice
   ) => void;
+  imageUrl?: string;
 };
 
-const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
+const DropzoneComponent: React.FC<DropzoneProps> = ({
+  index,
+  onChange,
+  imageUrl,
+}) => {
   const [image, setImage] = useState<PreviewFile | null>(null);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -48,7 +53,9 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
         style={
           image
             ? {
-                backgroundImage: `url(${image.preview})`,
+                backgroundImage: imageUrl
+                  ? `url("${imageUrl}")`
+                  : `url("${image.preview}")`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }

@@ -10,6 +10,7 @@ import { Link } from "react-router";
 import FilterProduk from "../../components/produk/FilterProduk";
 import SearchProduk from "../../components/produk/input/SearchProduk";
 import { useNavigate } from "react-router";
+import { downloadProductExel } from "../../service/product";
 
 type FilterState = {
   kategori: string;
@@ -47,6 +48,12 @@ export default function AllProdukPage() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  // Download Exel
+  async function downloadExel() {
+    const data = await downloadProductExel();
+    return data;
+  }
 
   // Handle Search and Filter Query
   const handleSearchAndFilter = useCallback(
@@ -125,6 +132,7 @@ export default function AllProdukPage() {
             variant="outline"
             className="flex-1/2"
             startIcon={<DownloadIcon className="size-5" />}
+            onClick={() => downloadExel()}
           >
             Export Data
           </Button>

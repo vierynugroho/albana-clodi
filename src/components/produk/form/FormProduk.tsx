@@ -261,7 +261,7 @@ export default function FormProduk() {
                   <Label>Berat</Label>
                   <div className="relative">
                     <Input
-                      placeholder="Berat (kg)"
+                      placeholder="Berat (gr)"
                       type="number"
                       min="0"
                       className="pl-[62px] appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"

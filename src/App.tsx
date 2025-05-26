@@ -34,6 +34,7 @@ import SettingPage from "./pages/SettingPage/SettingPage";
 import AddOrderFomPage from "./components/order/form/AddOrderFormPage";
 import UploadOrderPage from "./pages/Order/UploadOrderPage";
 import EditOrderFomPage from "./components/order/form/EditOrderPage";
+import DetailProduCtPage from "./pages/Produk/DetailProdukPage";
 
 export default function App() {
   return (
@@ -66,6 +67,7 @@ export default function App() {
             <Route path="/produk" element={<AllProdukPage />} />
             <Route path="/produk/form_produk" element={<ProductFormPage />} />
             <Route path="/produk/edit/:id" element={<ProductFormPage />} />
+            <Route path="/produk/detail_produk/:id" element={<DetailProduCtPage />} />
             <Route
               path="/produk/barcode_sku"
               element={<PrintProductBarcode />}

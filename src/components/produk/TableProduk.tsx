@@ -14,11 +14,14 @@ import { AiFillDelete } from "react-icons/ai";
 import { getProducts } from "../../service/product";
 import { type ArrayProduct } from "../../service/product";
 import { Link } from "react-router";
+import ModalDeleteProduct from "./modal/ModalDeleteProduct";
 
 export default function TableProduk() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [products, setProducts] = useState<ArrayProduct[] | null>(null);
+  const [modalDelete, setModalDelete] = useState(false);
+  const [idDeleteProduct, setIdDeleteProduct] = useState("");
 
   const [isChecked, setIsChecked] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string[]>([]);
@@ -40,19 +43,24 @@ export default function TableProduk() {
     }
   }, [selectedItem]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      const result = await getProducts();
-      if (result.success && result.responseObject) {
-        setProducts(result.responseObject.data);
-      } else {
-        setMessage(result.message);
-      }
-      setLoading(false);
-    };
-    fetchProducts();
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    const result = await getProducts();
+    if (result.success && result.responseObject) {
+      setProducts(result.responseObject.data);
+    } else {
+      setMessage(result.message);
+    }
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  const handleModal = () => {
+    setModalDelete((prev) => !prev);
+  };
 
   const checkboxHandler = useCallback((checked: boolean, id: string) => {
     setSelectedItem((prev) =>
@@ -142,7 +150,12 @@ export default function TableProduk() {
                       </div>
                       <div>
                         <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {produk.product.name}
+                          <Link
+                            to={`/produk/detail_produk/${produk.product.id}`}
+                            className="hover:underline font-semibold"
+                          >
+                            {produk.product.name}
+                          </Link>
                         </span>
                         <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
                           {produk.price.normal}
@@ -175,7 +188,13 @@ export default function TableProduk() {
                         <FaEdit className="w-6 h-5 text-amber-500 cursor-pointer" />
                       </Link>
 
-                      <AiFillDelete className="w-6 h-5  text-red-700 cursor-pointer" />
+                      <AiFillDelete
+                        onClick={() => {
+                          handleModal();
+                          setIdDeleteProduct(produk.product.id);
+                        }}
+                        className="w-6 h-5  text-red-700 cursor-pointer"
+                      />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -192,6 +211,13 @@ export default function TableProduk() {
             )}
           </TableBody>
         </Table>
+        {modalDelete && (
+          <ModalDeleteProduct
+            changeModal={handleModal}
+            id={idDeleteProduct}
+            fetchProduk={fetchProducts}
+          />
+        )}
       </div>
     </div>
   );

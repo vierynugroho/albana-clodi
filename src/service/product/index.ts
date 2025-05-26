@@ -115,7 +115,7 @@ type ResponseSucces = {
   statusCode?: number;
 };
 
-type ResponseDetailProduk = {
+export type ResponseDetailProduk = {
   id: string;
   categoryId: string | null;
   name: string;
@@ -275,6 +275,37 @@ export async function createProduct(
   }
 }
 
+export async function deleteProduct(id: string): Promise<ResponseSucces> {
+  try {
+    console.log(id);
+    const { data } = await axios.delete(`${apiUrl}/products/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return data;
+  } catch (error) {
+    let message = "Terjadi kesalahan";
+    if (axios.isAxiosError(error)) {
+      console.log(error.response);
+      if (error.response) {
+        message = error.response.data.message || "Gagal Menghapus produk";
+      } else if (error.request) {
+        message = "Tidak dapat menghubungi server";
+      } else {
+        message = error.message;
+      }
+    } else {
+      message = (error as Error).message;
+    }
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
 export async function editProduct(
   credentials: CreateProductRequest,
   id: string
@@ -325,7 +356,55 @@ export async function getProducts(): Promise<ResponseSucces> {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log(data);
     return data;
+  } catch (error) {
+    let message = "Terjadi kesalahan saat mengambil produk";
+
+    if (axios.isAxiosError(error)) {
+      message =
+        error.response?.data?.message ||
+        (error.request ? "Tidak dapat menghubungi server" : error.message);
+    } else {
+      message = (error as Error).message;
+    }
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
+export async function downloadProductExel() {
+  try {
+    const response = await axios.post(`${apiUrl}/products/export/excel`, "", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      },
+      responseType: "blob",
+    });
+
+    const blob = new Blob([response.data], {
+      type: response.headers["content-type"],
+    });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+
+    const contentDisposition = response.headers["content-disposition"];
+    const fileName =
+      contentDisposition?.split("filename=")[1]?.replace(/"/g, "") ||
+      "Produk.xlsx";
+
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
   } catch (error) {
     let message = "Terjadi kesalahan saat mengambil produk";
 
