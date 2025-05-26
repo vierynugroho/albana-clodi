@@ -175,10 +175,11 @@ const convertToFormData = (data: CreateProductRequest): FormData => {
     formData.append(`productVariants[${index}].color`, variant.color ?? "");
     formData.append(`productVariants[${index}].barcode`, variant.barcode ?? "");
     // File image
-    formData.append(
-      `productVariants[${index}].imageUrl`,
-      variant.imageUrl ?? ""
-    );
+    // formData.append(
+    //   `productVariants[${index}].image`,
+    //   variant.imageUrl ?? ""
+    // );
+    formData.append(`images`, variant.imageUrl ?? "");
 
     // Product prices
     Object.entries(variant.productPrices).forEach(([key, value]) => {
@@ -348,15 +349,17 @@ export async function editProduct(
   }
 }
 
-export async function getProducts(): Promise<ResponseSucces> {
+export async function getProducts(page: number = 1): Promise<ResponseSucces> {
   try {
     const { data } = await axios.get(`${apiUrl}/products`, {
       headers: {
         "ngrok-skip-browser-warning": "true",
         Authorization: `Bearer ${token}`,
       },
+      params: {
+        page,
+      },
     });
-    console.log(data);
     return data;
   } catch (error) {
     let message = "Terjadi kesalahan saat mengambil produk";

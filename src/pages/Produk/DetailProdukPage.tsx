@@ -15,6 +15,7 @@ export default function DetailProduCtPage() {
     async function fetchDetailProduct() {
       if (id) {
         const result = await getDetailProduct(id);
+        console.log(result);
 
         if (!hasFetched.current) {
           if (result.success && result.responseObject) {
@@ -49,7 +50,7 @@ export default function DetailProduCtPage() {
         <div className="flex-col gap-5">
           <DetailProduct productDetail={productDetail} />
           {productDetail?.productVariants.map((varian, index) => (
-            <DetailVariant numberVariant={index} productVariant={varian}/>
+            <DetailVariant key={index} numberVariant={index} productVariant={varian} />
           ))}
         </div>
       </div>

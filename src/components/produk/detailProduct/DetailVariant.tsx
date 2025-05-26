@@ -20,14 +20,18 @@ export default function DetailVariant({
               {/* Icon Container */}
               <div className="flex justify-center">
                 <div
-                  className={`flex h-[68px] w-[98px] items-center justify-center overflow-hidden ${
-                    productVariant.imageUrl ? "" : "rounded-full bg-gray-200"
+                  className={`flex h-[168px] w-[168px] items-center justify-center overflow-hidden ${
+                    productVariant.imageUrl ? "" : "rounded-2xl bg-gray-200"
                   } text-gray-700 dark:bg-gray-800 dark:text-gray-400`}
                 >
                   <img
-                    src="/images/icons/empty_box.svg" // ganti dengan path default kamu
+                    src={
+                      productVariant.imageUrl
+                        ? String(productVariant.imageUrl)
+                        : "/images/icons/empty_box.svg"
+                    }
                     alt="Default"
-                    className="h-18 w-28 opacity-60"
+                    className="h-[68px] w-[98px]  opacity-60"
                   />
                 </div>
               </div>
@@ -49,9 +53,15 @@ export default function DetailVariant({
                 <h2 className="text-gray-500 dark:text-gray-400">
                   Barcode produk
                 </h2>
-                <h2 className="mb-2 font-bold text-balance leading-normal ">
-                  {productVariant.barcode}
-                </h2>
+                {productVariant.barcode ? (
+                  <img
+                    src={productVariant.barcode}
+                    alt="Barcode"
+                    className="h-10"
+                  />
+                ) : (
+                  <h2 className="font-bold text-balance">-</h2>
+                )}
               </div>
             </div>
             {/* Harga Jual */}

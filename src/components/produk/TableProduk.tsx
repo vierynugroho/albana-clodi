@@ -15,6 +15,7 @@ import { getProducts } from "../../service/product";
 import { type ArrayProduct } from "../../service/product";
 import { Link } from "react-router";
 import ModalDeleteProduct from "./modal/ModalDeleteProduct";
+import PaginationNavigation from "./pagination/PaginationNavigation";
 
 export default function TableProduk() {
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,9 @@ export default function TableProduk() {
 
   const [isChecked, setIsChecked] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string[]>([]);
+  // For Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Sync selectedItem when isChecked changes
   useEffect(() => {
@@ -45,14 +49,16 @@ export default function TableProduk() {
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
-    const result = await getProducts();
+    const result = await getProducts(currentPage);
     if (result.success && result.responseObject) {
+      setCurrentPage(Number(result.responseObject.meta.currentPage));
+      setTotalPages(result.responseObject.meta.totalPages);
       setProducts(result.responseObject.data);
     } else {
       setMessage(result.message);
     }
     setLoading(false);
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     fetchProducts();
@@ -143,10 +149,14 @@ export default function TableProduk() {
                       }
                     />
                   </TableCell>
-                  <TableCell className="px-5 py-4 sm:px-6 text-start">
+                  <TableCell className=" w-1/4 px-6 py-4  text-start">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 overflow-hidden rounded-full">
-                        <img width={30} height={30} />
+                        <img
+                          width={30}
+                          height={30}
+                          src="/images/icons/empty_box.svg"
+                        />
                       </div>
                       <div>
                         <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
@@ -157,8 +167,8 @@ export default function TableProduk() {
                             {produk.product.name}
                           </Link>
                         </span>
-                        <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                          {produk.price.normal}
+                        <span className="block text-gray-500  dark:text-gray-400 text-xl font-semibold">
+                          Rp {produk.price.normal.toLocaleString("IND")}
                         </span>
                       </div>
                     </div>
@@ -211,6 +221,7 @@ export default function TableProduk() {
             )}
           </TableBody>
         </Table>
+
         {modalDelete && (
           <ModalDeleteProduct
             changeModal={handleModal}
@@ -219,6 +230,12 @@ export default function TableProduk() {
           />
         )}
       </div>
+      <PaginationNavigation
+        currentPage={currentPage}
+        loading={loading}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+      />
     </div>
   );
 }
