@@ -2,6 +2,15 @@ import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 const token = localStorage.getItem("token");
 
+export type FilterState = {
+  kategori: string;
+  channel: string;
+  harga: string;
+  type: string | null;
+  urutan: string;
+  produkMarketplace: string;
+};
+
 type ProductPrice = {
   normal: number;
   buy: number;
@@ -18,6 +27,7 @@ type ProductWholesaler = {
 };
 
 export type ProductVariant = {
+  id?: string;
   imageUrl: File | null | string;
   sku: string;
   productPrices: ProductPrice;
@@ -29,6 +39,7 @@ export type ProductVariant = {
 };
 
 type ProductDiscount = {
+  id?: string;
   type: string;
   value: number;
   startDate?: string;
@@ -55,7 +66,7 @@ type Category = {
   updatedAt: string;
 };
 
-type ProductNew = {
+export type ProductNew = {
   id: string;
   categoryId: string;
   name: string;
@@ -169,6 +180,9 @@ const convertToFormData = (data: CreateProductRequest): FormData => {
 
   // Product variants
   data.productVariants.forEach((variant: ProductVariant, index: number) => {
+    if (variant.id) {
+      formData.append(`productVariants[${index}].id`, variant.id);
+    }
     formData.append(`productVariants[${index}].sku`, variant.sku);
     formData.append(`productVariants[${index}].stock`, String(variant.stock));
     formData.append(`productVariants[${index}].size`, variant.size ?? "");
@@ -349,8 +363,13 @@ export async function editProduct(
   }
 }
 
-export async function getProducts(page: number = 1): Promise<ResponseSucces> {
+export async function getProducts(
+  page: number = 1,
+  search: string = "",
+  query?: FilterState
+): Promise<ResponseSucces> {
   try {
+    console.log(query);
     const { data } = await axios.get(`${apiUrl}/products`, {
       headers: {
         "ngrok-skip-browser-warning": "true",
@@ -358,6 +377,8 @@ export async function getProducts(page: number = 1): Promise<ResponseSucces> {
       },
       params: {
         page,
+        ...query,
+        search,
       },
     });
     return data;
@@ -372,6 +393,7 @@ export async function getProducts(page: number = 1): Promise<ResponseSucces> {
       message = (error as Error).message;
     }
 
+    console.log(error);
     return {
       success: false,
       message,

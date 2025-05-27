@@ -11,7 +11,7 @@ interface OptionProduct {
 }
 
 interface SelectProps {
-  options: Option[]|OptionProduct[];
+  options: Option[] | OptionProduct[];
   placeholder?: string;
   onChange: (value: string) => void;
   className?: string;
@@ -52,7 +52,7 @@ const Select: React.FC<SelectProps> = ({
         {placeholder}
       </option>
       {/* Map over options */}
-      {options.map((option) => (
+      {options?.map((option) => (
         <option
           key={option.value}
           value={option.value}

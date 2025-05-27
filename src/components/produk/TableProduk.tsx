@@ -11,13 +11,29 @@ import Checkbox from "../form/input/Checkbox";
 import { useCallback, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
-import { getProducts } from "../../service/product";
+import { FilterState, getProducts } from "../../service/product";
 import { type ArrayProduct } from "../../service/product";
 import { Link } from "react-router";
 import ModalDeleteProduct from "./modal/ModalDeleteProduct";
 import PaginationNavigation from "./pagination/PaginationNavigation";
 
-export default function TableProduk() {
+type PropsTableProduk = {
+  search: string;
+  isSearch: boolean;
+  setIsSearch: React.RefObject<boolean>;
+  firstLoadBrowser: boolean;
+  setLoadBrowser: React.RefObject<boolean>;
+  optionFilter: FilterState;
+};
+
+export default function TableProduk({
+  search,
+  isSearch,
+  setIsSearch,
+  firstLoadBrowser,
+  setLoadBrowser,
+  optionFilter,
+}: PropsTableProduk) {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [products, setProducts] = useState<ArrayProduct[] | null>(null);
@@ -48,17 +64,56 @@ export default function TableProduk() {
   }, [selectedItem]);
 
   const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    const result = await getProducts(currentPage);
-    if (result.success && result.responseObject) {
-      setCurrentPage(Number(result.responseObject.meta.currentPage));
-      setTotalPages(result.responseObject.meta.totalPages);
-      setProducts(result.responseObject.data);
-    } else {
-      setMessage(result.message);
+    let result;
+
+    if (!isSearch && !firstLoadBrowser) {
+      return;
     }
+
+    if (!isSearch && firstLoadBrowser) {
+      result = await getProducts(currentPage);
+      setLoadBrowser.current = false;
+      if (result.success && result.responseObject) {
+        setCurrentPage(Number(result.responseObject.meta.currentPage));
+        setTotalPages(result.responseObject.meta.totalPages);
+        setProducts(result.responseObject.data);
+      } else {
+        setMessage(result.message);
+      }
+    }
+
+    if (isSearch) {
+      result = await getProducts(currentPage, search, {
+        type: optionFilter.type || null,
+        channel: "",
+        harga: "",
+        kategori: "",
+        produkMarketplace: "",
+        urutan: "",
+      });
+      if (result.success && result.responseObject) {
+        setCurrentPage(Number(result.responseObject.meta.currentPage));
+        setTotalPages(result.responseObject.meta.totalPages);
+        setProducts(result.responseObject.data);
+      } else {
+        setMessage(result.message);
+      }
+      setIsSearch.current = false;
+    }
+
+    console.log("mencari data");
+    setLoading(true);
+
     setLoading(false);
-  }, [currentPage]);
+  }, [
+    currentPage,
+    search,
+    isSearch,
+    setIsSearch,
+    firstLoadBrowser,
+    setLoadBrowser,
+    optionFilter,
+  ]);
 
   useEffect(() => {
     fetchProducts();
@@ -73,12 +128,6 @@ export default function TableProduk() {
       checked ? [...prev, id] : prev.filter((item) => item !== id)
     );
   }, []);
-
-  console.log(loading);
-  // if (products) {
-  //   console.log(products[0].variant[0].stock);
-  // }
-
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
