@@ -13,8 +13,17 @@ import ModalAddCustomer from "../modal/ModalAddcustomer.tsx";
 import PaymentSection from "../card/PaymentSection.tsx";
 import ShippingSection from "../card/ShippingSection.tsx";
 
-export default function EditOrderFomPage() {
+export default function EditOrderFomPage({ orderId }: { orderId: string }) {
   const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    customerName: "",
+    shippingName: "",
+    sender: "",
+    orderDate: "",
+    salesChannel: "",
+    notes: "",
+    addToPrintLabel: false,
+  });
 
   const salesChannelsOptions = [
     { value: "shopee", label: "Shopee" },
@@ -28,8 +37,18 @@ export default function EditOrderFomPage() {
     },
   ];
 
-  const handleSelectChange = (field: string, value: string) => {
-    // setFilter((prev) => ({ ...prev, [field]: value }));
+  const handleSelectChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      salesChannel: value,
+    }));
+  };
+
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   return (
@@ -39,7 +58,7 @@ export default function EditOrderFomPage() {
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
       />
       <OrderPageBreadcrumb pageTitle="Edit Order" />
-      <p className="py-2">Order#123421432</p>
+      <p className="py-2">Order#{orderId}</p>
       <hr className="border-1 border-gray-200" />
 
       <div className="p-6 bg-gray-50 min-h-screen">
@@ -56,6 +75,10 @@ export default function EditOrderFomPage() {
                     id="namaPemesan"
                     placeholder="Cari customer"
                     className="w-full"
+                    value={formData.customerName}
+                    onChange={(e) =>
+                      handleInputChange("customerName", e.target.value)
+                    }
                   />
                   <button
                     onClick={() => setShowModal(true)}
@@ -76,7 +99,11 @@ export default function EditOrderFomPage() {
                   <Input
                     id="namaPemesan"
                     placeholder="Cari customer"
-                    className="w-full "
+                    className="w-full"
+                    value={formData.shippingName}
+                    onChange={(e) =>
+                      handleInputChange("shippingName", e.target.value)
+                    }
                   />
                   <button
                     onClick={() => setShowModal(true)}
@@ -98,7 +125,7 @@ export default function EditOrderFomPage() {
                 </Label>
                 <Select
                   options={senderOptions}
-                  onChange={handleSelectChange}
+                  onChange={(value) => handleInputChange("sender", value)}
                   placeholder="Pilih Pengirim"
                   className="w-full h-10 pr-10 rounded-md border border-gray-300 dark:bg-dark-900"
                 />
@@ -121,8 +148,7 @@ export default function EditOrderFomPage() {
                   label="Tanggal Order"
                   placeholder="Select a date"
                   onChange={(dates, currentDateString) => {
-                    // Handle your logic
-                    console.log({ dates, currentDateString });
+                    handleInputChange("orderDate", currentDateString);
                   }}
                 />
               </div>
@@ -155,10 +181,19 @@ export default function EditOrderFomPage() {
                 <textarea
                   id="note"
                   className="input h-30 w-full border border-gray-400 rounded-lg bg-gray-100"
+                  value={formData.notes}
+                  onChange={(e) => handleInputChange("notes", e.target.value)}
                 />
                 <div className="mt-2">
                   <label className="inline-flex items-center">
-                    <input type="checkbox" className="mr-2" />
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      checked={formData.addToPrintLabel}
+                      onChange={(e) =>
+                        handleInputChange("addToPrintLabel", e.target.checked)
+                      }
+                    />
                     Add To Print Label
                   </label>
                 </div>
