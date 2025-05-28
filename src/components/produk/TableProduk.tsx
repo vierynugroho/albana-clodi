@@ -65,6 +65,7 @@ export default function TableProduk({
 
   const fetchProducts = useCallback(async () => {
     let result;
+    setLoading(true);
 
     if (!isSearch && !firstLoadBrowser) {
       return;
@@ -100,10 +101,7 @@ export default function TableProduk({
       }
       setIsSearch.current = false;
     }
-
     console.log("mencari data");
-    setLoading(true);
-
     setLoading(false);
   }, [
     currentPage,

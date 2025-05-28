@@ -156,9 +156,3 @@ export default function TableCustomer({ customers, deleteCustomer, editCustomer 
 		</div>
 	);
 }
-
-interface DeleteModalProps {
-	id: string;
-	changeModal: () => void;
-	deleteCustomer: (id: string) => void;
-}

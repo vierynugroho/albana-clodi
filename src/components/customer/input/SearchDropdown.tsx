@@ -40,7 +40,6 @@ export default function SearchableDropdown({ options, label, id, selectedVal, ha
 
 		return '';
 	};
-	console.log(options);
 
 	const filter = (options: OptionDataAddres[] = []) => {
 		return options.filter((option) => String(option[label]).toLowerCase().includes(query.toLowerCase()));

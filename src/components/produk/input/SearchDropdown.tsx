@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrayProduct, ProductNew } from "../../../service/product";
 import Button from "../button/Button";
 import { FaPrint } from "react-icons/fa";
