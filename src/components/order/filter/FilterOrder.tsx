@@ -49,8 +49,8 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
       name: "salesChannelId",
       options: [
         { value: "", label: "Semua" },
-        { value: "shopee", label: "Shopee" },
-        { value: "tokopedia", label: "Tokopedia" },
+        { value: "SHOPEE", label: "Shopee" },
+        { value: "TOKOPEDIA", label: "Tokopedia" },
       ],
     },
     {
@@ -58,7 +58,7 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
       name: "deliveryPlaceId",
       options: [
         { value: "", label: "Semua" },
-        { value: "gudang-utama", label: "Gudang Utama" },
+        { value: "GUDANGUTAMA", label: "Gudang Utama" },
       ],
     },
     {
@@ -76,8 +76,8 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
       name: "paymentMethodId",
       options: [
         { value: "", label: "Semua" },
-        { value: "cash", label: "Cash" },
-        { value: "bank-transfer", label: "Transfer Bank" },
+        { value: "CASH", label: "Cash" },
+        { value: "BANKTRANSFER", label: "Transfer Bank" },
       ],
     },
   ];
@@ -124,7 +124,7 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
       paymentMethodId: "",
       search: "",
       sort: "",
-      order: "desc",
+      // order: "desc",
     };
 
     setFilter(defaultFilter);

@@ -63,7 +63,7 @@ export default function AllOrderPage() {
   paymentMethodId: "",
   search: "",
   sort: "",
-  order: "desc",
+  // order: "desc",
 });
 
 
