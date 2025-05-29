@@ -16,8 +16,13 @@ import {
   Province,
   Village,
 } from "../../../service/region";
-import { createCustomer } from "../../../service/customer";
+import {
+  createCustomer,
+  detailCustomer,
+  editCustomer,
+} from "../../../service/customer";
 import toast, { Toaster } from "react-hot-toast";
+import { useParams } from "react-router";
 
 type FormCustomer = {
   category: string;
@@ -36,8 +41,7 @@ const optionsCustomers = [
   { value: "customer", label: "Customer" },
   { value: "reseller", label: "Reseller" },
   { value: "agent", label: "Agent" },
-  { value: "member", label: "Member" },
-  { value: "dropshiper", label: "Dropshiper" },
+  { value: "dropshipper", label: "Dropshiper" },
 ];
 
 export default function FormCustomer() {
@@ -59,6 +63,7 @@ export default function FormCustomer() {
     address: "",
   });
 
+  const [categoryUser, setCategoryUser] = useState("");
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
@@ -69,8 +74,36 @@ export default function FormCustomer() {
     districts: false,
     villages: false,
   });
-
   console.log(isLoading);
+
+  const { id } = useParams();
+  useEffect(() => {
+    if (id) {
+      const getDetailCostumer = async () => {
+        const data = await detailCustomer(id);
+        const customerDetail = data.responseObject;
+        console.log(customerDetail);
+        if (customerDetail) {
+          setFormData((prev) => ({
+            ...prev,
+            id: customerDetail.id,
+            name: customerDetail.name,
+            phoneNumber:customerDetail.phoneNumber,
+            category: customerDetail.category.toLowerCase(),
+            provinceName: customerDetail.province,
+            cityName: customerDetail.city,
+            districtName: customerDetail.district,
+            villageName: customerDetail.village,
+            postalCode: customerDetail.postalCode,
+            email: customerDetail.email,
+            address: customerDetail.address,
+          }));
+          setCategoryUser(customerDetail.category.toLowerCase());
+        }
+      };
+      getDetailCostumer();
+    }
+  }, [id]);
   useEffect(() => {
     async function fetchProvinces() {
       setIsLoading((prev) => ({ ...prev, provinces: true }));
@@ -98,6 +131,7 @@ export default function FormCustomer() {
       }));
 
       const response = await getCities(formData.provinceId);
+      console.log(response);
       if (response.success && response.responseObject) {
         setCities(response.responseObject as City[]);
       }
@@ -129,14 +163,11 @@ export default function FormCustomer() {
     async function fetchVillages() {
       if (!formData.districtId) return;
 
-      console.log("FORM DATA DISTRIK", formData.districtId);
-
       setIsLoading((prev) => ({ ...prev, villages: true }));
       setVillages([]);
       setFormData((prev) => ({ ...prev, villageId: "" }));
 
       const response = await getVillages(formData.districtId);
-      console.log("hasil Data Desa", response);
       if (response.success && response.responseObject) {
         setVillages(response.responseObject as Village[]);
       }
@@ -171,38 +202,72 @@ export default function FormCustomer() {
       //   updatedAt: new Date().toISOString(),
     };
 
-    createCustomer(payload)
-      .then((response) => {
-        if (response.success) {
-          console.log("Customer berhasil ditambahkan");
-          toast.success("Customer berhasil ditambahkan");
-          setFormData({
-            id: "",
-            name: "",
-            category: "",
-            address: "",
-            provinceId: "",
-            provinceName: "",
-            cityId: "",
-            cityName: "",
-            districtId: "",
-            districtName: "",
-            villageId: "",
-            villageName: "",
-            postalCode: "",
-            phoneNumber: "",
-            email: "",
-          });
-          // Redirect ke halaman customer setelah berhasil menambahkan
-          window.location.href = "/customer";
-        } else {
-          toast.error("Customer gagal ditambahkan");
-          console.error("Gagal menambahkan customer:", response.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error saat menambahkan customer:", error);
-      });
+    // For Edit Data
+    if (id) {
+      editCustomer(id, payload)
+        .then((response) => {
+          if (response.success) {
+            toast.success("Customer berhasil diPerbarui");
+            setFormData({
+              id: "",
+              name: "",
+              category: "",
+              address: "",
+              provinceId: "",
+              provinceName: "",
+              cityId: "",
+              cityName: "",
+              districtId: "",
+              districtName: "",
+              villageId: "",
+              villageName: "",
+              postalCode: "",
+              phoneNumber: "",
+              email: "",
+            });
+            // Redirect ke halaman customer setelah berhasil menambahkan
+            window.location.href = "/customer";
+          } else {
+            toast.error("Customer gagal diperbarui");
+            console.error("Gagal menambahkan customer:", response.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error saat menambahkan customer:", error);
+        });
+    } else {
+      createCustomer(payload)
+        .then((response) => {
+          if (response.success) {
+            toast.success("Customer berhasil ditambahkan");
+            setFormData({
+              id: "",
+              name: "",
+              category: "",
+              address: "",
+              provinceId: "",
+              provinceName: "",
+              cityId: "",
+              cityName: "",
+              districtId: "",
+              districtName: "",
+              villageId: "",
+              villageName: "",
+              postalCode: "",
+              phoneNumber: "",
+              email: "",
+            });
+            // Redirect ke halaman customer setelah berhasil menambahkan
+            window.location.href = "/customer";
+          } else {
+            toast.error("Customer gagal ditambahkan");
+            console.error("Gagal menambahkan customer:", response.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error saat menambahkan customer:", error);
+        });
+    }
   };
 
   return (
@@ -214,6 +279,7 @@ export default function FormCustomer() {
             <div className="flex-1/3">
               <Label>Kategori Customer</Label>
               <Select
+                defaultValue={categoryUser}
                 options={optionsCustomers}
                 placeholder="Pilih Kategori Customer"
                 onChange={(val) => handleChange("category", val)}
@@ -319,6 +385,7 @@ export default function FormCustomer() {
             <div className="flex-1/3">
               <Label>Kode Pos</Label>
               <Input
+                value={formData.postalCode}
                 type="number"
                 id="inputTwo"
                 placeholder="99102"
@@ -334,6 +401,7 @@ export default function FormCustomer() {
                 id="inputTwo"
                 placeholder="my@gmail.com"
                 min="0"
+                value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
               />
@@ -342,6 +410,7 @@ export default function FormCustomer() {
             <div className="w-full">
               <Label>No Telepon</Label>
               <Input
+                value={formData.phoneNumber}
                 type="number"
                 id="inputTwo"
                 placeholder="0897662516"
@@ -354,6 +423,7 @@ export default function FormCustomer() {
             <div className="flex-auto">
               <Label>Alamat Lengkap</Label>
               <textarea
+                value={formData.address}
                 id="addres"
                 placeholder="JL Melati No 10 ...."
                 onChange={(e) => handleChange("address", e.target.value)}
@@ -362,7 +432,7 @@ export default function FormCustomer() {
             </div>
 
             <Button size="md" className="w-full" onClick={handleSubmit}>
-              Tambah Customer
+              {id ? "Edit Customer" : "Tambah Customer"}
             </Button>
           </div>
         </ComponentCard>

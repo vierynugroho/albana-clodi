@@ -6,7 +6,6 @@ interface ProtectedRouteProps {
 }
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const authUser = localStorage.getItem("token");
-
   if (!authUser) {
     return <Navigate to={"/signin"} replace />;
   } else {

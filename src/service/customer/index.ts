@@ -45,6 +45,32 @@ type ResponseSucces = {
   statusCode?: number;
 };
 
+type detailCustomer = {
+  address: string;
+  addressDetail: string | null;
+  category: " CUSTOMER | RESELLER | DROPSHIPPER | AGENT";
+  city: string;
+  createdAt: string;
+  updatedAt: string;
+  destinationId: number;
+  phoneNumber: string;
+  district: string;
+  village: string;
+  email: string;
+  id: string;
+  name: string;
+  postalCode: string;
+  province: string;
+  status: "ACTIVE | NONACTIVE";
+};
+
+type ResponseSuccesDetailCustomer = {
+  success: boolean;
+  message: string;
+  responseObject?: detailCustomer;
+  statusCode?: number;
+};
+
 export type FilterState = {
   category: "CUSTOMER | RESELLER | DROPSHIPPER | AGENT" | null | string;
   status: "ACTIVE | NONACTIVE" | null;
@@ -186,6 +212,71 @@ export async function deleteCustomer(id: string): Promise<ResponseSucces> {
     };
   } catch (error) {
     let message = "Terjadi kesalahan saat menghapus data customer";
+
+    console.log(error);
+    if (axios.isAxiosError(error)) {
+      message =
+        error.response?.data?.message ||
+        (error.request ? "Tidak dapat menghubungi server" : error.message);
+    } else {
+      message = (error as Error).message;
+    }
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
+export async function detailCustomer(
+  id: string
+): Promise<ResponseSuccesDetailCustomer> {
+  try {
+    const { data } = await axios.get(`${apiUrl}/customers/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return data;
+  } catch (error) {
+    let message = "Terjadi kesalahan saat menghapus data customer";
+
+    console.log(error);
+    if (axios.isAxiosError(error)) {
+      message =
+        error.response?.data?.message ||
+        (error.request ? "Tidak dapat menghubungi server" : error.message);
+    } else {
+      message = (error as Error).message;
+    }
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
+export async function editCustomer(
+  id: string,
+  customerData: NewCustomer
+): Promise<ResponseSucces> {
+  try {
+    const { data } = await axios.put(
+      `${apiUrl}/customers/${id}`,
+      customerData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log(data);
+    return data;
+  } catch (error) {
+    let message = "Terjadi kesalahan saat Edit customer";
 
     console.log(error);
     if (axios.isAxiosError(error)) {

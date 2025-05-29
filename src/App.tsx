@@ -67,7 +67,10 @@ export default function App() {
             <Route path="/produk" element={<AllProdukPage />} />
             <Route path="/produk/form_produk" element={<ProductFormPage />} />
             <Route path="/produk/edit/:id" element={<ProductFormPage />} />
-            <Route path="/produk/detail_produk/:id" element={<DetailProduCtPage />} />
+            <Route
+              path="/produk/detail_produk/:id"
+              element={<DetailProduCtPage />}
+            />
             <Route
               path="/produk/barcode_sku"
               element={<PrintProductBarcode />}
@@ -83,6 +86,7 @@ export default function App() {
               path="/customer/form_customer"
               element={<CustomerFormPage />}
             />
+            <Route path="/customer/edit/:id" element={<CustomerFormPage />} />
 
             {/* Report Page */}
             <Route path="/report" element={<AllReportPage />} />

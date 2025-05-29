@@ -25,6 +25,7 @@ export async function login(credentials: {
     const { token, user } = response.data.responseObject;
 
     localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
 
     return {
       success: true,
