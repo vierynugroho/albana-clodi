@@ -158,6 +158,7 @@ export default function AddOrderFomPage() {
         detail: {
           otherFees: {
             // packaging: 5000,
+            installment : nominalPayment,
             insurance: insurance,
             weight: ongkirDiscountValue,
             shippingCost: shippingCost,

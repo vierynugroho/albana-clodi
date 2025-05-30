@@ -12,6 +12,7 @@ export interface OrderPayload {
     detail: {
       code?: string;
       otherFees?: {
+        installment?: number;
         packaging?: number;
         insurance?: number;
         weight?: number;
