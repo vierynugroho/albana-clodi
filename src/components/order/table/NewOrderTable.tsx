@@ -7,7 +7,8 @@ import {
 } from "../../ui/table";
 
 export default function NewOrderTable() {
-  const orders = []; // Ganti dengan data order Anda
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const orders: any[] = []; // Ganti dengan data order Anda
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] mt-5">

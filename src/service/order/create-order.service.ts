@@ -17,9 +17,7 @@ import {
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwYjJhN2FlLTAzZjgtNDU3Yy04NmM4LTIzNWEyMmY1MTc5NSIsImlhdCI6MTc0ODQ4OTcyOCwiZXhwIjoxNzQ4NTc2MTI4fQ.K9SEJJh_2AtpxAjM_ZO9gJzN6FkglWwqBzQ9XPuXYyI";
-
+const token = localStorage.getItem('token');
 export const postOrder = async (data: OrderPayload) => {
   try {
     const response = await axios.post(`${apiUrl}/orders`, data, {
@@ -181,5 +179,26 @@ export const calculateShippingCost = async (
   } catch (error) {
     console.error("Failed to calculate shipping cost:", error);
     throw new Error("Failed to calculate shipping cost");
+  }
+};
+
+// cancel order 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const cancelOrder = async (orderId: string): Promise<any> => {
+  try {
+    const response = await axios.patch(
+      `${apiUrl}/orders/${orderId}/cancel`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Gagal membatalkan order:", error);
+    throw error?.response?.data || error;
   }
 };

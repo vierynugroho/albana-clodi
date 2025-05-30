@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ReactDOM from "react-dom";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import {
@@ -7,7 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { useEffect, useState } from "react";
+import {
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+  useEffect,
+  useState,
+} from "react";
 import { getOrderById, OrderItem } from "../../../service/order";
 
 type Props = {
@@ -29,7 +38,7 @@ export default function ModalRiwayatTran({ changeModal, orderId }: Props) {
       setLoading(false);
 
       if (result.success) {
-        setOrderDetail(result.responseObject); // Asumsi ini objek OrderItem
+        setOrderDetail((result.responseObject as unknown as OrderItem) ?? null);
       } else {
         setError(result.message);
       }
@@ -38,7 +47,7 @@ export default function ModalRiwayatTran({ changeModal, orderId }: Props) {
     fetchData();
   }, [orderId]);
 
-  const paymentHistory = orderDetail?.paymentHistory ?? [];
+  const paymentHistory = orderDetail;
 
   return ReactDOM.createPortal(
     <div className="fixed z-[100000] inset-0 overflow-y-auto">
@@ -52,7 +61,8 @@ export default function ModalRiwayatTran({ changeModal, orderId }: Props) {
             <button
               onClick={changeModal}
               className="text-gray-400 hover:text-gray-700"
-              aria-label="Close modal">
+              aria-label="Close modal"
+            >
               <IoIosCloseCircleOutline size={30} />
             </button>
           </div>
@@ -62,68 +72,169 @@ export default function ModalRiwayatTran({ changeModal, orderId }: Props) {
           {loading && <p className="mb-5">Loading...</p>}
           {error && <p className="text-red-600">{error}</p>}
 
-          {!loading && !error && paymentHistory.length > 0 && (
-            <div className="space-y-3 mb-7">
-              <Table>
-                <TableHeader className="border-b border-gray-100 bg-gray-200 dark:bg-black dark:border-white/[0.05]">
-                  <TableRow>
-                    <TableCell
-                      isHeader
-                      className="px-2 py-2 font-semibold text-black text-start text-theme-md dark:text-gray-400">
-                      Tanggal
-                    </TableCell>
-                    <TableCell
-                      isHeader
-                      className="px-2 py-2 font-semibold text-black text-start text-theme-md dark:text-gray-400">
-                      Bank
-                    </TableCell>
-                    <TableCell
-                      isHeader
-                      className="px-2 py-2 font-semibold text-black text-start text-theme-md dark:text-gray-400">
-                      Nominal
-                    </TableCell>
-                    <TableCell
-                      isHeader
-                      className="px-2 py-2 font-semibold text-black text-start text-theme-md dark:text-gray-400">
-                      Status
-                    </TableCell>
-                  </TableRow>
-                </TableHeader>
-
-                <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {paymentHistory.map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="px-2 py-4 text-black text-start text-theme-md dark:text-gray-400">
-                        {new Date(item.updatedAt).toISOString().slice(0, 10)}
+          {!loading &&
+            !error &&
+            paymentHistory &&
+            paymentHistory.length > 0 && (
+              <div className="space-y-3 mb-7">
+                <Table>
+                  <TableHeader className="border-b border-gray-100 bg-gray-200 dark:bg-black dark:border-white/[0.05]">
+                    <TableRow>
+                      <TableCell
+                        isHeader
+                        className="px-2 py-2 font-semibold text-black text-start text-theme-md dark:text-gray-400"
+                      >
+                        Tanggal
                       </TableCell>
-                      <TableCell className="px-2 py-4 text-black text-start text-theme-md dark:text-gray-400">
-                        {item.bankName}-{item.accountNumber}
+                      <TableCell
+                        isHeader
+                        className="px-2 py-2 font-semibold text-black text-start text-theme-md dark:text-gray-400"
+                      >
+                        Bank
                       </TableCell>
-                      <TableCell className="px-2 py-4 text-black text-start text-theme-md dark:text-gray-400">
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 0,
-                        }).format(item.nominal)}
+                      <TableCell
+                        isHeader
+                        className="px-2 py-2 font-semibold text-black text-start text-theme-md dark:text-gray-400"
+                      >
+                        Nominal
                       </TableCell>
-                      <TableCell className="px-2 py-4 text-black text-start text-theme-md dark:text-gray-400">
-                        <span className="bg-green-500 text-white text-theme-sm px-3 py-1.5 rounded-2xl">
-                          {item.status}
-                        </span>
+                      <TableCell
+                        isHeader
+                        className="px-2 py-2 font-semibold text-black text-start text-theme-md dark:text-gray-400"
+                      >
+                        Status
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
+                  </TableHeader>
 
-          {!loading && !error && paymentHistory.length === 0 && (
-            <p className="text-center text-gray-500 mb-5">
-              Detail Riwayat Transaksi Tidak Ditemukan
-            </p>
-          )}
+                  <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                    {paymentHistory.map(
+                      (
+                        item: {
+                          updatedAt: string | number | Date;
+                          bankName:
+                            | string
+                            | number
+                            | bigint
+                            | boolean
+                            | ReactElement<
+                                unknown,
+                                string | JSXElementConstructor<any>
+                              >
+                            | Iterable<ReactNode>
+                            | ReactPortal
+                            | Promise<
+                                | string
+                                | number
+                                | bigint
+                                | boolean
+                                | ReactPortal
+                                | ReactElement<
+                                    unknown,
+                                    string | JSXElementConstructor<any>
+                                  >
+                                | Iterable<ReactNode>
+                                | null
+                                | undefined
+                              >
+                            | null
+                            | undefined;
+                          accountNumber:
+                            | string
+                            | number
+                            | bigint
+                            | boolean
+                            | ReactElement<
+                                unknown,
+                                string | JSXElementConstructor<any>
+                              >
+                            | Iterable<ReactNode>
+                            | ReactPortal
+                            | Promise<
+                                | string
+                                | number
+                                | bigint
+                                | boolean
+                                | ReactPortal
+                                | ReactElement<
+                                    unknown,
+                                    string | JSXElementConstructor<any>
+                                  >
+                                | Iterable<ReactNode>
+                                | null
+                                | undefined
+                              >
+                            | null
+                            | undefined;
+                          nominal: number | bigint;
+                          status:
+                            | string
+                            | number
+                            | bigint
+                            | boolean
+                            | ReactElement<
+                                unknown,
+                                string | JSXElementConstructor<any>
+                              >
+                            | Iterable<ReactNode>
+                            | ReactPortal
+                            | Promise<
+                                | string
+                                | number
+                                | bigint
+                                | boolean
+                                | ReactPortal
+                                | ReactElement<
+                                    unknown,
+                                    string | JSXElementConstructor<any>
+                                  >
+                                | Iterable<ReactNode>
+                                | null
+                                | undefined
+                              >
+                            | null
+                            | undefined;
+                        },
+                        index: Key | null | undefined
+                      ) => (
+                        <TableRow key={index}>
+                          <TableCell className="px-2 py-4 text-black text-start text-theme-md dark:text-gray-400">
+                            {new Date(item.updatedAt)
+                              .toISOString()
+                              .slice(0, 10)}
+                          </TableCell>
+                          <TableCell className="px-2 py-4 text-black text-start text-theme-md dark:text-gray-400">
+                            {item.bankName}-{item.accountNumber}
+                          </TableCell>
+                          <TableCell className="px-2 py-4 text-black text-start text-theme-md dark:text-gray-400">
+                            {new Intl.NumberFormat("id-ID", {
+                              style: "currency",
+                              currency: "IDR",
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 0,
+                            }).format(item.nominal)}
+                          </TableCell>
+                          <TableCell className="px-2 py-4 text-black text-start text-theme-md dark:text-gray-400">
+                            <span className="bg-green-500 text-white text-theme-sm px-3 py-1.5 rounded-2xl">
+                              {item.status}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+          {!loading &&
+            !error &&
+            paymentHistory &&
+            paymentHistory.length === 0 && (
+              <p className="text-center text-gray-500 mb-5">
+                Detail Riwayat Transaksi Tidak Ditemukan
+              </p>
+            )}
         </div>
       </div>
     </div>,

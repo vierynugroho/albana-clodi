@@ -293,9 +293,15 @@ export default function TableAddOrder({
         return isNaN(val) ? acc : acc + val;
       }, 0);
 
+      if (total < 1) {
+        discountOrder = {
+          value: 0,
+          type: "nominal",
+        };
+      }
       if (total > 0) {
         discountOrder = {
-          value: total,
+          value: total ?? 0,
           type: isPercent ? "percent" : "nominal",
         };
       }

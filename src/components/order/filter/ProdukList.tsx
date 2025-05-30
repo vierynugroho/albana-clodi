@@ -12,7 +12,7 @@ function ProductList() {
   const [search, setSearch] = useState("");
   const [jumlah, setJumlah] = useState(produkData.map(() => 1));
 
-  const handleJumlahChange = (index, delta) => {
+  const handleJumlahChange = (index: number, delta: number) => {
     setJumlah((prev) => {
       const baru = [...prev];
       baru[index] = Math.max(1, baru[index] + delta);
@@ -20,7 +20,7 @@ function ProductList() {
     });
   };
 
-  const handleTambah = (index) => {
+  const handleTambah = (index: number) => {
     alert(`Menambahkan ${jumlah[index]} x ${produkData[index].nama}`);
   };
 

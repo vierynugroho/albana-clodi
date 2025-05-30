@@ -11,7 +11,14 @@ export default function SearchOrder({
 }: Props) {
   return (
     <div className="relative">
-      <span className="absolute -translate-y-1/2 pointer-events-auto left-4 top-1/2">
+      <input
+        type="text"
+        placeholder="Cari Order Barang...."
+        value={keyword}
+        onChange={(e) => keywordChange(e.target.value)}
+        className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-4 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+      />
+      <span className="absolute -translate-y-1/2 pointer-events-auto right-4 top-1/2">
         <svg
           className="fill-gray-500 dark:fill-gray-400 cursor-pointer"
           width="20"
@@ -28,13 +35,6 @@ export default function SearchOrder({
           />
         </svg>
       </span>
-      <input
-        type="text"
-        placeholder="Cari Order Barang...."
-        value={keyword}
-        onChange={(e) => keywordChange(e.target.value)}
-        className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-10 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 md:pl-12"
-      />
     </div>
   );
 }

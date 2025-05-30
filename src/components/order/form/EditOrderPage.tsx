@@ -10,7 +10,6 @@ import Button from "../../ui/button/Button.tsx";
 import { IoIosSave } from "react-icons/io";
 import { useState } from "react";
 import ModalAddCustomer from "../modal/ModalAddcustomer.tsx";
-import PaymentSection from "../card/PaymentSection.tsx";
 import ShippingSection from "../card/ShippingSection.tsx";
 
 export default function EditOrderFomPage() {
@@ -28,7 +27,7 @@ export default function EditOrderFomPage() {
     },
   ];
 
-  const handleSelectChange = (field: string, value: string) => {
+  const handleSelectChange = () => {
     // setFilter((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -175,8 +174,6 @@ export default function EditOrderFomPage() {
             <ComponentCard title="Orderan">
               <TableAddOrder />
             </ComponentCard>
-
-            <PaymentSection />
             <ShippingSection />
 
             {/* Tombol Aksi */}

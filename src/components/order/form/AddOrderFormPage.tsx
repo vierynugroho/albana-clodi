@@ -132,13 +132,41 @@ export default function AddOrderFomPage() {
     setisEditingPenerima(true);
   };
 
-  const handleChangeOrder = useCallback((data) => {
-    setOrderProducts(data.orderProducts);
-    setShippingCost(data.shippingCost ?? {});
-    setDiscount(data.discountOrder ?? {});
-    setInsurance(data.insuranceValue);
-    setOngkirDiscountValue(data.ongkirDiscountValue);
-  }, []);
+  const handleChangeOrder = useCallback(
+    (data: {
+      orderProducts: {
+        productId: string;
+        productVariantId: string;
+        productQty: number;
+      }[];
+      shippingCost?: {
+        shippingService?: string;
+        cost?: number;
+        type?: string;
+        weight?: number;
+      };
+      discountOrder?: { value?: number; type?: "nominal" | "percent" } | null;
+      insuranceValue?: number;
+      ongkirDiscountValue?: number;
+    }) => {
+      setOrderProducts(data.orderProducts);
+      setShippingCost(
+        data.shippingCost
+          ? {
+              ...data.shippingCost,
+              weight:
+                data.shippingCost.weight !== undefined
+                  ? String(data.shippingCost.weight)
+                  : undefined,
+            }
+          : {}
+      );
+      setDiscount(data.discountOrder ? data.discountOrder : {});
+      setInsurance(data.insuranceValue);
+      setOngkirDiscountValue(data.ongkirDiscountValue);
+    },
+    []
+  );
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -158,7 +186,10 @@ export default function AddOrderFomPage() {
         detail: {
           otherFees: {
             // packaging: 5000,
-            installment : nominalPayment,
+            installment:
+              nominalPayment !== undefined && nominalPayment !== ""
+                ? Number(nominalPayment)
+                : undefined,
             insurance: insurance,
             weight: ongkirDiscountValue,
             shippingCost: shippingCost,
@@ -168,9 +199,7 @@ export default function AddOrderFomPage() {
         },
         paymentMethod: {
           id: selectedPaymentMethod?.id || "",
-          status: selectedPaymentStatus
-            ? PaymentStatus[selectedPaymentStatus]
-            : PaymentStatus.PENDING,
+          status: selectedPaymentStatus ?? "PENDING",
           date: paymentDate
             ? paymentDate.toISOString()
             : new Date().toISOString(),
@@ -417,8 +446,8 @@ export default function AddOrderFomPage() {
                   </span>
                 </div>
               </div>
-              {(selectedPaymentStatus === "INSTALLMENT" ||
-                selectedPaymentStatus === "PAID") && (
+              {(selectedPaymentStatus === "INSTALLMENTS" ||
+                selectedPaymentStatus === "SETTLEMENT") && (
                 <>
                   <div className="flex flex-col relative mb-4">
                     <Label className="font-semibold text-md">
@@ -454,7 +483,7 @@ export default function AddOrderFomPage() {
                 </>
               )}
 
-              {selectedPaymentStatus === "INSTALLMENT" && (
+              {selectedPaymentStatus === "INSTALLMENTS" && (
                 <div className="mb-4">
                   <Label className="font-semibold text-md">Nominal</Label>
                   <Input
@@ -466,8 +495,8 @@ export default function AddOrderFomPage() {
               )}
             </ComponentCard>
 
-            {(selectedPaymentStatus === "INSTALLMENT" ||
-              selectedPaymentStatus === "PAID") && (
+            {(selectedPaymentStatus === "INSTALLMENTS" ||
+              selectedPaymentStatus === "SETTLEMENT") && (
               <ComponentCard title="Shipping">
                 <div>
                   <label className="text-left font-semibold mb-1 block">

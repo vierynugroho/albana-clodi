@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
@@ -12,7 +13,6 @@ import FilterStatusOrder from "../../components/order/filter/FilterStatusOrder";
 import { DownloadIcon } from "../../icons";
 import { FaPlus } from "react-icons/fa6";
 import OptionDropdownOrder from "../../components/order/dropdown/OptionDropdownOrder";
-import FilterOrderDropdown from "../../components/order/filter/FilterOrderDropdown";
 import OrderToolbar from "../../components/order/orderToolbar";
 import { getOrders, OrderItem } from "../../service/order/index";
 
@@ -36,9 +36,8 @@ export type FilterState = {
   order?: "asc" | "desc";
 };
 
-
 export default function AllOrderPage() {
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
@@ -46,97 +45,117 @@ export default function AllOrderPage() {
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
 
- const [filterOrder, setFilterOrder] = useState<FilterState>({
-  ordererCustomerId: "",
-  deliveryTargetCustomerId: "",
-  salesChannelId: "",
-  deliveryPlaceId: "",
-  orderDate: "",
-  orderStatus: "",
-  orderMonth: "",
-  orderYear: "",
-  startDate: "",
-  endDate: "",
-  customerCategory: "",
-  paymentStatus: "",
-  productId: "",
-  paymentMethodId: "",
-  search: "",
-  sort: "",
-  // order: "desc",
-});
-
+  const [filterOrder, setFilterOrder] = useState<FilterState>({
+    ordererCustomerId: "",
+    deliveryTargetCustomerId: "",
+    salesChannelId: "",
+    deliveryPlaceId: "",
+    orderDate: "",
+    orderStatus: "",
+    orderMonth: "",
+    orderYear: "",
+    startDate: "",
+    endDate: "",
+    customerCategory: "",
+    paymentStatus: "",
+    productId: "",
+    paymentMethodId: "",
+    search: "",
+    sort: "",
+    order: "desc",
+  });
 
   const location = useLocation();
   const navigate = useNavigate();
 
-const handleSearchAndFilter = useCallback(
-  (keyword: string, filter: FilterState) => {
-    const params = new URLSearchParams();
+  const handleSearchAndFilter = useCallback(
+    (keyword: string, filter: FilterState) => {
+      const params = new URLSearchParams();
 
-    if (keyword) params.set("search", keyword.toLowerCase());
+      if (keyword) params.set("search", keyword.toLowerCase());
 
-    Object.entries(filter).forEach(([key, value]) => {
-      if (value) params.set(key, value);
-    });
+      Object.entries(filter).forEach(([key, value]) => {
+        if (value && value !== "") {
+          params.set(key, value);
+        }
+      });
 
-    navigate(`?${params.toString()}`);
-  },
-  [navigate]
-);
+      navigate(`?${params.toString()}`);
+    },
+    [navigate]
+  );
 
-useEffect(() => {
-  async function fetchFilteredOrders() {
-    setLoading(true);
-    const params = new URLSearchParams(location.search);
+  const handleStatusChange = (status: string) => {
+    setSelectedStatuses(status);
 
-    const filterFromURL: FilterState = {
-      ordererCustomerId: params.get("ordererCustomerId") || "",
-      deliveryTargetCustomerId: params.get("deliveryTargetCustomerId") || "",
-      salesChannelId: params.get("salesChannelId") || "",
-      deliveryPlaceId: params.get("deliveryPlaceId") || "",
-      orderDate: params.get("orderDate") || "",
-      orderStatus: params.get("orderStatus") || "",
-      orderMonth: params.get("orderMonth") || "",
-      orderYear: params.get("orderYear") || "",
-      startDate: params.get("startDate") || "",
-      endDate: params.get("endDate") || "",
-      customerCategory: params.get("customerCategory") || "",
-      paymentStatus: params.get("paymentStatus") || "",
-      productId: params.get("productId") || "",
-      paymentMethodId: params.get("paymentMethodId") || "",
-      search: params.get("search") || "",
-      sort: params.get("sort") || "",
-      order: (params.get("order") as "asc" | "desc") || "desc",
+    const newFilter = {
+      ...filterOrder,
+      paymentStatus: status || "",
     };
 
-    setFilterOrder(filterFromURL);
-    const result = await getOrders(filterFromURL);
+    setFilterOrder(newFilter);
+    handleSearchAndFilter(keyword, newFilter);
+  };
 
-    if (result.success && Array.isArray(result.responseObject)) {
-      setOrders(result.responseObject);
-    } else {
-      setOrders([]);
+  useEffect(() => {
+    async function fetchFilteredOrders() {
+      setLoading(true);
+      const params = new URLSearchParams(location.search);
+
+      const filterFromURL: FilterState = {
+        ordererCustomerId: params.get("ordererCustomerId") || "",
+        deliveryTargetCustomerId: params.get("deliveryTargetCustomerId") || "",
+        salesChannelId: params.get("salesChannelId") || "",
+        deliveryPlaceId: params.get("deliveryPlaceId") || "",
+        orderDate: params.get("orderDate") || "",
+        orderStatus: params.get("orderStatus") || "",
+        orderMonth: params.get("orderMonth") || "",
+        orderYear: params.get("orderYear") || "",
+        startDate: params.get("startDate") || "",
+        endDate: params.get("endDate") || "",
+        customerCategory: params.get("customerCategory") || "",
+        paymentStatus: params.get("paymentStatus") || "",
+        productId: params.get("productId") || "",
+        paymentMethodId: params.get("paymentMethodId") || "",
+        search: params.get("search") || "",
+        sort: params.get("sort") || "",
+        order: (params.get("order") as "asc" | "desc") || "desc",
+      };
+
+      setFilterOrder(filterFromURL);
+      setSelectedStatuses(filterFromURL.paymentStatus || "");
+
+      // Hanya kirim properti yang ada nilainya
+      const filteredParams = Object.fromEntries(
+        Object.entries(filterFromURL).filter(
+          ([_, value]) => value !== "" && value !== undefined
+        )
+      );
+
+      const result = await getOrders(filteredParams);
+
+      if (result.success && Array.isArray(result.responseObject)) {
+        setOrders(result.responseObject);
+      } else {
+        setOrders([]);
+      }
+
+      setLoading(false);
     }
 
-    setLoading(false);
-  }
+    fetchFilteredOrders();
+  }, [location.search, setLoading]);
 
-  fetchFilteredOrders();
-}, [location.search]);
-
-
-useEffect(() => {
-  if (!location.search) {
-    const savedFilter = localStorage.getItem("orderFilter");
-    if (savedFilter) {
-      const parsedFilter: FilterState = JSON.parse(savedFilter);
-      setFilterOrder(parsedFilter);
-      handleSearchAndFilter(keyword, parsedFilter);
+  useEffect(() => {
+    if (!location.search) {
+      const savedFilter = localStorage.getItem("orderFilter");
+      if (savedFilter) {
+        const parsedFilter: FilterState = JSON.parse(savedFilter);
+        setFilterOrder(parsedFilter);
+        handleSearchAndFilter(keyword, parsedFilter);
+      }
     }
-  }
-}, [handleSearchAndFilter, keyword, location.search]);
-
+  }, [handleSearchAndFilter, keyword, location.search]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -150,7 +169,7 @@ useEffect(() => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [setIsMobile]);
 
   return (
     <div>
@@ -163,19 +182,19 @@ useEffect(() => {
 
       <div className="py-2 bg-gray-50">
         <div
-          className={`flex flex-wrap gap-2 ${window.innerWidth <= 768 ? "overflow-x-auto" : ""
-            }`}>
+          className={`flex flex-wrap gap-2 ${
+            window.innerWidth <= 768 ? "overflow-x-auto" : ""
+          }`}
+        >
           <FilterStatusOrder
+            onChange={handleStatusChange}
             selectedStatuses={selectedStatuses}
-            onChange={setSelectedStatuses}
           />
         </div>
 
         {/* Search and Filter Row */}
         <div className="flex flex-wrap items-center gap-2 mb-4 mt-3">
-          <div className="relative">
-            <FilterOrderDropdown />
-          </div>
+          <div className="relative">{/* <FilterOrderDropdown /> */}</div>
           <div className="flex-1">
             <SearchOrder
               onSearch={() => handleSearchAndFilter(keyword, filterOrder)}
@@ -190,7 +209,8 @@ useEffect(() => {
                   size="md"
                   variant="primary"
                   className="flex-1"
-                  startIcon={<FaPlus className="size-5 text-white" />}>
+                  startIcon={<FaPlus className="size-5 text-white" />}
+                >
                   Tambah Order
                 </Button>
               </div>
@@ -199,14 +219,16 @@ useEffect(() => {
               size="md"
               variant="outline"
               startIcon={<TbFilterDiscount className="size-5 text-blue-700" />}
-              onClick={() => setFilter((prev) => !prev)}>
+              onClick={() => setFilter((prev) => !prev)}
+            >
               Filter
             </Button>
 
             <Button
               size="md"
               variant="outline"
-              startIcon={<DownloadIcon className="size-5 text-blue-700" />}>
+              startIcon={<DownloadIcon className="size-5 text-blue-700" />}
+            >
               Download
             </Button>
             <OptionDropdownOrder />
@@ -228,11 +250,6 @@ useEffect(() => {
               {orders.length} order ditemukan
             </p>
             <div className="flex justify-between items-center bg-white p-3.5 rounded-lg">
-              <p className="text-md font-light">
-                Sisa kuota order:{" "}
-                <span className="text-green-600 font-semibold">826</span>
-              </p>
-              <span className="text-gray-400 mx-2">|</span>
               <Link to="/profile">
                 <span className="text-blue-600 text-md font-semibold">
                   Lihat Detail
@@ -242,7 +259,18 @@ useEffect(() => {
           </div>
         </div>
         <div className="mb-6">
-          <OrderCard orders={orders} />
+          {loading ? (
+            <div className="text-center py-10">
+              {" "}
+              <div
+                className={`flex flex-wrap gap-2 ${
+                  isMobile ? "overflow-x-auto" : ""
+                }`}
+              ></div>
+            </div>
+          ) : (
+            <OrderCard orders={orders} />
+          )}
         </div>
         <OrderToolbar />
       </div>

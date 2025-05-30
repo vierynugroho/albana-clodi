@@ -31,7 +31,7 @@ export interface OrderPayload {
     };
     paymentMethod?: {
       id?: string;
-      status: PaymentStatus;
+      status: string;
       date?: string;
     };
     orderProducts: {
@@ -59,8 +59,8 @@ export interface OrderPayload {
 // enum 
 export enum PaymentStatus {
   PENDING = "Belum Bayar",
-  INSTALLMENT = "Cicilan",
-  PAID = "Lunas",
+  INSTALLMENTS = "Cicilan",
+  SETTLEMENT = "Lunas",
 }
 
 

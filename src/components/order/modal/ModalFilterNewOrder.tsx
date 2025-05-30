@@ -70,7 +70,7 @@ export default function ModalFilterNewOrder({ changeModal }: Props) {
                 </Label>
                 <Select
                   options={StatusPaymentOptions}
-                  onChange={""}
+                  onChange={() => {}}
                   placeholder="Pilih Pengirim"
                   className="w-full h-10 pr-10 rounded-md border border-gray-300 dark:bg-dark-900"
                 />
@@ -95,7 +95,7 @@ export default function ModalFilterNewOrder({ changeModal }: Props) {
                 </Label>
                 <Select
                   options={UserOptions}
-                  onChange={""}
+                  onChange={() => {}}
                   placeholder="Pilih Kategori Pemesan"
                   className="w-full h-10 pr-10 rounded-md border border-gray-300 dark:bg-dark-900"
                 />
@@ -120,7 +120,7 @@ export default function ModalFilterNewOrder({ changeModal }: Props) {
                 </Label>
                 <Select
                   options={SalesChannelOptions}
-                  onChange={""}
+                  onChange={() => {}}
                   placeholder="Pilih Kanal Penjualan"
                   className="w-full h-10 pr-10 rounded-md border border-gray-300 dark:bg-dark-900"
                 />
