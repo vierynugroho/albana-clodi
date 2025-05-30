@@ -1,14 +1,34 @@
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import MonthlyGrossProfitChart from "../../components/ecommerce/MonthlyGrossProfitChart";
-import StatisticSalersChart from "../../components/ecommerce/StatisticsSalerChart";
 // import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
 // import RecentOrders from "../../components/ecommerce/RecentOrders";
 // import DemographicCard from "../../components/ecommerce/DemographicCard";
 import PageMeta from "../../components/common/PageMeta";
 import SliderDashboard from "../../components/Carausel/SliderDasboard.";
 import SectionDasboard from "./SectionDasboard";
+import ProductSoldChart from "../../components/laporan/SalesChart";
+import { useEffect, useState } from "react";
+import { ProductSold, ProductSolds } from "../../service/report";
+import toast from "react-hot-toast";
 
 export default function Home() {
+  const [productSold, setProductSold] = useState<ProductSold | null>(null);
+  const [totalProductSold, setTotalProductSold] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchProductSold = async () => {
+      const resultProduct = await ProductSolds();
+      if (resultProduct.success && resultProduct.responseObject) {
+        setProductSold(resultProduct.responseObject.produk_terjual_per_hari);
+        setTotalProductSold(resultProduct.responseObject.totalProductsSold);
+      } else {
+        toast.error(resultProduct.message, {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      }
+    };
+    fetchProductSold();
+  }, []);
   return (
     <>
       <PageMeta title="ALBANA GROSIR" description="Dashboard" />
@@ -31,7 +51,12 @@ export default function Home() {
               <MonthlyGrossProfitChart />
             </div>
             <div className="col-span-12">
-              <StatisticSalersChart />
+              <ProductSoldChart
+                productsSold={productSold}
+                totalProductsSold={totalProductSold}
+                year={null}
+                month={null}
+              />
             </div>
           </div>
         </div>

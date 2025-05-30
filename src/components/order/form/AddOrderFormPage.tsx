@@ -55,6 +55,7 @@ export default function AddOrderFomPage() {
           <ComponentCard title="Informasi Order" className="max-h-8/12">
             <div className="space-y-6">
               <div>
+                {/* Slicing Informasi Order */}
                 <Label htmlFor="namaPemesan" className="font-semibold text-md">
                   Nama Pemesan
                 </Label>

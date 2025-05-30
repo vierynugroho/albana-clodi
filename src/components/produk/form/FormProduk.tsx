@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ComponentCard from "../../common/ComponentCard";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
@@ -17,11 +17,21 @@ import {
   ProductVariant,
 } from "../../../service/product";
 import { useParams } from "react-router";
+import {
+  CategoryProduct,
+  getCategories,
+} from "../../../service/product/category";
+import toast, { Toaster } from "react-hot-toast";
 
 type SwichStatesType = {
   varian: boolean;
   diskon: boolean;
   grosir: boolean;
+};
+
+type CategoriesProduct = {
+  value: string;
+  label: string;
 };
 
 const defaultVariant = (): ProductVariant => ({
@@ -46,22 +56,8 @@ const options = [
   { value: "BARANG_PRE_ORDER", label: "Barang Pre-Order" },
 ];
 
-const categoryProducts = [
-  {
-    value: "ae24719a-4ceb-4104-b768-a5e88aff6bbc",
-    label: "Elektronik",
-  },
-  {
-    value: "d290f1ee-6c54-4b01-90e6-d701748f0851",
-    label: "Kemeja",
-  },
-  {
-    value: "5c9d8a34-3a71-4de1-9b8a-fb0dc9f9e1cc",
-    label: "Hoodie",
-  },
-];
-
 export default function FormProduk() {
+  const categoryProducts = useRef<CategoriesProduct[]>([]);
   const { id } = useParams(); //ID Edit Product
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [switchStates, setSwitchStates] = useState<SwichStatesType>({
@@ -71,11 +67,13 @@ export default function FormProduk() {
   });
   const [categoryId, setCategoryId] = useState<string>("");
   console.log(categoryId);
+
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productWeight, setProductWeight] = useState(0);
   const [varian, setVarian] = useState<ProductVariant[]>([defaultVariant()]);
   const [diskon, setDiskon] = useState("");
+  const [diskonId, setDiskonId] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -137,9 +135,10 @@ export default function FormProduk() {
         type: selectedValue,
         isPublish: true,
         weight: productWeight,
-        // categoryId,
+        categoryId,
       },
       productDiscount: {
+        id: diskonId,
         type: "PERCENTAGE",
         value: Number(diskon),
       },
@@ -149,8 +148,13 @@ export default function FormProduk() {
       const result = await editProduct(payload, id);
       setLoading(false);
       if (result.success) {
-        console.log("Berhasil:", result.message);
+        toast.success("Berhasil Memperbarui Produk", {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
       } else {
+        toast.error("Terjadi Kesalahan Edit Produk", {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
         setError(result.message);
       }
     }
@@ -158,29 +162,50 @@ export default function FormProduk() {
 
   // Get Detail Produk When Id Exist
   useEffect(() => {
+    async function fetchCategoryProduts() {
+      const categories = await getCategories();
+
+      categoryProducts.current =
+        categories.responseObject?.map((val: CategoryProduct) => ({
+          value: val.id,
+          label: val.name,
+        })) || [];
+    }
+
     async function fetchDetailProduct() {
       if (id) {
         const result = await getDetailProduct(id);
 
         if (result.success && result.responseObject) {
           const diskonValue = result.responseObject.ProductDiscount?.[0]?.value;
+          const diskonId = result.responseObject.ProductDiscount?.[0]?.id;
           setProductName(result.responseObject?.name);
           setSelectedValue(result.responseObject.type);
           setProductDescription(result.responseObject.description);
           setProductWeight(result.responseObject.weight);
+          setCategoryId(
+           result.responseObject.categoryId ?  result.responseObject.categoryId :''
+          );
           setDiskon(
             diskonValue !== undefined && diskonValue !== null
               ? String(diskonValue)
               : ""
           );
+          setDiskonId(
+            diskonId !== undefined && diskonValue !== null
+              ? String(diskonId)
+              : ""
+          );
           setVarian(result.responseObject.productVariants);
         }
+        console.log(result);
       } else {
         return;
       }
     }
+    fetchCategoryProduts();
     fetchDetailProduct();
-  }, [id]);
+  }, [id, categoryProducts]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -192,7 +217,7 @@ export default function FormProduk() {
         type: selectedValue,
         isPublish: true,
         weight: productWeight,
-        // categoryId,
+        categoryId,
       },
       productDiscount: {
         type: "PERCENTAGE",
@@ -202,15 +227,22 @@ export default function FormProduk() {
     };
     const result = await createProduct(payload);
     setLoading(false);
+
     if (result.success) {
-      console.log("Berhasil:", result.message);
+      toast.success("Berhasil Membuat Produk", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
     } else {
+      toast.error("Terjadi Kesalahan Membuat Produk", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
       setError(result.message);
     }
   };
 
   return (
     <div>
+      <Toaster />
       <div className="flex gap-4 max-xl:flex-col">
         <div className="flex flex-col gap-y-5">
           <ComponentCard title="Informasi Produk" className="md:min-w-[780px]">
@@ -228,7 +260,8 @@ export default function FormProduk() {
               <div>
                 <Label>Kategori</Label>
                 <Select
-                  options={categoryProducts}
+                  defaultValue={categoryId ? categoryId : ""}
+                  options={categoryProducts.current}
                   placeholder="Pilih Kategori Produk"
                   onChange={handleSelectChange}
                   className="dark:bg-dark-900"
@@ -261,7 +294,7 @@ export default function FormProduk() {
                   <Label>Berat</Label>
                   <div className="relative">
                     <Input
-                      placeholder="Berat (kg)"
+                      placeholder="Berat (gr)"
                       type="number"
                       min="0"
                       className="pl-[62px] appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"

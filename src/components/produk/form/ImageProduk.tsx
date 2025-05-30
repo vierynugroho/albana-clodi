@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { ProductPrice, ProductVariant } from "./VarianProduk";
 
@@ -10,11 +10,16 @@ type DropzoneProps = {
     value: File,
     label: keyof ProductVariant | keyof ProductPrice
   ) => void;
+  imageUrl?: string;
 };
 
-const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
+const DropzoneComponent: React.FC<DropzoneProps> = ({
+  index,
+  onChange,
+  imageUrl,
+}) => {
   const [image, setImage] = useState<PreviewFile | null>(null);
-
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     const previewFile = Object.assign(file, {
@@ -34,8 +39,28 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
       "image/svg+xml": [],
     },
   });
+
+  useEffect(() => {
+    if (imageUrl) {
+      setPreviewImage(imageUrl);
+    }
+  }, [imageUrl]);
+  console.log(encodeURI(previewImage ? previewImage : ""));
   return (
-    <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500 w-40 h-full ">
+    <div className=" relative transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500 w-40 h-full ">
+      <button
+        type="button"
+        onClick={() => {
+          setImage(null);
+          setPreviewImage(null);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange(index, null as any, "imageUrl" as keyof ProductVariant);
+        }}
+        className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 z-10"
+      >
+        X
+      </button>
+
       <form
         {...getRootProps()}
         className={`dropzone rounded-xl border-dashed border-gray-300 p-7 lg:p-10
@@ -45,15 +70,15 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
             : "border-gray-300 bg-gray-200 dark:border-gray-700 dark:bg-gray-900"
         }
       `}
-        style={
-          image
-            ? {
-                backgroundImage: `url(${image.preview})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }
-            : {}
-        }
+        style={{
+          backgroundImage: image
+            ? `url("${image.preview}")`
+            : previewImage
+            ? `url("${encodeURI(previewImage)}")`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
         id="demo-upload"
       >
         {/* Hidden Input */}

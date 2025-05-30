@@ -7,7 +7,7 @@ import { FaLifeRing, FaPlaneDeparture } from "react-icons/fa";
 import { GiMoneyStack, GiProfit, GiTakeMyMoney } from "react-icons/gi";
 import { BiCalculator, BiSolidDiscount } from "react-icons/bi";
 import { LuPackageOpen } from "react-icons/lu";
-import StatisticsChart from "../../components/ecommerce/StatisticsSalerChart";
+// import StatisticsChart from "../../components/ecommerce/StatisticsSalerChart";
 import {
   getPaymentTransaction,
   getReport,
@@ -182,23 +182,13 @@ export default function AllReportPage() {
               <CardReport
                 icon={<LuPackageOpen size={30} />}
                 title="Ongkir"
-                result="Rp 1.052.000"
+                result="Rp 0"
                 iconColor="bg-cyan-100 text-cyan-600"
-              />
-              <CardReport
-                icon={<BiCalculator size={30} />}
-                title="Pengeluaran"
-                result={`Rp ${
-                  report?.reportExpenses?.totalExpenses.toLocaleString(
-                    "id-ID"
-                  ) ?? 0
-                }`}
-                iconColor="bg-red-100 text-red-600"
               />
               <CardReport
                 icon={<FaPlaneDeparture size={30} />}
                 title="Biaya Lain"
-                result="Rp 1.052.000"
+                result="Rp 0"
                 iconColor="bg-blue-100 text-blue-600"
               />
             </div>
@@ -214,9 +204,9 @@ export default function AllReportPage() {
               year={year}
             />
           </div>
-          <div className="col-span-12">
+          {/* <div className="col-span-12">
             <StatisticsChart />
-          </div>
+          </div> */}
           <div className="col-span-12 xl:col-span-7">
             <PaymentTransactions data={paymentTransaction} />
           </div>

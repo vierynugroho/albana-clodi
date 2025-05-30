@@ -33,8 +33,10 @@ import AllExpense from "./pages/Expenses/Allexpense";
 import SettingPage from "./pages/SettingPage/SettingPage";
 import AddOrderFomPage from "./components/order/form/AddOrderFormPage";
 import UploadOrderPage from "./pages/Order/UploadOrderPage";
-import EditOrderFomPage from "./components/order/form/EditOrderPage";
-
+// import EditOrderFomPage from "./components/order/form/EditOrderPage";
+import DetailProduCtPage from "./pages/Produk/DetailProdukPage";
+import SupplierSettingForm from "./components/setting/form/SupplierSettingForm";
+import FormSettingAccount from "./components/setting/form/FormSeattingAccount";
 export default function App() {
   return (
     <>
@@ -47,8 +49,7 @@ export default function App() {
               <ProtectedRoute>
                 <AppLayout />
               </ProtectedRoute>
-            }
-          >
+            }>
             <Route index path="/" element={<Home />} />
 
             {/* Order Page */}
@@ -59,13 +60,17 @@ export default function App() {
             <Route path="/order/import_order" element={<UploadOrderPage />} />
             <Route
               path="/order/edit_order/:id"
-              element={<EditOrderFomPage />}
+              // element={<EditOrderFomPage />}
             />
 
             {/* Produk Page */}
             <Route path="/produk" element={<AllProdukPage />} />
             <Route path="/produk/form_produk" element={<ProductFormPage />} />
             <Route path="/produk/edit/:id" element={<ProductFormPage />} />
+            <Route
+              path="/produk/detail_produk/:id"
+              element={<DetailProduCtPage />}
+            />
             <Route
               path="/produk/barcode_sku"
               element={<PrintProductBarcode />}
@@ -81,6 +86,7 @@ export default function App() {
               path="/customer/form_customer"
               element={<CustomerFormPage />}
             />
+            <Route path="/customer/edit/:id" element={<CustomerFormPage />} />
 
             {/* Report Page */}
             <Route path="/report" element={<AllReportPage />} />
@@ -90,6 +96,14 @@ export default function App() {
 
             {/* Setting Page */}
             <Route path="/setting" element={<SettingPage />} />
+            <Route
+              path="/setting/form_supplier"
+              element={<SupplierSettingForm />}
+            />
+            <Route
+              path="/setting/form_account"
+              element={<FormSettingAccount />}
+            />
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
