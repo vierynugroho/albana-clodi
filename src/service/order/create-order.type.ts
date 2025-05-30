@@ -30,7 +30,7 @@ export interface OrderPayload {
     };
     paymentMethod?: {
       id?: string;
-      status: "PENDING" | "PAID";
+      status: PaymentStatus;
       date?: string;
     };
     orderProducts: {
@@ -54,6 +54,14 @@ export interface OrderPayload {
     }[];
   };
 }
+
+// enum 
+export enum PaymentStatus {
+  PENDING = "Belum Bayar",
+  INSTALLMENT = "Cicilan",
+  PAID = "Lunas",
+}
+
 
 
 // response dari customers 

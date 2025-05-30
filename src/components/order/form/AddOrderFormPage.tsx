@@ -12,6 +12,7 @@ import AsyncSelect from "react-select/async";
 import {
   OrderPayload,
   PaymentMethod,
+  PaymentStatus,
   SalesChannel,
   TCustomer,
   TDeliveryPlace,
@@ -27,8 +28,11 @@ import {
 import { FaSpinner } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Input from "../../form/input/InputField.tsx";
 
-const CustomOption = (props: OptionProps<{ customer: TCustomer }, false>) => {
+export const CustomOption = (
+  props: OptionProps<{ customer: TCustomer }, false>
+) => {
   const { data, innerRef, innerProps, isFocused } = props;
   return (
     <div
@@ -44,7 +48,7 @@ const CustomOption = (props: OptionProps<{ customer: TCustomer }, false>) => {
   );
 };
 
-const DeliveryOption = (
+export const DeliveryOption = (
   props: OptionProps<{ place: TDeliveryPlace }, false>
 ) => {
   const { data, innerRef, innerProps, isFocused } = props;
@@ -65,8 +69,27 @@ const DeliveryOption = (
 
 export default function AddOrderFomPage() {
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [orderProducts, setOrderProducts] = useState<
+    { productId: string; productVariantId: string; productQty: number }[]
+  >([]);
+  const [shippingCost, setShippingCost] = useState<{
+    shippingService?: string;
+    cost?: number;
+    type?: string;
+    weight?: string;
+  }>({});
+  const [discount, setDiscount] = useState<{
+    value?: number;
+    type?: "nominal" | "percent";
+  }>({});
+  const [insurance, setInsurance] = useState<number | undefined>(undefined);
+  const [ongkirDiscountValue, setOngkirDiscountValue] = useState<
+    number | undefined
+  >(undefined);
   const [note, setNote] = useState("");
   const [orderDate, setOrderDate] = useState<Date | null>(null);
+  const [paymentDate, setPaymentDate] = useState<Date | null>(null);
   const [selectedPemesan, setSelectedPemesan] = useState<TCustomer | null>(
     null
   );
@@ -81,6 +104,27 @@ export default function AddOrderFomPage() {
     useState<SalesChannel | null>(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethod | null>(null);
+  const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<
+    keyof typeof PaymentStatus | null
+  >(null);
+
+  const paymentOptions = Object.entries(PaymentStatus).map(([key, label]) => ({
+    label,
+    value: key, // simpan key, bukan label
+  }));
+
+  const [recieptNumber, setReceiptNumber] = useState<string | undefined>(
+    undefined
+  );
+  const [nominalPayment, setNominalPayment] = useState<string | undefined>(
+    undefined
+  );
+  function handleSelectChange(
+    _field: string,
+    value: keyof typeof PaymentStatus
+  ) {
+    setSelectedPaymentStatus(value);
+  }
   const handleEditPemesan = () => {
     setisEditingPemesan(true);
   };
@@ -95,26 +139,6 @@ export default function AddOrderFomPage() {
     setInsurance(data.insuranceValue);
     setOngkirDiscountValue(data.ongkirDiscountValue);
   }, []);
-
-  const paymentOptions = [
-    { value: "PENDING", label: "Belum Bayar" },
-    { value: "ST", label: "Cicilan" },
-    { value: "lunas", label: "Sudah Bayar(Lunas)" },
-  ];
-
-  function handleSelectChange(field: string, value: string): void {
-    // Implement your logic here, e.g., update state based on field
-    console.log(`Field: ${field}, Value: ${value}`);
-  }
-
-  const [loading, setLoading] = useState(false);
-  const [orderProducts, setOrderProducts] = useState<
-    { productId: string; productVariantId: string; productQty: number }[]
-  >([]);
-  const [shippingCost, setShippingCost] = useState<{shippingService?: string; cost?: number; type?: string; weight?: string}>({});
-  const [discount, setDiscount] = useState<{ value?: number; type?: "nominal" | "percent" }>({});
-  const [insurance, setInsurance] = useState<number | undefined>(undefined);
-  const [ongkirDiscountValue, setOngkirDiscountValue] = useState<number | undefined>(undefined);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -139,11 +163,16 @@ export default function AddOrderFomPage() {
             shippingCost: shippingCost,
             discount: discount || {},
           },
+          receiptNumber: recieptNumber,
         },
         paymentMethod: {
           id: selectedPaymentMethod?.id || "",
-          status: "PENDING",
-          date: new Date().toISOString(),
+          status: selectedPaymentStatus
+            ? PaymentStatus[selectedPaymentStatus]
+            : PaymentStatus.PENDING,
+          date: paymentDate
+            ? paymentDate.toISOString()
+            : new Date().toISOString(),
         },
         orderProducts: orderProducts,
       },
@@ -173,7 +202,7 @@ export default function AddOrderFomPage() {
           {/* Form kiri */}
           <ComponentCard
             title="Informasi Order"
-            className="max-w-full md:max-h-7/12"
+            className="max-w-full md:max-h-fit"
           >
             <div className="space-y-6">
               <div>
@@ -359,38 +388,21 @@ export default function AddOrderFomPage() {
 
             {/* Status Pembayaran */}
             <ComponentCard title="Pembayaran">
-              <div className="relative">
-                <Label
-                  htmlFor="pengirimanDari"
-                  className="font-semibold text-md"
-                >
-                  {" "}
-                  Metode Pembayaran{" "}
-                </Label>
-                <AsyncSelect
-                  cacheOptions
-                  defaultOptions
-                  loadOptions={fetchPayments}
-                  placeholder="Pilih metode pembayaran"
-                  className="w-full"
-                  onChange={(option) => {
-                    setSelectedPaymentMethod(option ? option.payment : null);
-                  }}
-                />
-              </div>
               <div className="w-full relative">
                 <label className="text-left font-semibold mb-1 block">
                   Status Pembayaran
                 </label>
                 <div className="relative my-4">
                   <Select
-                    onChange={(value) =>
-                      handleSelectChange("paymentStatus", value)
+                    onChange={(value: string) =>
+                      handleSelectChange(
+                        "paymentStatus",
+                        value as keyof typeof PaymentStatus
+                      )
                     }
-                    options={[...paymentOptions]}
+                    options={paymentOptions}
                     className="w-full h-10 pr-10 pl-3 rounded-md border border-gray-300 dark:bg-dark-900 dark:text-white text-sm appearance-none"
                   />
-
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                     <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
                       <path
@@ -404,7 +416,69 @@ export default function AddOrderFomPage() {
                   </span>
                 </div>
               </div>
+              {(selectedPaymentStatus === "INSTALLMENT" ||
+                selectedPaymentStatus === "PAID") && (
+                <>
+                  <div className="flex flex-col relative mb-4">
+                    <Label className="font-semibold text-md">
+                      Pilih Tanggal:
+                    </Label>
+                    <DatePicker
+                      id="datepicker"
+                      selected={paymentDate}
+                      onChange={(date) => setPaymentDate(date)}
+                      dateFormat="dd-MM-yyyy"
+                      className="border p-2 rounded-md w-full"
+                      placeholderText="Pilih tanggal pembayaran"
+                    />
+                  </div>
+
+                  <div className="relative mb-4">
+                    <Label className="font-semibold text-md">
+                      Metode Pembayaran
+                    </Label>
+                    <AsyncSelect
+                      cacheOptions
+                      defaultOptions
+                      loadOptions={fetchPayments}
+                      placeholder="Pilih metode pembayaran"
+                      className="w-full"
+                      onChange={(option) => {
+                        setSelectedPaymentMethod(
+                          option ? option.payment : null
+                        );
+                      }}
+                    />
+                  </div>
+                </>
+              )}
+
+              {selectedPaymentStatus === "INSTALLMENT" && (
+                <div className="mb-4">
+                  <Label className="font-semibold text-md">Nominal</Label>
+                  <Input
+                    placeholder="0"
+                    onChange={(e) => setNominalPayment(e.target.value)}
+                    value={nominalPayment || ""}
+                  />
+                </div>
+              )}
             </ComponentCard>
+
+            {(selectedPaymentStatus === "INSTALLMENT" ||
+              selectedPaymentStatus === "PAID") && (
+              <ComponentCard title="Shipping">
+                <div>
+                  <label className="text-left font-semibold mb-1 block">
+                    Nomor Resi
+                  </label>
+                  <Input
+                    placeholder="Masukkan Nomor Resi ( Optional )"
+                    onChange={(e) => setReceiptNumber(e.target.value)}
+                  />
+                </div>
+              </ComponentCard>
+            )}
 
             {/* Tombol Aksi */}
             <div className="flex flex-wrap justify-end gap-4 pt-2">
