@@ -36,7 +36,6 @@ export type FilterState = {
   order?: "asc" | "desc";
 };
 
-
 export default function AllOrderPage() {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [keyword, setKeyword] = useState<string>("");
@@ -46,97 +45,96 @@ export default function AllOrderPage() {
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
 
- const [filterOrder, setFilterOrder] = useState<FilterState>({
-  ordererCustomerId: "",
-  deliveryTargetCustomerId: "",
-  salesChannelId: "",
-  deliveryPlaceId: "",
-  orderDate: "",
-  orderStatus: "",
-  orderMonth: "",
-  orderYear: "",
-  startDate: "",
-  endDate: "",
-  customerCategory: "",
-  paymentStatus: "",
-  productId: "",
-  paymentMethodId: "",
-  search: "",
-  sort: "",
-  // order: "desc",
-});
-
+  console.log(isMobile);
+  console.log(loading);
+  const [filterOrder, setFilterOrder] = useState<FilterState>({
+    ordererCustomerId: "",
+    deliveryTargetCustomerId: "",
+    salesChannelId: "",
+    deliveryPlaceId: "",
+    orderDate: "",
+    orderStatus: "",
+    orderMonth: "",
+    orderYear: "",
+    startDate: "",
+    endDate: "",
+    customerCategory: "",
+    paymentStatus: "",
+    productId: "",
+    paymentMethodId: "",
+    search: "",
+    sort: "",
+    // order: "desc",
+  });
 
   const location = useLocation();
   const navigate = useNavigate();
 
-const handleSearchAndFilter = useCallback(
-  (keyword: string, filter: FilterState) => {
-    const params = new URLSearchParams();
+  const handleSearchAndFilter = useCallback(
+    (keyword: string, filter: FilterState) => {
+      const params = new URLSearchParams();
 
-    if (keyword) params.set("search", keyword.toLowerCase());
+      if (keyword) params.set("search", keyword.toLowerCase());
 
-    Object.entries(filter).forEach(([key, value]) => {
-      if (value) params.set(key, value);
-    });
+      Object.entries(filter).forEach(([key, value]) => {
+        if (value) params.set(key, value);
+      });
 
-    navigate(`?${params.toString()}`);
-  },
-  [navigate]
-);
+      navigate(`?${params.toString()}`);
+    },
+    [navigate]
+  );
 
-useEffect(() => {
-  async function fetchFilteredOrders() {
-    setLoading(true);
-    const params = new URLSearchParams(location.search);
+  useEffect(() => {
+    async function fetchFilteredOrders() {
+      setLoading(true);
+      const params = new URLSearchParams(location.search);
 
-    const filterFromURL: FilterState = {
-      ordererCustomerId: params.get("ordererCustomerId") || "",
-      deliveryTargetCustomerId: params.get("deliveryTargetCustomerId") || "",
-      salesChannelId: params.get("salesChannelId") || "",
-      deliveryPlaceId: params.get("deliveryPlaceId") || "",
-      orderDate: params.get("orderDate") || "",
-      orderStatus: params.get("orderStatus") || "",
-      orderMonth: params.get("orderMonth") || "",
-      orderYear: params.get("orderYear") || "",
-      startDate: params.get("startDate") || "",
-      endDate: params.get("endDate") || "",
-      customerCategory: params.get("customerCategory") || "",
-      paymentStatus: params.get("paymentStatus") || "",
-      productId: params.get("productId") || "",
-      paymentMethodId: params.get("paymentMethodId") || "",
-      search: params.get("search") || "",
-      sort: params.get("sort") || "",
-      order: (params.get("order") as "asc" | "desc") || "desc",
-    };
+      const filterFromURL: FilterState = {
+        ordererCustomerId: params.get("ordererCustomerId") || "",
+        deliveryTargetCustomerId: params.get("deliveryTargetCustomerId") || "",
+        salesChannelId: params.get("salesChannelId") || "",
+        deliveryPlaceId: params.get("deliveryPlaceId") || "",
+        orderDate: params.get("orderDate") || "",
+        orderStatus: params.get("orderStatus") || "",
+        orderMonth: params.get("orderMonth") || "",
+        orderYear: params.get("orderYear") || "",
+        startDate: params.get("startDate") || "",
+        endDate: params.get("endDate") || "",
+        customerCategory: params.get("customerCategory") || "",
+        paymentStatus: params.get("paymentStatus") || "",
+        productId: params.get("productId") || "",
+        paymentMethodId: params.get("paymentMethodId") || "",
+        search: params.get("search") || "",
+        sort: params.get("sort") || "",
+        order: (params.get("order") as "asc" | "desc") || "desc",
+      };
 
-    setFilterOrder(filterFromURL);
-    const result = await getOrders(filterFromURL);
+      setFilterOrder(filterFromURL);
+      const result = await getOrders(filterFromURL);
 
-    if (result.success && Array.isArray(result.responseObject)) {
-      setOrders(result.responseObject);
-    } else {
-      setOrders([]);
+      if (result.success && Array.isArray(result.responseObject)) {
+        setOrders(result.responseObject);
+      } else {
+        setOrders([]);
+      }
+
+      setLoading(false);
     }
 
-    setLoading(false);
-  }
+    fetchFilteredOrders();
+  }, [location.search]);
 
-  fetchFilteredOrders();
-}, [location.search]);
-
-
-useEffect(() => {
-  if (!location.search) {
-    const savedFilter = localStorage.getItem("orderFilter");
-    if (savedFilter) {
-      const parsedFilter: FilterState = JSON.parse(savedFilter);
-      setFilterOrder(parsedFilter);
-      handleSearchAndFilter(keyword, parsedFilter);
+  useEffect(() => {
+    if (!location.search) {
+      const savedFilter = localStorage.getItem("orderFilter");
+      if (savedFilter) {
+        const parsedFilter: FilterState = JSON.parse(savedFilter);
+        setFilterOrder(parsedFilter);
+        handleSearchAndFilter(keyword, parsedFilter);
+      }
     }
-  }
-}, [handleSearchAndFilter, keyword, location.search]);
-
+  }, [handleSearchAndFilter, keyword, location.search]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -163,8 +161,10 @@ useEffect(() => {
 
       <div className="py-2 bg-gray-50">
         <div
-          className={`flex flex-wrap gap-2 ${window.innerWidth <= 768 ? "overflow-x-auto" : ""
-            }`}>
+          className={`flex flex-wrap gap-2 ${
+            window.innerWidth <= 768 ? "overflow-x-auto" : ""
+          }`}
+        >
           <FilterStatusOrder
             selectedStatuses={selectedStatuses}
             onChange={setSelectedStatuses}
@@ -190,7 +190,8 @@ useEffect(() => {
                   size="md"
                   variant="primary"
                   className="flex-1"
-                  startIcon={<FaPlus className="size-5 text-white" />}>
+                  startIcon={<FaPlus className="size-5 text-white" />}
+                >
                   Tambah Order
                 </Button>
               </div>
@@ -199,14 +200,16 @@ useEffect(() => {
               size="md"
               variant="outline"
               startIcon={<TbFilterDiscount className="size-5 text-blue-700" />}
-              onClick={() => setFilter((prev) => !prev)}>
+              onClick={() => setFilter((prev) => !prev)}
+            >
               Filter
             </Button>
 
             <Button
               size="md"
               variant="outline"
-              startIcon={<DownloadIcon className="size-5 text-blue-700" />}>
+              startIcon={<DownloadIcon className="size-5 text-blue-700" />}
+            >
               Download
             </Button>
             <OptionDropdownOrder />
