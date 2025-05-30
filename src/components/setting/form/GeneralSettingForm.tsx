@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PhoneInput from "../../form/group-input/PhoneInput";
 import Input from "../../form/input/InputField";
 import Label from "../../form/Label";
@@ -8,15 +8,17 @@ import Button from "../../ui/button/Button";
 import {
   ServiceForm,
   getServiceForm,
-  updateServiceForm,
+  createServiceForm,
 } from "../../../service/shopSetting";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function GeneralSettingForm() {
+  const dataIsExist = useRef<boolean>(false);
   const countries = [{ code: "IND", label: "+62" }];
   const [formData, setFormData] = useState<ServiceForm>({
     name: "",
     description: "",
-    email: "",
+    email: "albana@gmail.com",
     phoneNumber: "",
     address: "",
     owner: "",
@@ -31,37 +33,47 @@ export default function GeneralSettingForm() {
 
       const response = await getServiceForm(token);
       if (response.success && response.responseObject) {
+        dataIsExist.current = true;
         setFormData(response.responseObject);
       }
     };
 
     fetchData();
   }, []);
+  console.log(formData);
 
   const handleSubmit = async () => {
-    const response = await updateServiceForm(formData);
+    const response = await createServiceForm(dataIsExist.current, formData);
     if (response.success) {
       // Handle success
-      console.log("Settings updated successfully");
+      toast.success(response.message, {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
     } else {
       // Handle error
-      console.error("Failed to update settings:", response.message);
+      toast.error(response.message, {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
+      console.error(response);
     }
   };
 
   return (
     <div className="flex flex-col gap-3">
+      <Toaster />
       <div className="flex gap-6">
         <div>
           <Label htmlFor="inputLogo">Logo Perusahaan</Label>
           <div className="flex flex-col gap-2">
             <DropzoneImage
+              imageUrl={String(formData.logo)}
               onChange={(file) => setFormData({ ...formData, logo: file })}
             />
             <Button
               className="bg-red-600 hover:bg-red-700"
               size="sm"
-              onClick={() => setFormData({ ...formData, logo: null })}>
+              onClick={() => setFormData({ ...formData, logo: null })}
+            >
               Hapus Logo
             </Button>
           </div>

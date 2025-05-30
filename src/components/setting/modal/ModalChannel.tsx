@@ -3,33 +3,51 @@ import ReactDOM from "react-dom";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import Input from "../../form/input/InputField";
 import Switch from "../../form/switch/Switch";
+import { createSales } from "../../../service/shopSetting/sales";
+import toast from "react-hot-toast";
 type Props = {
   changeModal: () => void;
-  isEdit?: boolean;
   id?: string;
-  refreshData?: () => void;
+  refreshData: () => void;
 };
 
-export default function ModalChannel({ changeModal, isEdit, id }: Props) {
+export default function ModalChannel({ changeModal, refreshData, id }: Props) {
   const [name, setName] = useState("");
   const [isActive, setIsActive] = useState(false);
 
-  async function addChannel() {
-    if (name.trim() === "") return;
-    changeModal();
+  async function handleAddSales() {
+    const payload = {
+      name: name,
+      isActive: isActive,
+    };
+    const result = await createSales(payload);
+    if (result.success) {
+      toast.success(result.message, {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
+      changeModal();
+      refreshData();
+    } else {
+      toast.error("Gagal Membuat Sales", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
+    }
   }
+
+  // async function addChannel() {
+  //   if (name.trim() === "") return;
+  //   changeModal();
+  // }
 
   async function handleEditChannel() {
     changeModal();
   }
 
   useEffect(() => {
-    if (isEdit && id) {
-      // Fetch channel data by id and set states
-      setName("Shopedia"); // Example default value
-      setIsActive(true);
+    if (id) {
+      console.log(id);
     }
-  }, [isEdit, id]);
+  }, [id]);
 
   return ReactDOM.createPortal(
     <div className="fixed z-[100000] inset-0 overflow-y-auto">
@@ -38,11 +56,12 @@ export default function ModalChannel({ changeModal, isEdit, id }: Props) {
         <div className="inline-block align-bottom bg-white rounded-lg px-6 pt-6 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-800 mb-2">
-              {isEdit ? "Edit Channel" : "Tambah Channel"}
+              {id ? "Edit Channel" : "Tambah Channel"}
             </h2>
             <button
               onClick={changeModal}
-              className="text-gray-400 hover:text-gray-700">
+              className="text-gray-400 hover:text-gray-700"
+            >
               <IoIosCloseCircleOutline size={27} />
             </button>
           </div>
@@ -52,11 +71,12 @@ export default function ModalChannel({ changeModal, isEdit, id }: Props) {
             <div className="flex gap-4">
               <div className="w-full">
                 <p className="text-theme-sm font-medium mb-1">Nama Channel</p>
-                {isEdit ? (
+                {id ? (
                   <select
                     className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 focus:border-blue-500 focus:outline-none"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}>
+                    onChange={(e) => setName(e.target.value)}
+                  >
                     <option value="Shopedia">Shopedia</option>
                     <option value="Bukalapak">Bukalapak</option>
                     <option value="Zilingo">Zilingo</option>
@@ -97,13 +117,15 @@ export default function ModalChannel({ changeModal, isEdit, id }: Props) {
           <div className="mt-5 flex justify-end gap-2">
             <button
               onClick={changeModal}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:text-gray-900">
+              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:text-gray-900"
+            >
               Batal
             </button>
             <button
-              onClick={isEdit ? handleEditChannel : addChannel}
-              className="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-500">
-              {isEdit ? "Simpan Perubahan" : "Tambah Channel"}
+              onClick={id ? handleEditChannel : handleAddSales}
+              className="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-500"
+            >
+              {id ? "Simpan Perubahan" : "Tambah Channel"}
             </button>
           </div>
         </div>

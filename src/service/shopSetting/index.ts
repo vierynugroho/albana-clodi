@@ -41,16 +41,34 @@ export async function getServiceForm(token: string): Promise<ResponseService> {
   }
 }
 
-export async function updateServiceForm(
+export async function createServiceForm(
+  dataIsExist: boolean,
   form: ServiceForm
 ): Promise<ResponseService> {
   try {
     const token = localStorage.getItem("token");
-    const { data } = await axios.put(`${apiUrl}/shop`, form, {
+    const formData = new FormData();
+
+    for (const key in form) {
+      const typedKey = key as keyof ServiceForm;
+      if (form[typedKey] !== null && form[typedKey] !== undefined) {
+        formData.append(typedKey, form[typedKey]);
+      }
+    }
+    const method = dataIsExist ? "patch" : "post";
+    console.log(dataIsExist);
+    const url = `${apiUrl}/shop`;
+
+    const { data } = await axios({
+      method,
+      url,
+      data: formData,
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       },
     });
+
     return data;
   } catch (error) {
     console.log(error);

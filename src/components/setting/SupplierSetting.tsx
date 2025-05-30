@@ -4,9 +4,34 @@ import { TbCirclePlus } from "react-icons/tb";
 import PageMeta from "../common/PageMeta";
 import TableDelivery from "./table/TableSupplier";
 import { useNavigate } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { getSuppliers, Supplier } from "../../service/shopSetting/supplier";
+import toast from "react-hot-toast";
 
 export default function DeliverySettingForm() {
   const navigate = useNavigate();
+  const hasFetched = useRef(false);
+  const [deliveries, setDeliveries] = useState<Supplier[]>([]);
+
+  useEffect(() => {
+    const getAllSupplier = async () => {
+      const result = await getSuppliers();
+      if (result.success && result.responseObject) {
+        setDeliveries(result.responseObject);
+        if (!hasFetched.current) {
+          toast.success(result.message, {
+            style: { marginTop: "10vh", zIndex: 100000 },
+          });
+        } else {
+          toast.error("Gagal Mendapatkan Data", {
+            style: { marginTop: "10vh", zIndex: 100000 },
+          });
+        }
+      }
+    };
+    hasFetched.current = true;
+    getAllSupplier();
+  }, []);
 
   return (
     <div>
@@ -18,15 +43,16 @@ export default function DeliverySettingForm() {
             onClick={() => {
               navigate("/setting/form_supplier");
             }}
-            startIcon={<TbCirclePlus className="size-5" />}>
-            Tambah Pengeluaran
+            startIcon={<TbCirclePlus className="size-5" />}
+          >
+            Tambah Asal Pengiriman
           </Button>
         </div>
       </div>
 
       <div>
         <TableDelivery
-          deliveries={[]}
+          deliveries={deliveries}
           setEditDelivery={() => {}}
           deleteDelivery={() => {}}
         />

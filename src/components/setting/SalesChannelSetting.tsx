@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 // import Button from "../ui/button/Button";
 import PageMeta from "../common/PageMeta";
 import {
@@ -14,8 +14,11 @@ import { TiDelete } from "react-icons/ti";
 import Button from "../ui/button/Button";
 import { TbCirclePlus } from "react-icons/tb";
 import ModalChannel from "./modal/ModalChannel";
-
+import { getAllSales, SalesChannel } from "../../service/shopSetting/sales";
+import toast, { Toaster } from "react-hot-toast";
+import DeleteSalesModal from "./modal/DeleteSalesModal";
 export default function SalesChannelSetting() {
+  const hasFetched = useRef(false);
   //   const [shippingLabel, setShippingLabel] = useState(false);
   //   const [autoDownload, setAutoDownload] = useState(false);
   //   const [autoConnect, setAutoConnect] = useState(false);
@@ -23,60 +26,38 @@ export default function SalesChannelSetting() {
   //   const [autoSync, setAutoSync] = useState(false);
 
   //   const [channelName, setChannelName] = useState("");
+  const [channels, setChannels] = useState<SalesChannel[]>([]);
+  const [idChannel, setIdChannel] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
-  const channels = [
-    {
-      name: "Shopedia",
-      isActive: true,
-    },
-    {
-      name: "Bukalapak",
-      isActive: true,
-    },
-    {
-      name: "Zilingo",
-      isActive: true,
-    },
-    {
-      name: "Lazada",
-      isActive: true,
-    },
-    {
-      name: "JD.ID",
-      isActive: true,
-    },
-    {
-      name: "Zalora",
-      isActive: true,
-    },
-    {
-      name: "Blibli",
-      isActive: true,
-    },
-    {
-      name: "WhatsApp",
-      isActive: true,
-    },
-    {
-      name: "Instagram",
-      isActive: true,
-    },
-    {
-      name: "Facebook",
-      isActive: true,
-    },
-    {
-      name: "Offline Store",
-      isActive: true,
-    },
-    {
-      name: "Website Live",
-      isActive: true,
-    },
-  ];
+
+  const [isDelete, setIsDelete] = useState<boolean>(false);
+
+  const getAllChannels = useCallback(async () => {
+    const result = await getAllSales();
+    if (result.success && result.responseObject) {
+      setChannels(result.responseObject);
+      if (!hasFetched.current) {
+        toast.success(result.message, {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      }
+    } else {
+      if (!hasFetched.current) {
+        toast.error(result.message, {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      }
+    }
+    hasFetched.current = true;
+  }, []);
+
+  useEffect(() => {
+    getAllChannels();
+  }, [getAllChannels]);
 
   return (
     <div className="w-full mx-auto">
+      <Toaster />
       <PageMeta title="ALBANA GROSIR" description="Pengaturan Sales Channel" />
 
       <div className="space-y-6">
@@ -86,12 +67,19 @@ export default function SalesChannelSetting() {
             onClick={() => {
               setShowModal(true);
             }}
-            startIcon={<TbCirclePlus className="size-5" />}>
+            startIcon={<TbCirclePlus className="size-5" />}
+          >
             Tambah Channel
           </Button>
 
           {showModal && (
-            <ModalChannel changeModal={() => setShowModal(false)} />
+            <ModalChannel
+              changeModal={() => {
+                setShowModal(false);
+              }}
+              refreshData={getAllChannels}
+              id={idChannel}
+            />
           )}
         </div>
       </div>
@@ -103,22 +91,26 @@ export default function SalesChannelSetting() {
               <TableRow>
                 <TableCell
                   isHeader
-                  className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                  className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400"
+                >
                   Nama
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                  className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400"
+                >
                   Keterangan
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                  className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400"
+                >
                   Status
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="px-5 py-3 font-semibold text-gray-500 text-end text-theme-sm dark:text-gray-400">
+                  className="px-5 py-3 font-semibold text-gray-500 text-end text-theme-sm dark:text-gray-400"
+                >
                   <div className="flex justify-end items-center">
                     <IoSettings size={15} className="mx-2" />
                     Action
@@ -157,11 +149,16 @@ export default function SalesChannelSetting() {
                         className="text-amber-500 cursor-pointer"
                         onClick={() => {
                           setShowModal(true);
+                          setIdChannel(channel.id);
                         }}
                       />
                       <TiDelete
                         size={30}
                         className="text-red-600 cursor-pointer"
+                        onClick={() => {
+                          setIdChannel(channel.id);
+                          setIsDelete(true);
+                        }}
                       />
                     </div>
                   </TableCell>
@@ -169,6 +166,13 @@ export default function SalesChannelSetting() {
               ))}
             </TableBody>
           </Table>
+          {isDelete && (
+            <DeleteSalesModal
+              changeModal={() => setIsDelete(false)}
+              id={idChannel}
+              refreshData={getAllChannels}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -183,6 +183,9 @@ export default function FormProduk() {
           setSelectedValue(result.responseObject.type);
           setProductDescription(result.responseObject.description);
           setProductWeight(result.responseObject.weight);
+          setCategoryId(
+           result.responseObject.categoryId ?  result.responseObject.categoryId :''
+          );
           setDiskon(
             diskonValue !== undefined && diskonValue !== null
               ? String(diskonValue)
@@ -257,6 +260,7 @@ export default function FormProduk() {
               <div>
                 <Label>Kategori</Label>
                 <Select
+                  defaultValue={categoryId ? categoryId : ""}
                   options={categoryProducts.current}
                   placeholder="Pilih Kategori Produk"
                   onChange={handleSelectChange}

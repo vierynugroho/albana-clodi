@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
-import { deleteBankPayment } from "../../../service/shopSetting/payment";
 import toast, { Toaster } from "react-hot-toast";
+import { deleteSales } from "../../../service/shopSetting/sales";
 
 type DeleteModalProps = {
   id: string;
@@ -8,13 +8,13 @@ type DeleteModalProps = {
   refreshData: () => void;
 };
 
-export default function DeleteBankModal({
+export default function DeleteSalesModal({
   id,
   changeModal,
   refreshData,
 }: DeleteModalProps) {
-  async function handleDeleteExpense(id: string) {
-    const result = await deleteBankPayment(id);
+  async function handleDeleteSales(id: string) {
+    const result = await deleteSales(id);
     if (result.success) {
       toast.success(result.message, {
         style: { marginTop: "10vh", zIndex: 100000 },
@@ -69,9 +69,9 @@ export default function DeleteBankModal({
               <button
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-700 text-base font-semibold text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out sm:text-sm"
-                onClick={() => handleDeleteExpense(id)}
+                onClick={() => handleDeleteSales(id)}
               >
-                Hapus Pengeluaran
+                Hapus Sales
               </button>
             </span>
             <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
