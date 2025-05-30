@@ -1,15 +1,7 @@
+import { FilterState } from "../../service/product";
 import Label from "../form/Label";
 import Select from "../form/Select";
 import Button from "./button/Button";
-
-type FilterState = {
-  kategori: string;
-  channel: string;
-  harga: string;
-  tipe: string;
-  urutan: string;
-  produkMarketplace: string;
-};
 
 type Props = {
   setFilter: React.Dispatch<React.SetStateAction<FilterState>>;
@@ -32,9 +24,9 @@ export default function FilterProduk({ setFilter, onFilter }: Props) {
   ];
 
   const tipeOptions = [
-    { value: "produk-sendiri", label: "Grosir" },
-    { value: "suplier-lain", label: "Eceran" },
-    { value: "preorder", label: "Preorder" },
+    { value: "BARANG_STOK_SENDIRI", label: "Barang Stock Sendiri" },
+    { value: "BARANG_SUPPLIER_LAIN", label: "Barang Suplier Lain" },
+    { value: "BARANG_PRE_ORDER", label: "Barang Pre-Order" },
   ];
 
   const urutanOptions = [
@@ -47,17 +39,13 @@ export default function FilterProduk({ setFilter, onFilter }: Props) {
     { value: "populer", label: "Populer" },
   ];
 
-  const produkMarketplace = [
-    { value: "semua", label: "Semua" },
-    { value: "produk-diskon", label: "Produk Diskon" },
-    { value: "produk-grosir", label: "Produk Grosir" },
-  ];
+  const produkMarketplace = [{ value: "semua", label: "" }];
 
   const filters = [
     { label: "Kategori", name: "kategori", options: kategoriOptions },
     { label: "Channel", name: "channel", options: channelOptions },
     { label: "Harga", name: "harga", options: hargaOptions },
-    { label: "Tipe", name: "tipe", options: tipeOptions },
+    { label: "Tipe", name: "type", options: tipeOptions },
     { label: "Urutan", name: "urutan", options: urutanOptions },
     {
       label: "Produk Marketplace",
@@ -75,7 +63,7 @@ export default function FilterProduk({ setFilter, onFilter }: Props) {
       kategori: "",
       channel: "",
       harga: "",
-      tipe: "",
+      type: "",
       urutan: "",
       produkMarketplace: "",
     });

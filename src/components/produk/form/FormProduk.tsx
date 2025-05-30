@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ComponentCard from "../../common/ComponentCard";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
@@ -8,37 +8,20 @@ import ManageProduk from "../switch/ManageProduk";
 import ManagePrivorAndStorefront from "../switch/ManagePrivorAndStorefront";
 import VarianProduk from "./VarianProduk";
 import Button from "../button/Button";
-import GrosirProduk from "./GrosirProduk";
 import { GiWeight } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
-import { createProduct } from "../../../service/product";
-
-type ProductPrice = {
-  normal: number;
-  buy: number;
-  reseller: number;
-  agent: number;
-  member: number;
-};
-
-type ProductWholesaler = {
-  lowerLimitItem: number;
-  upperLimitItem: number;
-  unitPrice: number;
-  wholesalerPrice: number;
-};
-
-type ProductVariant = {
-  imageUrl: string;
-  file?: File;
-  sku: string;
-  productPrices: ProductPrice;
-  productWholesalers: ProductWholesaler[];
-  barcode?: string;
-  size?: string;
-  color?: string;
-  stock: number | null;
-};
+import {
+  createProduct,
+  editProduct,
+  getDetailProduct,
+  ProductVariant,
+} from "../../../service/product";
+import { useParams } from "react-router";
+import {
+  CategoryProduct,
+  getCategories,
+} from "../../../service/product/category";
+import toast, { Toaster } from "react-hot-toast";
 
 type SwichStatesType = {
   varian: boolean;
@@ -46,22 +29,17 @@ type SwichStatesType = {
   grosir: boolean;
 };
 
-const defaultWholesalePrices: ProductWholesaler[] = Array.from(
-  { length: 5 },
-  () => ({
-    lowerLimitItem: 0,
-    upperLimitItem: 0,
-    unitPrice: 0,
-    wholesalerPrice: 0,
-  })
-);
+type CategoriesProduct = {
+  value: string;
+  label: string;
+};
 
 const defaultVariant = (): ProductVariant => ({
   sku: "",
   stock: 0,
   size: "",
   color: "",
-  imageUrl: "",
+  imageUrl: null,
   barcode: "",
   productPrices: {
     normal: 0,
@@ -70,31 +48,17 @@ const defaultVariant = (): ProductVariant => ({
     agent: 0,
     member: 0,
   },
-  productWholesalers: defaultWholesalePrices,
 });
 
 const options = [
   { value: "BARANG_STOK_SENDIRI", label: "Barang Stock Sendiri" },
-  { value: "BARANG_SUPLIER_LAIN", label: "Barang Suplier Lain" },
+  { value: "BARANG_SUPPLIER_LAIN", label: "Barang Suplier Lain" },
   { value: "BARANG_PRE_ORDER", label: "Barang Pre-Order" },
 ];
 
-const categoryProducts = [
-  {
-    value: "b4788f9c-a24b-48f0-a7ba-3e86f4149248",
-    label: "Kaos",
-  },
-  {
-    value: "d290f1ee-6c54-4b01-90e6-d701748f0851",
-    label: "Kemeja",
-  },
-  {
-    value: "5c9d8a34-3a71-4de1-9b8a-fb0dc9f9e1cc",
-    label: "Hoodie",
-  },
-];
-
 export default function FormProduk() {
+  const categoryProducts = useRef<CategoriesProduct[]>([]);
+  const { id } = useParams(); //ID Edit Product
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [switchStates, setSwitchStates] = useState<SwichStatesType>({
     varian: false,
@@ -102,10 +66,14 @@ export default function FormProduk() {
     grosir: false,
   });
   const [categoryId, setCategoryId] = useState<string>("");
+  console.log(categoryId);
+
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productWeight, setProductWeight] = useState(0);
   const [varian, setVarian] = useState<ProductVariant[]>([defaultVariant()]);
+  const [diskon, setDiskon] = useState("");
+  const [diskonId, setDiskonId] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -157,6 +125,88 @@ export default function FormProduk() {
     );
   };
 
+  const handleEdit = async () => {
+    setLoading(true);
+    setError("");
+    const payload = {
+      product: {
+        name: productName,
+        description: productDescription,
+        type: selectedValue,
+        isPublish: true,
+        weight: productWeight,
+        categoryId,
+      },
+      productDiscount: {
+        id: diskonId,
+        type: "PERCENTAGE",
+        value: Number(diskon),
+      },
+      productVariants: varian,
+    };
+    if (id) {
+      const result = await editProduct(payload, id);
+      setLoading(false);
+      if (result.success) {
+        toast.success("Berhasil Memperbarui Produk", {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      } else {
+        toast.error("Terjadi Kesalahan Edit Produk", {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+        setError(result.message);
+      }
+    }
+  };
+
+  // Get Detail Produk When Id Exist
+  useEffect(() => {
+    async function fetchCategoryProduts() {
+      const categories = await getCategories();
+
+      categoryProducts.current =
+        categories.responseObject?.map((val: CategoryProduct) => ({
+          value: val.id,
+          label: val.name,
+        })) || [];
+    }
+
+    async function fetchDetailProduct() {
+      if (id) {
+        const result = await getDetailProduct(id);
+
+        if (result.success && result.responseObject) {
+          const diskonValue = result.responseObject.ProductDiscount?.[0]?.value;
+          const diskonId = result.responseObject.ProductDiscount?.[0]?.id;
+          setProductName(result.responseObject?.name);
+          setSelectedValue(result.responseObject.type);
+          setProductDescription(result.responseObject.description);
+          setProductWeight(result.responseObject.weight);
+          setCategoryId(
+           result.responseObject.categoryId ?  result.responseObject.categoryId :''
+          );
+          setDiskon(
+            diskonValue !== undefined && diskonValue !== null
+              ? String(diskonValue)
+              : ""
+          );
+          setDiskonId(
+            diskonId !== undefined && diskonValue !== null
+              ? String(diskonId)
+              : ""
+          );
+          setVarian(result.responseObject.productVariants);
+        }
+        console.log(result);
+      } else {
+        return;
+      }
+    }
+    fetchCategoryProduts();
+    fetchDetailProduct();
+  }, [id, categoryProducts]);
+
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
@@ -167,21 +217,32 @@ export default function FormProduk() {
         type: selectedValue,
         isPublish: true,
         weight: productWeight,
+        categoryId,
       },
-      categoryId,
+      productDiscount: {
+        type: "PERCENTAGE",
+        value: Number(diskon),
+      },
       productVariants: varian,
     };
     const result = await createProduct(payload);
     setLoading(false);
+
     if (result.success) {
-      console.log("Berhasil:", result.message);
+      toast.success("Berhasil Membuat Produk", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
     } else {
+      toast.error("Terjadi Kesalahan Membuat Produk", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
       setError(result.message);
     }
   };
 
   return (
     <div>
+      <Toaster />
       <div className="flex gap-4 max-xl:flex-col">
         <div className="flex flex-col gap-y-5">
           <ComponentCard title="Informasi Produk" className="md:min-w-[780px]">
@@ -199,7 +260,8 @@ export default function FormProduk() {
               <div>
                 <Label>Kategori</Label>
                 <Select
-                  options={categoryProducts}
+                  defaultValue={categoryId ? categoryId : ""}
+                  options={categoryProducts.current}
                   placeholder="Pilih Kategori Produk"
                   onChange={handleSelectChange}
                   className="dark:bg-dark-900"
@@ -232,7 +294,7 @@ export default function FormProduk() {
                   <Label>Berat</Label>
                   <div className="relative">
                     <Input
-                      placeholder="Berat (kg)"
+                      placeholder="Berat (gr)"
                       type="number"
                       min="0"
                       className="pl-[62px] appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
@@ -251,7 +313,9 @@ export default function FormProduk() {
                     <Label>Diskon</Label>
                     <div className="relative">
                       <Input
-                        placeholder="Diskon (10%)"
+                        value={diskon ?? ""}
+                        onChange={(e) => setDiskon(e.target.value)}
+                        placeholder="10(nilai persen)"
                         type="number"
                         min="0"
                         className="pl-[62px] appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
@@ -277,8 +341,17 @@ export default function FormProduk() {
             onSwitchChange={handleSwitchChange}
           />
           <ManagePrivorAndStorefront title="Atur Privor & Storefront" />
-          <Button className="hover:bg-black" onClick={handleSubmit}>
-            {loading ? "Menambahkan Produk" : "Tambah Produk"}
+          <Button
+            className="hover:bg-black"
+            onClick={id ? handleEdit : handleSubmit}
+          >
+            {loading
+              ? id
+                ? "Menyimpan Perubahan"
+                : "Menambahkan Produk"
+              : id
+              ? "Edit Produk"
+              : "Tambah Produk"}
           </Button>
           {error && <section className="text-red-600">{error}</section>}
         </div>
@@ -297,23 +370,17 @@ export default function FormProduk() {
         </div>
 
         {/* Variant Produk */}
-        {varian.map((row, index) => (
+        {varian.map((data, index) => (
           <ComponentCard
             key={index + 1}
             title={`Variant ${index + 1}`}
             className="mt-5 max-lg:max-w-full lg:max-w-[791px] min-w-[791px] relative"
           >
             <VarianProduk
+              variant={data}
               setVarian={setVarian}
               index={index}
               onDelete={deleteVariant}
-            />
-
-            <GrosirProduk
-              variantIndex={index}
-              rows={row.productWholesalers}
-              setRows={() => {}}
-              setVarian={setVarian}
             />
           </ComponentCard>
         ))}

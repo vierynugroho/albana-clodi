@@ -9,18 +9,42 @@ import {
 import { CiEdit } from "react-icons/ci";
 import { TiDelete } from "react-icons/ti";
 import { FaWhatsapp } from "react-icons/fa";
+import { Customer } from "../../service/customer";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 
-type Customer = {
-  id: string;
-  name: string;
-  category: string;
-  phone: string;
-  address: string;
-};
 type Props = {
   customers: Customer[];
+  deleteCustomer?: (id: string) => void;
+  editCustomer?: (id: string) => void;
 };
-export default function TableCustomer({ customers }: Props) {
+
+export default function TableCustomer({ customers, deleteCustomer }: Props) {
+  const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
+
+  const handleDeleteClick = (customerId: string) => {
+    setSelectedCustomerId(customerId);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setSelectedCustomerId("");
+  };
+
+  const handleConfirmDelete = (id: string) => {
+    if (deleteCustomer) {
+      deleteCustomer(id);
+    }
+    handleCloseDeleteModal();
+  };
+
+  const handleEdit = (id: string) => {
+    navigate(`/customer/edit/${id}`);
+  };
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] mt-5">
       <div className="max-w-full overflow-x-auto">
@@ -86,7 +110,7 @@ export default function TableCustomer({ customers }: Props) {
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                   <div className="flex gap-2">
                     <FaWhatsapp size={20} className="text-green-600" />
-                    {customer.phone}
+                    {customer.phoneNumber}
                   </div>
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -94,8 +118,18 @@ export default function TableCustomer({ customers }: Props) {
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                   <div className="flex gap-5 justify-end">
-                    <CiEdit size={30} className="text-amber-500" />
-                    <TiDelete size={30} className="text-red-600" />
+                    <CiEdit
+                      size={30}
+                      className="text-amber-500"
+                      onClick={() => handleEdit(customer.id)}
+                      style={{ cursor: "pointer" }}
+                    />
+                    <TiDelete
+                      size={30}
+                      className="text-red-600"
+                      onClick={() => handleDeleteClick(customer.id)}
+                      style={{ cursor: "pointer" }}
+                    />
                   </div>
                 </TableCell>
               </TableRow>
@@ -103,6 +137,31 @@ export default function TableCustomer({ customers }: Props) {
           </TableBody>
         </Table>
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-50">
+          <div className="bg-black bg-blend-color text-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Konfirmasi Hapus</h2>
+            <p className="mb-6">
+              Apakah Anda yakin ingin menghapus customer ini?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleCloseDeleteModal}
+                className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 text-slate-600"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => handleConfirmDelete(selectedCustomerId)}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
