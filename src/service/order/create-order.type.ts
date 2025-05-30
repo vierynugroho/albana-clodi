@@ -19,6 +19,7 @@ export interface OrderPayload {
           shippingService?: string;
           cost?: number;
           type?: string;
+          weight?: string;
         };
         discount: {
           value?: number;

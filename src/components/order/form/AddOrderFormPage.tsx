@@ -3,11 +3,10 @@ import OrderPageBreadcrumb from "../../../pages/Order/OrderPageBreadcrumb.tsx";
 import ComponentCard from "../../common/ComponentCard.tsx";
 import Label from "../../form/Label.tsx";
 import Select from "../../form/Select.tsx";
-import DatePicker from "../../form/date-picker.tsx";
 import TableAddOrder from "../table/TableAddOrder.tsx";
 import Button from "../../ui/button/Button.tsx";
 import { IoIosSave } from "react-icons/io";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import ModalAddCustomer from "../modal/ModalAddcustomer.tsx";
 import AsyncSelect from "react-select/async";
 import {
@@ -26,6 +25,8 @@ import {
   postOrder,
 } from "../../../service/order/create-order.service.ts";
 import { FaSpinner } from "react-icons/fa";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const CustomOption = (props: OptionProps<{ customer: TCustomer }, false>) => {
   const { data, innerRef, innerProps, isFocused } = props;
@@ -33,8 +34,9 @@ const CustomOption = (props: OptionProps<{ customer: TCustomer }, false>) => {
     <div
       ref={innerRef}
       {...innerProps}
-      className={`p-3 cursor-pointer ${isFocused ? "bg-blue-100 text-blue-900" : "bg-white text-gray-900"
-        }`}
+      className={`p-3 cursor-pointer ${
+        isFocused ? "bg-blue-100 text-blue-900" : "bg-white text-gray-900"
+      }`}
     >
       <div className="font-semibold">{data.customer.name}</div>
       <div className="text-sm text-gray-500">{data.customer.address}</div>
@@ -51,8 +53,9 @@ const DeliveryOption = (
     <div
       ref={innerRef}
       {...innerProps}
-      className={`p-3 cursor-pointer ${isFocused ? "bg-blue-100 text-blue-900" : "bg-white text-gray-900"
-        }`}
+      className={`p-3 cursor-pointer ${
+        isFocused ? "bg-blue-100 text-blue-900" : "bg-white text-gray-900"
+      }`}
     >
       <div className="font-semibold">{data.place.name}</div>
       <div className="text-sm text-gray-500">{data.place.address}</div>
@@ -62,7 +65,7 @@ const DeliveryOption = (
 
 export default function AddOrderFomPage() {
   const [showModal, setShowModal] = useState(false);
-  const [note, setNote] = useState('');
+  const [note, setNote] = useState("");
   const [orderDate, setOrderDate] = useState<Date | null>(null);
   const [selectedPemesan, setSelectedPemesan] = useState<TCustomer | null>(
     null
@@ -76,16 +79,22 @@ export default function AddOrderFomPage() {
     useState<TDeliveryPlace | null>(null);
   const [selectedSalesChannel, setSelectedSalesChannel] =
     useState<SalesChannel | null>(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
-    PaymentMethod | null
-  >(null);
-
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<PaymentMethod | null>(null);
   const handleEditPemesan = () => {
     setisEditingPemesan(true);
   };
   const handleEditPenerima = () => {
     setisEditingPenerima(true);
   };
+
+  const handleChangeOrder = useCallback((data) => {
+    setOrderProducts(data.orderProducts);
+    setShippingCost(data.shippingCost ?? {});
+    setDiscount(data.discountOrder ?? {});
+    setInsurance(data.insuranceValue);
+    setOngkirDiscountValue(data.ongkirDiscountValue);
+  }, []);
 
   const paymentOptions = [
     { value: "PENDING", label: "Belum Bayar" },
@@ -102,9 +111,10 @@ export default function AddOrderFomPage() {
   const [orderProducts, setOrderProducts] = useState<
     { productId: string; productVariantId: string; productQty: number }[]
   >([]);
-
-  type ShippingCostType = { shippingService?: string; cost?: number; type?: string } | undefined;
-  const [shippingCost, setShippingCost] = useState<ShippingCostType>(undefined);
+  const [shippingCost, setShippingCost] = useState<{shippingService?: string; cost?: number; type?: string; weight?: string}>({});
+  const [discount, setDiscount] = useState<{ value?: number; type?: "nominal" | "percent" }>({});
+  const [insurance, setInsurance] = useState<number | undefined>(undefined);
+  const [ongkirDiscountValue, setOngkirDiscountValue] = useState<number | undefined>(undefined);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -112,7 +122,10 @@ export default function AddOrderFomPage() {
       order: {
         ordererCustomerId: selectedPemesan?.id || "",
         deliveryTargetCustomerId: selectedPenerima?.id || "",
-        deliveryPlaceId: selectedDeliveryPlace?.id !== undefined ? String(selectedDeliveryPlace.id) : "",
+        deliveryPlaceId:
+          selectedDeliveryPlace?.id !== undefined
+            ? String(selectedDeliveryPlace.id)
+            : "",
         salesChannelId: selectedSalesChannel?.id || "",
         orderDate: orderDate ? orderDate.toISOString() : "",
         note: note,
@@ -121,13 +134,10 @@ export default function AddOrderFomPage() {
         detail: {
           otherFees: {
             // packaging: 5000,
-            insurance: 10000,
-            weight: 1000,
+            insurance: insurance,
+            weight: ongkirDiscountValue,
             shippingCost: shippingCost,
-            discount: {
-              value: 10,
-              type: "percent",
-            },
+            discount: discount || {},
           },
         },
         paymentMethod: {
@@ -141,7 +151,6 @@ export default function AddOrderFomPage() {
 
     try {
       const res = await postOrder(payload);
-      // setSuccessMsg("Order berhasil dibuat!");
       console.log("Order response:", res);
     } catch (error) {
       console.error("Order submission error:", error);
@@ -286,17 +295,14 @@ export default function AddOrderFomPage() {
               </div>
 
               <div>
+                <Label htmlFor="datepicker">Pilih Tanggal:</Label>
                 <DatePicker
-                  id="date-picker"
-                  label="Tanggal Order"
-                  placeholder="Select a date"
-                  onChange={(dates) => {
-                    if (Array.isArray(dates)) {
-                      setOrderDate(dates[0] || null);
-                    } else {
-                      setOrderDate(dates);
-                    }
-                  }}
+                  id="datepicker"
+                  selected={orderDate}
+                  onChange={(date) => setOrderDate(date)}
+                  dateFormat="dd-MM-yyyy"
+                  className="border p-2 rounded"
+                  placeholderText="Pilih tanggal order"
                 />
               </div>
 
@@ -320,7 +326,9 @@ export default function AddOrderFomPage() {
               </div>
 
               <div>
-                <label htmlFor="note" className="font-semibold text-md">Catatan</label>
+                <label htmlFor="note" className="font-semibold text-md">
+                  Catatan
+                </label>
                 <textarea
                   id="note"
                   className="input h-30 w-full border border-gray-400 rounded-lg bg-gray-100"
@@ -346,10 +354,7 @@ export default function AddOrderFomPage() {
               receiverDestinationId={
                 selectedDeliveryPlace?.destinationId ?? undefined
               }
-              onChange={(data) => {
-                setOrderProducts(data.orderProducts);
-                setShippingCost(data.shippingCost); 
-              }}
+              onChange={handleChangeOrder}
             />
 
             {/* Status Pembayaran */}
@@ -409,10 +414,11 @@ export default function AddOrderFomPage() {
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
-                className={`flex items-center gap-2 px-4 py-2 rounded text-white ${loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
-                  }`}
+                className={`flex items-center gap-2 px-4 py-2 rounded text-white ${
+                  loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
               >
                 {loading ? (
                   <>

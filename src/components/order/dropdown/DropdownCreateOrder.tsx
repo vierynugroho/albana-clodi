@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import EditProductModal from "../modal/EditOrder";
+import ProductDiscountModal from "../modal/ProductDiscountModal";
 
 interface DropdownCreateOrderProps {
   order: {
@@ -9,14 +11,21 @@ interface DropdownCreateOrderProps {
     subtotal: number;
   };
   onDelete: (id: string) => void;
+  onUpdateQuantity: (id: string, newQty: number) => void;
+  onApplyDiscount?: (id: string, finalPrice: number, discount: number, type: "Rp" | "%") => void;
 }
 
 export default function DropdownCreateOrder({
   order,
   onDelete,
+  onUpdateQuantity,
+  onApplyDiscount,
 }: DropdownCreateOrderProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [openModalEdit, setOpenModalEdit] = useState(false);
+  const [qty, setQty] = useState(order.qty);
+  const [isOpenDiscount, setOpenDiscount] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -39,10 +48,23 @@ export default function DropdownCreateOrder({
 
       {open && (
         <div className="absolute right-0 flex items-center justify-center gap-3 z-10 bg-white border rounded shadow-lg p-2 text-xs">
-          <button className="text-green-600 hover:bg-green-600 hover:text-white rounded-md p-2 px-5 border border-green-600">
+          {/* <button
+            onClick={() => {
+              setOpenDiscount(true);
+              setOpen(false);
+            }}
+            className="text-green-600 hover:bg-green-600 hover:text-white rounded-md p-2 px-5 border border-green-600"
+          >
             Diskon
-          </button>
-          <button className="text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-md p-2 px-5 border border-yellow-600">
+          </button> */}
+          <button
+            onClick={() => {
+              setQty(order.qty);
+              setOpenModalEdit(true);
+              setOpen(false);
+            }}
+            className="text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-md p-2 px-5 border border-yellow-600"
+          >
             Edit
           </button>
           <button
@@ -52,6 +74,34 @@ export default function DropdownCreateOrder({
             Hapus
           </button>
         </div>
+      )}
+
+      {openModalEdit && (
+        <EditProductModal
+          productName={order.name}
+          price={order.harga}
+          quantity={qty}
+          onQuantityChange={(newQty) => setQty(newQty)}
+          onClose={() => setOpenModalEdit(false)}
+          onSave={() => {
+            onUpdateQuantity(order.productId, qty);
+            setOpenModalEdit(false);
+          }}
+        />
+      )}
+
+      {isOpenDiscount && (
+        <ProductDiscountModal
+          productName={order.name}
+          initialPrice={order.harga}
+          onClose={() => setOpenDiscount(false)}
+          onSave={(finalPrice, discountValue, discountType) => {
+            if (onApplyDiscount) {
+              onApplyDiscount(order.productId, finalPrice, discountValue, discountType);
+            }
+            setOpenDiscount(false);
+          }}
+        />
       )}
     </div>
   );
