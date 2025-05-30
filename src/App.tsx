@@ -31,6 +31,7 @@ import CategoryProduk from "./pages/Produk/CategoryProduk";
 import CustomerFormPage from "./pages/Customer/CustomerFormPage";
 import AllExpense from "./pages/Expenses/Allexpense";
 import SettingPage from "./pages/SettingPage/SettingPage";
+import PrintLabelPage from "./pages/Order/PrintLabelPage";
 import AddOrderFomPage from "./components/order/form/AddOrderFormPage";
 import UploadOrderPage from "./pages/Order/UploadOrderPage";
 // import EditOrderFomPage from "./components/order/form/EditOrderPage";
@@ -132,6 +133,9 @@ export default function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
 
+          {/* Print Label  */}
+          <Route path="/order/print-label/:id" element={<PrintLabelPage />} />
+          
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
