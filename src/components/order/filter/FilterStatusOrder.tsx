@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 type FilterStatusOrderProps = {
   selectedStatuses: string[];
   onChange: (selected: string[]) => void;
@@ -14,6 +16,7 @@ export default function FilterStatusOrder({
       onChange([...selectedStatuses, status]);
     }
   };
+  const [status, setStatus] = useState("Semua Order");
 
   const statusList: string[] = [
     "Semua Order",
@@ -29,22 +32,22 @@ export default function FilterStatusOrder({
   return (
     <div className="flex flex-wrap gap-2">
       {statusList.map((statusOrder) => (
-        <label
+        <button
           key={statusOrder}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors duration-200 ${
-            selectedStatuses.includes(statusOrder)
-              ? "bg-blue-600 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300"
-          } cursor-pointer`}>
-          <input
-            type="checkbox"
-            checked={selectedStatuses.includes(statusOrder)}
-            onChange={() => handleToggle(statusOrder)}
-            className="form-checkbox accent-blue-600"
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-md border transition-colors duration-200 ${
+            status === statusOrder
+              ? "text-blue-600  border-blue-600"
+              : "text-gray-700 border-gray-300"
+          } cursor-pointer`}
+          onClick={() => setStatus(statusOrder)}>
+          <span
+            className={`w-2 h-2 rounded-full ${
+              status === statusOrder ? "bg-blue-600" : "bg-gray-400"
+            }`}
           />
 
           <span className="text-sm">{statusOrder}</span>
-        </label>
+        </button>
       ))}
     </div>
   );
