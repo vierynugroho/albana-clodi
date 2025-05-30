@@ -4,13 +4,14 @@ const logoBank: Record<string, string> = {
   BNI: "/images/logo/bank_logo/BNI-logo.svg",
   BCA: "/images/logo/bank_logo/BCA-logo.svg",
   Mandiri: "/images/logo/bank_logo/Mandiri-logo.svg",
+  BRI: "/images/logo/bank_logo/BRI-logo.svg",
 };
 
 type Props = {
   id?: string;
   titleBank: string;
-  rekeningNumber: string;
-  userBank: string;
+  rekeningNumber: string | null;
+  userBank: string | null;
   setStateEdit: () => void;
   setDelete: () => void;
 };
@@ -27,7 +28,7 @@ export default function CardBank({
   return (
     <div className="flex justify-around bg-white shadow-md rounded-2xl gap-3 hover:shadow-lg hover:shadow-blue-300 transition-shadow border h-[185px] dark:bg-gray-dark dark:border-gray-800 dark:hover:shadow-blue-300">
       <div className="pt-5 h-[185px] dark:bg-gray-dark dark:border-gray-800 dark:hover:shadow-blue-300">
-        <div className="w-[100px] overflow-hidden rounded-xl bg-blue-light-50">
+        <div className="w-[70px] h-[70px] p-1 overflow-hidden rounded-xl bg-blue-light-50">
           <img
             src={logoSrc}
             alt={titleBank}

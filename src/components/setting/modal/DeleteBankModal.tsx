@@ -1,18 +1,36 @@
 import ReactDOM from "react-dom";
+import { deleteBankPayment } from "../../../service/shopSetting/payment";
+import toast, { Toaster } from "react-hot-toast";
 
 type DeleteModalProps = {
   id: string;
   changeModal: () => void;
+  refreshData: () => void;
 };
 
-export default function DeleteBankModal({ id, changeModal }: DeleteModalProps) {
+export default function DeleteBankModal({
+  id,
+  changeModal,
+  refreshData,
+}: DeleteModalProps) {
   async function handleDeleteExpense(id: string) {
-    console.log(id);
+    const result = await deleteBankPayment(id);
+    if (result.success) {
+      toast.success(result.message, {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
+    } else {
+      toast.success("Gagal Menghapus Data", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
+    }
+    refreshData();
     changeModal();
   }
 
   return ReactDOM.createPortal(
     <div className="fixed z-[100000] inset-0 overflow-y-auto">
+      <Toaster />
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 transition-opacity">
           <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
