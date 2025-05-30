@@ -1,18 +1,12 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { ProductPrice, ProductVariant } from "./VarianProduk";
 
 type PreviewFile = File & { preview: string };
 type DropzoneProps = {
-  index: number;
-  onChange: (
-    index: number,
-    value: File,
-    label: keyof ProductVariant | keyof ProductPrice
-  ) => void;
+  onChange: (value: File) => void;
 };
 
-const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
+const DropzoneImage: React.FC<DropzoneProps> = ({ onChange }) => {
   const [image, setImage] = useState<PreviewFile | null>(null);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -21,7 +15,7 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
       preview: URL.createObjectURL(file),
     });
     setImage(previewFile);
-    onChange(index, previewFile, "imageUrl" as keyof ProductVariant);
+    onChange(previewFile);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -35,7 +29,7 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
     },
   });
   return (
-    <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500 w-40 h-full ">
+    <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500 w-40  ">
       <form
         {...getRootProps()}
         className={`dropzone rounded-xl border-dashed border-gray-300 p-7 lg:p-10
@@ -63,7 +57,7 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
           {/* Icon Container */}
           <div className="flex justify-center">
             <div
-              className={`flex h-[68px] w-[68px]  items-center justify-center ${
+              className={`flex h-[70px] w-[70px]  items-center justify-center ${
                 image ? "" : "rounded-full bg-gray-200 "
               } text-gray-700 dark:bg-gray-800 dark:text-gray-400 `}
             >
@@ -90,4 +84,4 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ index, onChange }) => {
   );
 };
 
-export default DropzoneComponent;
+export default DropzoneImage;

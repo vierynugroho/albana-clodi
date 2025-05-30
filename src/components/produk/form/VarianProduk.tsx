@@ -11,19 +11,11 @@ export type ProductPrice = {
   member: number;
 };
 
-type ProductWholesaler = {
-  lowerLimitItem: number;
-  upperLimitItem: number;
-  unitPrice: number;
-  wholesalerPrice: number;
-};
-
 export type ProductVariant = {
-  imageUrl: string;
+  imageUrl: File | null | string;
   image?: File;
   sku: string;
   productPrices: ProductPrice;
-  productWholesalers: ProductWholesaler[];
   barcode?: string;
   size?: string;
   color?: string;
@@ -32,11 +24,17 @@ export type ProductVariant = {
 
 type Props = {
   setVarian: React.Dispatch<React.SetStateAction<ProductVariant[]>>;
+  variant: ProductVariant;
   index: number;
   onDelete: (index: number) => void;
 };
 
-export default function VarianProduk({ setVarian, index, onDelete }: Props) {
+export default function VarianProduk({
+  setVarian,
+  index,
+  onDelete,
+  variant,
+}: Props) {
   function onChange(
     index: number,
     value: number | string | File,
@@ -68,6 +66,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
         <Input
           type="text"
           placeholder="SKU45"
+          value={variant.sku ?? ""}
           onChange={(val) => onChange(index, val.target.value, "sku")}
         />
       </div>
@@ -76,6 +75,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
           <Label htmlFor="inputTwo">Harga Beli</Label>
           <Input
             onChange={(val) => onChange(index, val.target.value, "buy")}
+            value={variant.productPrices?.buy ?? ""}
             type="number"
             min="0"
             placeholder="5000"
@@ -87,6 +87,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
           <Label htmlFor="inputTwo">Harga Jual Normal</Label>
           <Input
             onChange={(val) => onChange(index, val.target.value, "normal")}
+            value={variant.productPrices?.normal ?? ""}
             type="number"
             min="0"
             placeholder="40000"
@@ -97,6 +98,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
           <Label htmlFor="inputTwo">Harga Jual Reseller</Label>
           <Input
             onChange={(val) => onChange(index, val.target.value, "reseller")}
+            value={variant.productPrices?.reseller ?? ""}
             type="number"
             min="0"
             placeholder="13000"
@@ -107,6 +109,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
           <Label htmlFor="inputTwo">Harga Jual Agent</Label>
           <Input
             onChange={(val) => onChange(index, val.target.value, "agent")}
+            value={variant.productPrices?.agent ?? ""}
             type="number"
             min="0"
             placeholder="15000"
@@ -117,6 +120,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
           <Label htmlFor="inputTwo">Harga Jual Member</Label>
           <Input
             onChange={(val) => onChange(index, val.target.value, "member")}
+            value={variant.productPrices?.member ?? ""}
             type="number"
             min="0"
             placeholder="20000"
@@ -128,6 +132,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
         <div>
           <Label htmlFor="inputTwo">Ukuran</Label>
           <Input
+            value={variant.size ?? ""}
             onChange={(val) => onChange(index, val.target.value, "size")}
             type="string"
             placeholder="XL"
@@ -137,6 +142,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
         <div className=" mt-4">
           <Label htmlFor="inputTwo">Warna</Label>
           <Input
+            value={variant.color ?? ""}
             type="text"
             placeholder="Merah"
             onChange={(val) => onChange(index, val.target.value, "color")}
@@ -146,6 +152,7 @@ export default function VarianProduk({ setVarian, index, onDelete }: Props) {
       <div>
         <Label htmlFor="inputTwo">Stok</Label>
         <Input
+          value={variant.stock ?? ""}
           onChange={(val) => onChange(index, val.target.value, "stock")}
           type="number"
           placeholder="20"
