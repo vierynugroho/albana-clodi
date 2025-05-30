@@ -17,8 +17,7 @@ import {
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwYjJhN2FlLTAzZjgtNDU3Yy04NmM4LTIzNWEyMmY1MTc5NSIsImlhdCI6MTc0ODQ4OTcyOCwiZXhwIjoxNzQ4NTc2MTI4fQ.K9SEJJh_2AtpxAjM_ZO9gJzN6FkglWwqBzQ9XPuXYyI";
+const token = localStorage.getItem("token");
 
 export const postOrder = async (data: OrderPayload) => {
   try {
@@ -33,7 +32,6 @@ export const postOrder = async (data: OrderPayload) => {
     throw error;
   }
 };
-
 
 export const fetchCustomers = async (
   query: string
@@ -144,12 +142,15 @@ export const fetchPayments = async (
   query: string
 ): Promise<{ label: string; value: string; payment: PaymentMethod }[]> => {
   try {
-    const response = await axios.get<PaymentResponse>(`${apiUrl}/payment-methods`, {
-      params: { search: query },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get<PaymentResponse>(
+      `${apiUrl}/payment-methods`,
+      {
+        params: { search: query },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const payments = response.data.responseObject;
 
@@ -159,7 +160,7 @@ export const fetchPayments = async (
       payment,
     }));
   } catch (error) {
-    console.error('Failed to fetch payments:', error);
+    console.error("Failed to fetch payments:", error);
     return [];
   }
 };
