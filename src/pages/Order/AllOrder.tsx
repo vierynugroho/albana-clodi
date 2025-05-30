@@ -15,6 +15,7 @@ import { FaPlus } from "react-icons/fa6";
 import OptionDropdownOrder from "../../components/order/dropdown/OptionDropdownOrder";
 import OrderToolbar from "../../components/order/orderToolbar";
 import { getOrders, OrderItem } from "../../service/order/index";
+import { exportOrdersToExcel } from "../../service/order/create-order.service";
 
 export type FilterState = {
   ordererCustomerId?: string;
@@ -171,6 +172,16 @@ export default function AllOrderPage() {
     };
   }, [setIsMobile]);
 
+  function handleExport() {
+    exportOrdersToExcel()
+      .then(() => {
+        console.log("File berhasil diunduh");
+      })
+      .catch(() => {
+        alert("Gagal mengunduh file Excel.");
+      });
+  }
+
   return (
     <div>
       <PageMeta
@@ -227,6 +238,7 @@ export default function AllOrderPage() {
             <Button
               size="md"
               variant="outline"
+              onClick={handleExport}
               startIcon={<DownloadIcon className="size-5 text-blue-700" />}
             >
               Download

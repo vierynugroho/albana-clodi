@@ -202,3 +202,26 @@ export const cancelOrder = async (orderId: string): Promise<any> => {
     throw error?.response?.data || error;
   }
 };
+
+export async function exportOrdersToExcel(): Promise<void> {
+  try {
+    const response = await axios.get("/orders/export/excel", {
+      responseType: "blob",
+      headers: {
+         Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Buat URL dari file blob
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "orders-export.xlsx");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Gagal mengunduh file Excel:", error);
+    throw error;
+  }
+}
