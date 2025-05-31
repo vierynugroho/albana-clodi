@@ -3,27 +3,46 @@ import Label from "../../form/Label";
 import Select from "../../form/Select";
 import Button from "../../ui/button/Button";
 import DatePicker from "../../form/date-picker";
+import { FilterState } from "../../../service/customer";
+import React from "react";
 
 type Props = {
   changeModal: () => void;
-  setFilter?: () => void;
+  handleFilter: () => void;
+  setQuery: React.Dispatch<React.SetStateAction<FilterState>>;
 };
 
 const optionsCustomers = [
-  { value: "customer", label: "Customer" },
-  { value: "reseller", label: "Reseller" },
-  { value: "agent", label: "Agent" },
-  { value: "member", label: "Member" },
-  { value: "dropshiper", label: "Dropshiper" },
+  { value: "CUSTOMER", label: "Customer" },
+  { value: "RESELLER", label: "Reseller" },
+  { value: "AGENT", label: "Agent" },
+  { value: "DROPSHIPPER", label: "Dropshiper" },
 ];
 
-export default function ModalCustomerKategory({ changeModal }: Props) {
-  function handleChange(value: string) {
-    console.log(value);
+const statusCostumer = [
+  { value: "ACTIVE", label: "User Aktiv" },
+  { value: "NONACTIVE", label: "User Tidak Aktiv" },
+];
+
+export default function ModalCustomerKategory({
+  changeModal,
+  setQuery,
+  handleFilter,
+}: Props) {
+  function handleChangeFilter<K extends keyof FilterState>(
+    key: K,
+    value: FilterState[K]
+  ) {
+    setQuery((prev) => ({ ...prev, [key]: value === "" ? null : value }));
   }
 
-  function addFilter() {
-    changeModal();
+  function handleChange(
+    value: "CUSTOMER | RESELLER | DROPSHIPPER | AGENT" | string,
+    key: keyof FilterState
+  ) {
+    handleChangeFilter(key, value);
+    console.log(key);
+    console.log(value);
   }
 
   return ReactDOM.createPortal(
@@ -35,7 +54,6 @@ export default function ModalCustomerKategory({ changeModal }: Props) {
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
         <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left  shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
           <div className="md:flex sm:items-start sm:flex-wrap gap-4 max-md:flex-col ma">
-            
             <div className="mx-auto w-full flex items-center justify-between h-12 rounded-full sm:mx-0 sm:h-10 ">
               <section className="font-bold text-2xl">Filter</section>
               <Button size="sm">Reset Filter</Button>
@@ -59,7 +77,9 @@ export default function ModalCustomerKategory({ changeModal }: Props) {
               <Select
                 options={optionsCustomers}
                 placeholder="Pilih Kategori Customer"
-                onChange={handleChange}
+                onChange={(
+                  value: "CUSTOMER | RESELLER | DROPSHIPPER | AGENT " | string
+                ) => handleChange(value, "category")}
                 className="dark:bg-dark-900"
               />
             </div>
@@ -69,7 +89,7 @@ export default function ModalCustomerKategory({ changeModal }: Props) {
               <Select
                 options={optionsCustomers}
                 placeholder="Pilih Kategori Customer"
-                onChange={handleChange}
+                onChange={() => ""}
                 className="dark:bg-dark-900"
               />
             </div>
@@ -77,20 +97,21 @@ export default function ModalCustomerKategory({ changeModal }: Props) {
             <div className="flex-auto max-md:mt-3">
               <Label>Status Customer</Label>
               <Select
-                options={optionsCustomers}
-                placeholder="Pilih Kategori Customer"
-                onChange={handleChange}
+                options={statusCostumer}
+                placeholder="Pilih Status Customer"
+                onChange={(
+                  value: "CUSTOMER | RESELLER | DROPSHIPPER | AGENT " | string
+                ) => handleChange(value, "status")}
                 className="dark:bg-dark-900"
               />
             </div>
-
           </div>
           <div className="mt-5 sm:mt-6 sm:flex sm:flex-row-reverse">
             <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
               <button
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-brand-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-brand-300 focus:outline-none focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                onClick={() => addFilter()}
+                onClick={() => handleFilter()}
               >
                 Tambah
               </button>

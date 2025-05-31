@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
@@ -10,12 +10,13 @@ import { Link } from "react-router";
 import FilterProduk from "../../components/produk/FilterProduk";
 import SearchProduk from "../../components/produk/input/SearchProduk";
 import { useNavigate } from "react-router";
+import { downloadProductExel } from "../../service/product";
 
 type FilterState = {
   kategori: string;
   channel: string;
   harga: string;
-  tipe: string;
+  type: string | null;
   urutan: string;
   produkMarketplace: string;
 };
@@ -25,11 +26,13 @@ export default function AllProdukPage() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
   const [keyword, setKeyword] = useState<string>("");
+  const isSearch = useRef(false);
+  const firstLoadBrowser = useRef(true);
   const [filterProduk, setFilterProduk] = useState<FilterState>({
     kategori: "",
     channel: "",
     harga: "",
-    tipe: "",
+    type: "",
     urutan: "",
     produkMarketplace: "",
   });
@@ -48,17 +51,26 @@ export default function AllProdukPage() {
     };
   }, []);
 
+  // Download Exel
+  async function downloadExel() {
+    const data = await downloadProductExel();
+    return data;
+  }
+
   // Handle Search and Filter Query
   const handleSearchAndFilter = useCallback(
     (keyword: string, filter: FilterState) => {
       const params = new URLSearchParams();
+      isSearch.current = true;
       // for search
       params.set("keyword", keyword.toLowerCase());
       // for filter
       params.set("kategori", filter.kategori);
       params.set("channel", filter.channel);
       params.set("harga", filter.harga);
-      params.set("tipe", filter.tipe);
+      if (filter.type) {
+        params.set("tipe", filter.type);
+      }
       params.set("urutan", filter.urutan);
       params.set("produkMarketplace", filter.produkMarketplace);
 
@@ -125,6 +137,7 @@ export default function AllProdukPage() {
             variant="outline"
             className="flex-1/2"
             startIcon={<DownloadIcon className="size-5" />}
+            onClick={() => downloadExel()}
           >
             Export Data
           </Button>
@@ -146,7 +159,14 @@ export default function AllProdukPage() {
             />
           ) : null}
 
-          <TableProduk />
+          <TableProduk
+            search={keyword}
+            isSearch={isSearch.current}
+            setIsSearch={isSearch}
+            firstLoadBrowser={firstLoadBrowser.current}
+            setLoadBrowser={firstLoadBrowser}
+            optionFilter={filterProduk}
+          />
         </div>
       </div>
     </div>

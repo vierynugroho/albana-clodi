@@ -4,25 +4,32 @@ import PageMeta from "../../components/common/PageMeta";
 import ProdukPageBreadcrumb from "../../components/produk/ProdukPageBreadcrumb";
 import SettingBarcode from "../../components/produk/printBarcode/SettingBarcode";
 import SearchableDropdown from "../../components/produk/input/SearchDropdown";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Label from "../../components/form/Label";
-import Button from "../../components/produk/button/Button";
-import { FaPrint } from "react-icons/fa";
+import { ArrayProduct, getProducts } from "../../service/product";
 
-type OptionsDropdows = {
-  id: number;
-  name: string;
-};
 export default function PrintProductBarcode() {
   const [value, setValue] = useState("");
-  const [listProduk, setListProduk] = useState<OptionsDropdows[]>([]);
-  const data = [
-    { id: 1, name: "Graspus graspus" },
-    { id: 2, name: "Grus rubicundus" },
-    { id: 3, name: "Speothos vanaticus" },
-    { id: 4, name: "Charadrius tricollaris" },
-    { id: 5, name: "Sciurus vulgaris" },
-  ];
+  const [message, setMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const dataProducts = useRef<ArrayProduct[]>([]);
+
+  useEffect(() => {
+    setLoading(true);
+    async function fetchProducts() {
+      const result = await getProducts();
+      if (result.success && result.responseObject) {
+        dataProducts.current = result.responseObject.data;
+        setLoading(false);
+      } else {
+        setMessage(result.message);
+        setLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
+  console.log(message);
+
   return (
     <div>
       <PageMeta
@@ -47,17 +54,13 @@ export default function PrintProductBarcode() {
             <div className="flex gap-2 flex-col">
               <Label>Cari Produk</Label>
               <SearchableDropdown
-                options={data}
+                options={dataProducts.current}
                 label="name"
                 id="id"
+                loading={loading}
                 selectedVal={value}
                 handleChange={(val) => setValue(val)}
-                setListProduk={setListProduk}
               />
-              <Button disabled={listProduk.length === 0}>
-                Cetak Barcode
-                <FaPrint size={25} />
-              </Button>
             </div>
           </ComponentCard>
         </div>

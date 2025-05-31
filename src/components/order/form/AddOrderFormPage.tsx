@@ -236,6 +236,7 @@ export default function AddOrderFomPage() {
           >
             <div className="space-y-6">
               <div>
+                {/* Slicing Informasi Order */}
                 <Label htmlFor="namaPemesan" className="font-semibold text-md">
                   Nama Pemesan
                 </Label>

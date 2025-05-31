@@ -6,37 +6,114 @@ import { FaFilter } from "react-icons/fa";
 import TableCustomer from "../../components/customer/TableCustomer";
 import { Link } from "react-router";
 import ModalCustomerKategory from "../../components/customer/modal/ModalFilterCustomer";
-import { Customer, getCustomers } from "../../service/customer";
+import {
+  Customer,
+  deleteCustomer,
+  downloadExcelCustomer,
+  getCustomers,
+} from "../../service/customer";
 import toast, { Toaster } from "react-hot-toast";
+import { FilterState } from "../../service/customer";
+import PaginationNavigation from "../../components/produk/pagination/PaginationNavigation";
 
 export default function AllCustomerPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const [filter, setFilter] = useState<boolean>(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const search = useRef<HTMLInputElement>(null);
   const hasFetched = useRef(false);
 
-  const fetchCustomers = useCallback(async () => {
-    const result = await getCustomers();
-    if (result.success && result.responseObject) {
-      setCustomers(result.responseObject.data);
-      if (!hasFetched.current) {
-        toast.success(result.message, {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
-      }
-    } else {
-      if (!hasFetched.current) {
-        toast.error(result.message, {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
-      }
-    }
-    hasFetched.current = true;
-  }, []);
+  //   Pagination State For Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
+  //   Query Filter
+  const [query, setQuery] = useState<FilterState>({
+    category: null,
+    status: null,
+  });
+
+  console.log(query);
+
+  function handleSearch() {
+    setIsSearching(true);
+    const keyword = search.current?.value;
+    fetchCustomers(keyword, query).finally(() => setIsSearching(false));
+  }
+
+  const fetchCustomers = useCallback(
+    async (search = "", query?: FilterState) => {
+      setIsLoading(true);
+      const result = await getCustomers(search, query, currentPage);
+      if (result.success && result.responseObject) {
+        setCustomers(result.responseObject.data);
+        setTotalPages(result.responseObject.meta.totalPages);
+        if (!hasFetched.current) {
+          toast.success(result.message, {
+            style: { marginTop: "10vh", zIndex: 100000 },
+          });
+        }
+      } else {
+        if (!hasFetched.current) {
+          toast.error(result.message, {
+            style: { marginTop: "10vh", zIndex: 100000 },
+          });
+        }
+      }
+      hasFetched.current = true;
+      setIsLoading(false);
+    },
+    [currentPage]
+  );
+
+  const handleFilter = useCallback(() => {
+    const keyword = search.current?.value || "";
+    changeModal();
+    fetchCustomers(keyword, query);
+  }, [query, fetchCustomers]);
+
+  const handleDeleteCustomer = async (id: string) => {
+    try {
+      const response = await deleteCustomer(id);
+      if (response.success) {
+        toast.success("Customer berhasil dihapus", {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+        fetchCustomers();
+      } else {
+        toast.error(response.message || "Gagal menghapus customer", {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      }
+    } catch (error) {
+      toast.error("Terjadi kesalahan saat menghapus customer", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
+      console.error("Error saat menghapus customer:", error);
+    }
+  };
+
+  const handleDownloadExcel = async () => {
+    try {
+      const response = await downloadExcelCustomer();
+      if (!response.success) {
+        toast.error(response.message || "Gagal mengunduh data customer", {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      }
+    } catch (error) {
+      toast.error("Terjadi kesalahan saat mengunduh data", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
+      console.error("Error saat mengunduh data:", error);
+    }
+  };
+
+  console.log(currentPage);
   useEffect(() => {
     fetchCustomers();
-  }, [fetchCustomers]);
+  }, [fetchCustomers, currentPage]);
 
   function changeModal() {
     setFilter((prevFilter) => !prevFilter);
@@ -55,9 +132,10 @@ export default function AllCustomerPage() {
         <div className="mb-4 w-full">
           <div className="flex justify-between max-md:flex-col max-md:gap-4">
             <div className="relative">
-              <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
+              <span className="absolute -translate-y-1/2 left-4 top-1/2 ">
                 <svg
-                  className="fill-gray-500 dark:fill-gray-400"
+                  onClick={() => handleSearch()}
+                  className="fill-gray-500 dark:fill-gray-400 cursor-pointer"
                   width="20"
                   height="20"
                   viewBox="0 0 20 20"
@@ -73,11 +151,20 @@ export default function AllCustomerPage() {
                 </svg>
               </span>
               <input
-                ref={inputRef}
+                ref={search}
                 type="text"
-                placeholder="Cari Nama ,Alamat,atau No Hp"
+                placeholder={
+                  isSearching
+                    ? "Sedang mencari..."
+                    : "Cari Nama ,Alamat,atau No Hp"
+                }
                 className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800  dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
               />
+              {isSearching && (
+                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                  <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-2 ">
@@ -85,8 +172,9 @@ export default function AllCustomerPage() {
                 size="md"
                 variant="outline"
                 className="border-b-brand-500 "
+                onClick={handleDownloadExcel}
               >
-                Download Exel
+                Download Excel
               </Button>
               <Button size="md" variant="outline" onClick={() => changeModal()}>
                 Filter
@@ -98,8 +186,23 @@ export default function AllCustomerPage() {
             </div>
           </div>
           {/* check if the filter value is true or false */}
-          {filter ? <ModalCustomerKategory changeModal={changeModal} /> : null}
-          <TableCustomer customers={customers} />
+          {filter ? (
+            <ModalCustomerKategory
+              changeModal={changeModal}
+              setQuery={setQuery}
+              handleFilter={handleFilter}
+            />
+          ) : null}
+          <TableCustomer
+            customers={customers}
+            deleteCustomer={handleDeleteCustomer}
+          />
+          <PaginationNavigation
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+            loading={isLoading}
+          />
         </div>
       </div>
     </div>

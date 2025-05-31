@@ -11,17 +11,40 @@ import Checkbox from "../form/input/Checkbox";
 import { useCallback, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
-import { getProducts } from "../../service/product";
+import { FilterState, getProducts } from "../../service/product";
 import { type ArrayProduct } from "../../service/product";
 import { Link } from "react-router";
+import ModalDeleteProduct from "./modal/ModalDeleteProduct";
+import PaginationNavigation from "./pagination/PaginationNavigation";
 
-export default function TableProduk() {
+type PropsTableProduk = {
+  search: string;
+  isSearch: boolean;
+  setIsSearch: React.RefObject<boolean>;
+  firstLoadBrowser: boolean;
+  setLoadBrowser: React.RefObject<boolean>;
+  optionFilter: FilterState;
+};
+
+export default function TableProduk({
+  search,
+  isSearch,
+  setIsSearch,
+  firstLoadBrowser,
+  setLoadBrowser,
+  optionFilter,
+}: PropsTableProduk) {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [products, setProducts] = useState<ArrayProduct[] | null>(null);
+  const [modalDelete, setModalDelete] = useState(false);
+  const [idDeleteProduct, setIdDeleteProduct] = useState("");
 
   const [isChecked, setIsChecked] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string[]>([]);
+  // For Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Sync selectedItem when isChecked changes
   useEffect(() => {
@@ -40,31 +63,69 @@ export default function TableProduk() {
     }
   }, [selectedItem]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      const result = await getProducts();
+  const fetchProducts = useCallback(async () => {
+    let result;
+    setLoading(true);
+
+    if (!isSearch && !firstLoadBrowser) {
+      return;
+    }
+
+    if (!isSearch && firstLoadBrowser) {
+      result = await getProducts(currentPage);
+      setLoadBrowser.current = false;
       if (result.success && result.responseObject) {
+        setCurrentPage(Number(result.responseObject.meta.currentPage));
+        setTotalPages(result.responseObject.meta.totalPages);
         setProducts(result.responseObject.data);
       } else {
         setMessage(result.message);
       }
-      setLoading(false);
-    };
+    }
+
+    if (isSearch) {
+      result = await getProducts(currentPage, search, {
+        type: optionFilter.type || null,
+        channel: "",
+        harga: "",
+        kategori: "",
+        produkMarketplace: "",
+        urutan: "",
+      });
+      if (result.success && result.responseObject) {
+        setCurrentPage(Number(result.responseObject.meta.currentPage));
+        setTotalPages(result.responseObject.meta.totalPages);
+        setProducts(result.responseObject.data);
+      } else {
+        setMessage(result.message);
+      }
+      setIsSearch.current = false;
+    }
+    console.log("mencari data");
+    setLoading(false);
+  }, [
+    currentPage,
+    search,
+    isSearch,
+    setIsSearch,
+    firstLoadBrowser,
+    setLoadBrowser,
+    optionFilter,
+  ]);
+
+  useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
+
+  const handleModal = () => {
+    setModalDelete((prev) => !prev);
+  };
 
   const checkboxHandler = useCallback((checked: boolean, id: string) => {
     setSelectedItem((prev) =>
       checked ? [...prev, id] : prev.filter((item) => item !== id)
     );
   }, []);
-
-  console.log(loading);
-  // if (products) {
-  //   console.log(products[0].variant[0].stock);
-  // }
-
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
@@ -135,17 +196,26 @@ export default function TableProduk() {
                       }
                     />
                   </TableCell>
-                  <TableCell className="px-5 py-4 sm:px-6 text-start">
+                  <TableCell className=" w-1/4 px-6 py-4  text-start">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 overflow-hidden rounded-full">
-                        <img width={30} height={30} />
+                        <img
+                          width={30}
+                          height={30}
+                          src="/images/icons/empty_box.svg"
+                        />
                       </div>
                       <div>
                         <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {produk.product.name}
+                          <Link
+                            to={`/produk/detail_produk/${produk.product.id}`}
+                            className="hover:underline font-semibold"
+                          >
+                            {produk.product.name}
+                          </Link>
                         </span>
-                        <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                          {produk.price.normal}
+                        <span className="block text-gray-500  dark:text-gray-400 text-xl font-semibold">
+                          Rp {produk.price.normal.toLocaleString("IND")}
                         </span>
                       </div>
                     </div>
@@ -175,7 +245,13 @@ export default function TableProduk() {
                         <FaEdit className="w-6 h-5 text-amber-500 cursor-pointer" />
                       </Link>
 
-                      <AiFillDelete className="w-6 h-5  text-red-700 cursor-pointer" />
+                      <AiFillDelete
+                        onClick={() => {
+                          handleModal();
+                          setIdDeleteProduct(produk.product.id);
+                        }}
+                        className="w-6 h-5  text-red-700 cursor-pointer"
+                      />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -192,7 +268,21 @@ export default function TableProduk() {
             )}
           </TableBody>
         </Table>
+
+        {modalDelete && (
+          <ModalDeleteProduct
+            changeModal={handleModal}
+            id={idDeleteProduct}
+            fetchProduk={fetchProducts}
+          />
+        )}
       </div>
+      <PaginationNavigation
+        currentPage={currentPage}
+        loading={loading}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+      />
     </div>
   );
 }

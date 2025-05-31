@@ -70,7 +70,7 @@ export default function ModalDeleteCategory({
                 className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-700 text-base font-semibold text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out sm:text-sm"
                 onClick={() => fetchdeleteCategory(id)}
               >
-                Hapus Pengeluaran
+                Hapus Category
               </button>
             </span>
             <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">

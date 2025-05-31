@@ -2,6 +2,15 @@ import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 const token = localStorage.getItem("token");
 
+export type FilterState = {
+  kategori: string;
+  channel: string;
+  harga: string;
+  type: string | null;
+  urutan: string;
+  produkMarketplace: string;
+};
+
 type ProductPrice = {
   normal: number;
   buy: number;
@@ -18,6 +27,7 @@ type ProductWholesaler = {
 };
 
 export type ProductVariant = {
+  id?: string;
   imageUrl: File | null | string;
   sku: string;
   productPrices: ProductPrice;
@@ -29,6 +39,7 @@ export type ProductVariant = {
 };
 
 type ProductDiscount = {
+  id?: string;
   type: string;
   value: number;
   startDate?: string;
@@ -55,7 +66,7 @@ type Category = {
   updatedAt: string;
 };
 
-type ProductNew = {
+export type ProductNew = {
   id: string;
   categoryId: string;
   name: string;
@@ -115,7 +126,7 @@ type ResponseSucces = {
   statusCode?: number;
 };
 
-type ResponseDetailProduk = {
+export type ResponseDetailProduk = {
   id: string;
   categoryId: string | null;
   name: string;
@@ -169,16 +180,20 @@ const convertToFormData = (data: CreateProductRequest): FormData => {
 
   // Product variants
   data.productVariants.forEach((variant: ProductVariant, index: number) => {
+    if (variant.id) {
+      formData.append(`productVariants[${index}].id`, variant.id);
+    }
     formData.append(`productVariants[${index}].sku`, variant.sku);
     formData.append(`productVariants[${index}].stock`, String(variant.stock));
     formData.append(`productVariants[${index}].size`, variant.size ?? "");
     formData.append(`productVariants[${index}].color`, variant.color ?? "");
     formData.append(`productVariants[${index}].barcode`, variant.barcode ?? "");
     // File image
-    formData.append(
-      `productVariants[${index}].imageUrl`,
-      variant.imageUrl ?? ""
-    );
+    // formData.append(
+    //   `productVariants[${index}].image`,
+    //   variant.imageUrl ?? ""
+    // );
+    formData.append(`images`, variant.imageUrl ?? "");
 
     // Product prices
     Object.entries(variant.productPrices).forEach(([key, value]) => {
@@ -275,6 +290,37 @@ export async function createProduct(
   }
 }
 
+export async function deleteProduct(id: string): Promise<ResponseSucces> {
+  try {
+    console.log(id);
+    const { data } = await axios.delete(`${apiUrl}/products/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return data;
+  } catch (error) {
+    let message = "Terjadi kesalahan";
+    if (axios.isAxiosError(error)) {
+      console.log(error.response);
+      if (error.response) {
+        message = error.response.data.message || "Gagal Menghapus produk";
+      } else if (error.request) {
+        message = "Tidak dapat menghubungi server";
+      } else {
+        message = error.message;
+      }
+    } else {
+      message = (error as Error).message;
+    }
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
 export async function editProduct(
   credentials: CreateProductRequest,
   id: string
@@ -317,15 +363,73 @@ export async function editProduct(
   }
 }
 
-export async function getProducts(): Promise<ResponseSucces> {
+export async function getProducts(
+  page: number = 1,
+  search: string = "",
+  query?: FilterState
+): Promise<ResponseSucces> {
   try {
+    console.log(query);
     const { data } = await axios.get(`${apiUrl}/products`, {
       headers: {
         "ngrok-skip-browser-warning": "true",
         Authorization: `Bearer ${token}`,
       },
+      params: {
+        page,
+        ...query,
+        search,
+      },
     });
     return data;
+  } catch (error) {
+    let message = "Terjadi kesalahan saat mengambil produk";
+
+    if (axios.isAxiosError(error)) {
+      message =
+        error.response?.data?.message ||
+        (error.request ? "Tidak dapat menghubungi server" : error.message);
+    } else {
+      message = (error as Error).message;
+    }
+
+    console.log(error);
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
+export async function downloadProductExel() {
+  try {
+    const response = await axios.post(`${apiUrl}/products/export/excel`, "", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      },
+      responseType: "blob",
+    });
+
+    const blob = new Blob([response.data], {
+      type: response.headers["content-type"],
+    });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+
+    const contentDisposition = response.headers["content-disposition"];
+    const fileName =
+      contentDisposition?.split("filename=")[1]?.replace(/"/g, "") ||
+      "Produk.xlsx";
+
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
   } catch (error) {
     let message = "Terjadi kesalahan saat mengambil produk";
 

@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 type PreviewFile = File & { preview: string };
 type DropzoneProps = {
   onChange: (value: File) => void;
+  imageUrl?: string;
 };
 
-const DropzoneImage: React.FC<DropzoneProps> = ({ onChange }) => {
+const DropzoneImage: React.FC<DropzoneProps> = ({ onChange, imageUrl }) => {
   const [image, setImage] = useState<PreviewFile | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -28,6 +30,14 @@ const DropzoneImage: React.FC<DropzoneProps> = ({ onChange }) => {
       "image/svg+xml": [],
     },
   });
+
+  useEffect(() => {
+    if (imageUrl) {
+      setPreviewImage(imageUrl);
+    }
+  }, [imageUrl]);
+
+  console.log(previewImage);
   return (
     <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500 w-40  ">
       <form
@@ -39,15 +49,15 @@ const DropzoneImage: React.FC<DropzoneProps> = ({ onChange }) => {
             : "border-gray-300 bg-gray-200 dark:border-gray-700 dark:bg-gray-900"
         }
       `}
-        style={
-          image
-            ? {
-                backgroundImage: `url(${image.preview})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }
-            : {}
-        }
+        style={{
+          backgroundImage: image
+            ? `url("${image.preview}")`
+            : previewImage
+            ? `url("${encodeURI(previewImage)}")`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
         id="demo-upload"
       >
         {/* Hidden Input */}
