@@ -10,7 +10,6 @@ import Button from "../../ui/button/Button.tsx";
 import { IoIosSave } from "react-icons/io";
 import { useState } from "react";
 import ModalAddCustomer from "../modal/ModalAddcustomer.tsx";
-import PaymentSection from "../card/PaymentSection.tsx";
 import ShippingSection from "../card/ShippingSection.tsx";
 
 export default function EditOrderFomPage({ orderId }: { orderId: string }) {
@@ -37,6 +36,7 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
     },
   ];
 
+<<<<<<< HEAD
   const handleSelectChange = (value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -49,6 +49,10 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
       ...prev,
       [field]: value,
     }));
+=======
+  const handleSelectChange = () => {
+    // setFilter((prev) => ({ ...prev, [field]: value }));
+>>>>>>> 2f14107edf3c3dd1776af6db5d2add088d80d326
   };
 
   return (
@@ -210,8 +214,6 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
             <ComponentCard title="Orderan">
               <TableAddOrder />
             </ComponentCard>
-
-            <PaymentSection />
             <ShippingSection />
 
             {/* Tombol Aksi */}

@@ -6,7 +6,7 @@ import DatePicker from "../../form/date-picker";
 export default function FilterBarCancelOrder() {
   const [status, setStatus] = useState("Cancel");
   const [startDate, setStartDate] = useState("2025-02-22");
-  const [endDate, setEndDate] = useState("2025-05-23");
+  const [endDate] = useState("2025-05-23");
 
   const statusOptions = ["Cancel", "Rejected", "Expired"];
 
@@ -45,7 +45,7 @@ export default function FilterBarCancelOrder() {
           <DatePicker
             id="start-date"
             placeholder="Select a date"
-            value={new Date(startDate)}
+            // value={new Date(startDate)}
             onChange={(date) => {
               const formatted = date.toString().split("T")[0];
               setStartDate(formatted);
@@ -56,7 +56,7 @@ export default function FilterBarCancelOrder() {
           <DatePicker
             id="start-date"
             placeholder="Select a date"
-            value={new Date(endDate)}
+            // value={new Date(endDate)}
             onChange={(date) => {
               const formatted = date.toString().split("T")[0];
               setStartDate(formatted);

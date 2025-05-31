@@ -5,7 +5,7 @@ import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
-import { login } from "../../service/auth/index";
+import { currentAuth, login } from "../../service/auth/index";
 
 export default function SignInForm() {
   const authUser = localStorage.getItem("token");
@@ -17,6 +17,10 @@ export default function SignInForm() {
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
 
+  if (redirect) {
+    return <Navigate to="/" replace />;
+  }
+
   if (authUser) {
     return <Navigate to="/" replace />;
   }
@@ -27,18 +31,18 @@ export default function SignInForm() {
     setError("");
 
     const result = await login({ email, password });
-    setLoading(false);
 
-    if (result.success) {
-      setRedirect(true);
-    } else {
-      setError(result.message);
+    if (result.token) {
+      const currentUserAuth = await currentAuth(result.token);
+      if (result.success && currentUserAuth.responseObject?.role) {
+        console.log("Role Anda", currentUserAuth.responseObject?.role);
+        localStorage.setItem("role", currentUserAuth.responseObject.role);
+        setRedirect(true);
+      } else {
+        setError(result.message);
+      }
     }
   };
-
-  if (redirect) {
-    return <Navigate to="/" replace />;
-  }
 
   return (
     <div className="flex flex-col flex-1">
@@ -119,18 +123,6 @@ export default function SignInForm() {
                 {error && <section className="text-red-600">{error}</section>}
               </div>
             </form>
-
-            <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account? {""}
-                <Link
-                  to="/signup"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                >
-                  Sign Up
-                </Link>
-              </p>
-            </div>
           </div>
         </div>
       </div>

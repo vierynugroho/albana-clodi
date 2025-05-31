@@ -39,12 +39,12 @@ const navItems: NavItem[] = [
   {
     icon: <BoxIcon />,
     name: "Produk",
-    subItems: [{ name: "Daftar Produk", path: "/produk", pro: false }],
+    path: "/produk",
   },
   {
     icon: <GroupIcon />,
     name: "Data Customer",
-    subItems: [{ name: "Data Semua Customer", path: "/customer", pro: false }],
+    path: "/customer",
   },
   {
     icon: <TbReportAnalytics />,

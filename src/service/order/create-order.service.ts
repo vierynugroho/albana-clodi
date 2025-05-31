@@ -184,3 +184,47 @@ export const calculateShippingCost = async (
     throw new Error("Failed to calculate shipping cost");
   }
 };
+
+// cancel order 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const cancelOrder = async (orderId: string): Promise<any> => {
+  try {
+    const response = await axios.patch(
+      `${apiUrl}/orders/${orderId}/cancel`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Gagal membatalkan order:", error);
+    throw error?.response?.data || error;
+  }
+};
+
+export async function exportOrdersToExcel(): Promise<void> {
+  try {
+    const response = await axios.get("/orders/export/excel", {
+      responseType: "blob",
+      headers: {
+         Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Buat URL dari file blob
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "orders-export.xlsx");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Gagal mengunduh file Excel:", error);
+    throw error;
+  }
+}
