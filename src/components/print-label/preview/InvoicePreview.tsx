@@ -26,7 +26,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
 
   return (
-    <div className="text-sm w-full">
+    <div className="text-base w-full">
       <div className="grid grid-cols-12 gap-4 gap-x-8 p-5">
         <div className="col-span-9 flex items-start gap-5">
           <img src={Logo} alt="" className="w-20" />
@@ -80,7 +80,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
             <th className="p-2">Subtotal</th>
           </tr>
         </thead>
-        <tbody className="bg-white">
+        <tbody className="bg-white dark:bg-white/[0] dark:text-white">
           {/* List Order  */}
           {(data?.products ?? []).flatMap((product) => {
             const priceType = product.price_type;

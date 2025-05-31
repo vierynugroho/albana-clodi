@@ -182,8 +182,15 @@ export default function AllOrderPage() {
       });
   }
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
+
   return (
-    <div>
+    <div className="dark:bg-white/[0.03] dark:text-white">
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
@@ -191,7 +198,7 @@ export default function AllOrderPage() {
       <PageBreadcrumb pageTitle="Halaman Order" />
       <hr className="my-6 border-gray-300 dark:border-gray-700" />
 
-      <div className="py-2 bg-gray-50">
+      <div className="py-2 bg-gray-50 dark:bg-white/[0]">
         <div
           className={`flex flex-wrap gap-2 ${
             window.innerWidth <= 768 ? "overflow-x-auto" : ""
@@ -261,9 +268,9 @@ export default function AllOrderPage() {
             <p className="text-2xl font-medium">
               {orders.length} order ditemukan
             </p>
-            <div className="flex justify-between items-center bg-white p-3.5 rounded-lg">
+            <div className="flex justify-between items-center bg-white dark:bg-white/[0] dark:border dark:border-gray-700 p-3.5 rounded-lg">
               <Link to="/profile">
-                <span className="text-blue-600 text-md font-semibold">
+                <span className="text-blue-600 dark:text-white/[0.3] text-md font-semibold">
                   Lihat Detail
                 </span>
               </Link>
@@ -281,10 +288,15 @@ export default function AllOrderPage() {
               ></div>
             </div>
           ) : (
-            <OrderCard orders={orders} />
+            <OrderCard orders={currentOrders} />
           )}
         </div>
-        <OrderToolbar />
+        <OrderToolbar
+          currentPage={currentPage}
+          totalItems={orders.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

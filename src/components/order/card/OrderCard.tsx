@@ -44,7 +44,7 @@ export default function OrderCard({ orders }: Props) {
       {orders.map((order) => (
         <div
           key={order.id}
-          className="max-w-full mx-auto mt-4 p-5 bg-white shadow-lg rounded-xl border"
+          className="max-w-full mx-auto mt-4 p-5 bg-white dark:border-gray-700 dark:bg-white/[0] shadow-lg rounded-xl border"
         >
           {/* Header */}
           <div className="flex justify-between items-start">
