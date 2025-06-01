@@ -38,7 +38,7 @@ export default function Home() {
         .padStart(2, "0");
       const resultGrossProfit = await reportGrossProfit(currentMonth);
 
-      console.log(currentMonth)
+      console.log(currentMonth);
       if (resultGrossProfit.success && resultGrossProfit.responseObject) {
         setGrosProfit(resultGrossProfit.responseObject.keuntungan_per_hari);
         setTotalGrosProfit(resultGrossProfit.responseObject.keuntungan);
@@ -70,10 +70,12 @@ export default function Home() {
           <div className="grid grid-cols-12 gap-4 md:gap-6">
             <div className="col-span-12 space-y-6">
               <EcommerceMetrics />
-              <MonthlyGrossProfitChart
-                ProfitOrder={grosProfit}
-                totalProfitOrder={totalGrosProfit}
-              />
+              {localStorage.getItem("role") === "ADMIN" ? null : (
+                <MonthlyGrossProfitChart
+                  ProfitOrder={grosProfit}
+                  totalProfitOrder={totalGrosProfit}
+                />
+              )}
             </div>
             <div className="col-span-12">
               <ProductSoldChart

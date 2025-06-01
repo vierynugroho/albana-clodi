@@ -119,14 +119,6 @@ export default function AllReportPage() {
                 iconColor="bg-brand-100 text-brand-600"
               />
               <CardReport
-                icon={<GiProfit size={30} />}
-                title="Laba Kotor"
-                result={`Rp ${
-                  report?.reportOrders?.laba_kotor.toLocaleString("id-ID") ?? 0
-                }`}
-                iconColor="bg-green-100 text-green-600"
-              />
-              <CardReport
                 icon={<GiTakeMyMoney size={30} />}
                 title="Penjualan Bersih"
                 result={`Rp ${
@@ -136,14 +128,31 @@ export default function AllReportPage() {
                 }`}
                 iconColor="bg-amber-100 text-amber-600"
               />
-              <CardReport
-                icon={<GiMoneyStack size={30} />}
-                title="Laba Bersih"
-                result={`Rp ${
-                  report?.reportOrders?.laba_kotor.toLocaleString("id-ID") ?? 0
-                }`}
-                iconColor="bg-yellow-100 text-yellow-600"
-              />
+              {localStorage.getItem("role") === "ADMIN" ? null : (
+                <>
+                  <CardReport
+                    icon={<GiProfit size={30} />}
+                    title="Laba Kotor"
+                    result={`Rp ${
+                      report?.reportOrders?.laba_kotor?.toLocaleString(
+                        "id-ID"
+                      ) ?? 0
+                    }`}
+                    iconColor="bg-green-100 text-green-600"
+                  />
+                  <CardReport
+                    icon={<GiMoneyStack size={30} />}
+                    title="Laba Bersih"
+                    result={`Rp ${
+                      report?.reportOrders?.laba_kotor?.toLocaleString(
+                        "id-ID"
+                      ) ?? 0
+                    }`}
+                    iconColor="bg-yellow-100 text-yellow-600"
+                  />
+                </>
+              )}
+
               <CardReport
                 icon={<BiCalculator size={30} />}
                 title="Pengeluaran"
@@ -166,12 +175,14 @@ export default function AllReportPage() {
                 title="Total Order"
                 result={`${report?.reportOrders?.total_orders ?? 0}`}
                 iconColor="bg-cyan-100 text-cyan-600"
+                className="md:w-full md:col-span-2"
               />
               <CardReport
                 icon={<FaPlaneDeparture size={30} />}
                 title="Biaya Lain"
                 result={`${report?.reportOrders?.total_transactions ?? 0}`}
                 iconColor="bg-blue-100 text-blue-600"
+                className="md:w-full md:col-span-2"
               />
             </div>
           </div>

@@ -6,6 +6,7 @@ export type UserProfile = {
   email: string;
   fullname: string;
   role: "ADMIN" | "SUPERADMIN";
+  phoneNumber: string | null;
 };
 
 export type RequestEditUserProfile = {
@@ -13,7 +14,7 @@ export type RequestEditUserProfile = {
   email: string;
   password: string;
   confirmPassword: string;
-  phoneNumber: string ;
+  phoneNumber: string;
 };
 
 type ResponseSucces = {

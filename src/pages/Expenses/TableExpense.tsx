@@ -9,6 +9,7 @@ import {
 import { CiEdit } from "react-icons/ci";
 import { TiDelete } from "react-icons/ti";
 import { ExpenseItem } from "../../service/expense";
+import SpinnerLoading from "../../components/produk/loading/SpinnerLoading";
 
 // import { FaWhatsapp } from "react-icons/fa";
 
@@ -25,12 +26,14 @@ import { ExpenseItem } from "../../service/expense";
 
 type Props = {
   expenses: ExpenseItem[];
+  loading: boolean;
   setEditExpense: (id: string) => void;
   deleteExpense: (id: string) => void;
 };
 
 export default function TablExpense({
   expenses,
+  loading,
   setEditExpense,
   deleteExpense,
 }: Props) {
@@ -95,43 +98,63 @@ export default function TablExpense({
 
           {/* Table Body */}
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            {expenses.map((expense, index) => (
-              <TableRow key={index}>
-                <TableCell className="py-4 px-3 sm:px-6 text-start text-gray-500">
-                  {index + 1}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {toDateOnly(expense.createdAt)}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {expense.itemName}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {expense.itemPrice}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {expense.qty}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {expense.itemPrice * expense.qty}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-end text-theme-sm dark:text-gray-400">
-                  <div className="flex gap-5 justify-end">
-                    {/* Add action buttons here */}
-                    <CiEdit
-                      size={30}
-                      className="text-amber-500 cursor-pointer"
-                      onClick={() => setEditExpense(expense.id)}
-                    />
-                    <TiDelete
-                      size={30}
-                      className="text-red-600 cursor-pointer"
-                      onClick={() => deleteExpense(expense.id)}
-                    />
-                  </div>
+            {loading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={8}
+                  className="px-4 text-gray-500 dark:text-gray-400 text-center font-bold h-20 text-2xl"
+                >
+                  <SpinnerLoading />
                 </TableCell>
               </TableRow>
-            ))}
+            ) : expenses && expenses.length >= 1 ? (
+              expenses.map((expense, index) => (
+                <TableRow key={index}>
+                  <TableCell className="py-4 px-3 sm:px-6 text-start text-gray-500">
+                    {index + 1}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {toDateOnly(expense.createdAt)}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {expense.itemName}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {expense.itemPrice}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {expense.qty}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {expense.itemPrice * expense.qty}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-end text-theme-sm dark:text-gray-400">
+                    <div className="flex gap-5 justify-end">
+                      {/* Add action buttons here */}
+                      <CiEdit
+                        size={30}
+                        className="text-amber-500 cursor-pointer"
+                        onClick={() => setEditExpense(expense.id)}
+                      />
+                      <TiDelete
+                        size={30}
+                        className="text-red-600 cursor-pointer"
+                        onClick={() => deleteExpense(expense.id)}
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={8}
+                  className="px-4 text-gray-500 dark:text-gray-400 text-center font-bold h-20 text-2xl"
+                >
+                  Data Pengeluaran Tidak Ditemukan
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>

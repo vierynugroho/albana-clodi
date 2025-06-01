@@ -34,6 +34,7 @@ export default function SignInForm() {
 
     if (result.token) {
       const currentUserAuth = await currentAuth(result.token);
+      console.log(currentAuth);
       if (result.success && currentUserAuth.responseObject?.role) {
         console.log("Role Anda", currentUserAuth.responseObject?.role);
         localStorage.setItem("role", currentUserAuth.responseObject.role);
@@ -42,7 +43,15 @@ export default function SignInForm() {
         setError(result.message);
       }
     }
+    setError(
+      !result.message
+        ? "Email dan Password Kosong Atau Tidak Valid"
+        : result.message
+    );
+    setLoading(false);
   };
+
+  console.log(error);
 
   return (
     <div className="flex flex-col flex-1">
