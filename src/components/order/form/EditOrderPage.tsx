@@ -27,23 +27,8 @@ export default function EditOrderFomPage() {
     },
   ];
 
-<<<<<<<<< Temporary merge branch 1
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      salesChannel: value,
-    }));
-  };
-
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-=========
   const handleSelectChange = () => {
     // setFilter((prev) => ({ ...prev, [field]: value }));
->>>>>>> 2f14107edf3c3dd1776af6db5d2add088d80d326
   };
 
   return (
