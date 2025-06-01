@@ -69,13 +69,13 @@ export default function DetailVariant({
               <div>
                 <h2 className="text-gray-500 dark:text-gray-400">Harga Beli</h2>
                 <h2 className="mb-2 font-bold text-balance leading-normal ">
-                  Rp {productVariant.productPrices.buy.toLocaleString("IND")}
+                  Rp {productVariant.productPrices.buy?.toLocaleString("IND")}
                 </h2>
               </div>
               <div>
                 <h2 className="text-gray-500 dark:text-gray-400">Harga Jual</h2>
                 <h2 className="mb-2 font-bold text-balance leading-normal ">
-                  Rp {productVariant.productPrices.normal.toLocaleString("IND")}
+                  Rp {productVariant.productPrices.normal?.toLocaleString("IND")}
                 </h2>
               </div>
               <div>
@@ -83,7 +83,7 @@ export default function DetailVariant({
                   Harga Member
                 </h2>
                 <h2 className="mb-2 font-bold text-balance leading-normal ">
-                  Rp {productVariant.productPrices.member.toLocaleString("IND")}
+                  Rp {productVariant.productPrices.member?.toLocaleString("IND")}
                 </h2>
               </div>
               <div>
@@ -92,13 +92,13 @@ export default function DetailVariant({
                 </h2>
                 <h2 className="mb-2 font-bold text-balance leading-normal ">
                   Rp{" "}
-                  {productVariant.productPrices.reseller.toLocaleString("IND")}
+                  {productVariant.productPrices.reseller?.toLocaleString("IND")}
                 </h2>
               </div>
               <div>
                 <h2 className="text-gray-500 dark:text-gray-400">Harga Agen</h2>
                 <h2 className="mb-2 font-bold text-balance leading-normal ">
-                  Rp {productVariant.productPrices.agent.toLocaleString("IND")}
+                  Rp {productVariant.productPrices.agent?.toLocaleString("IND")}
                 </h2>
               </div>
             </div>

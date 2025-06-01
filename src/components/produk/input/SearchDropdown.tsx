@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrayProduct, ProductNew } from "../../../service/product";
+import {
+  ArrayProduct,
+  getProducts,
+  ProductNew,
+} from "../../../service/product";
 import Button from "../button/Button";
 import { FaPrint } from "react-icons/fa";
 
@@ -42,6 +46,12 @@ export default function SearchableDropdown({
     SelectedVariantItem[]
   >([]);
 
+  const [searchResults, setSearchResults] = useState<ArrayProduct[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [useApiSearch, setUseApiSearch] = useState(false);
+
+  const isLoading = useApiSearch ? isSearching : loading;
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -54,6 +64,32 @@ export default function SearchableDropdown({
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (query) {
+        searchProductsFromAPI(query);
+      } else {
+        setSearchResults([]);
+        setUseApiSearch(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [query]);
+
+  const searchProductsFromAPI = async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setUseApiSearch(false);
+      return;
+    }
+    setIsSearching(true);
+    setUseApiSearch(true);
+    const response = await getProducts(1, searchQuery);
+    setSearchResults(response.responseObject?.data || []);
+    setIsSearching(false);
+  };
 
   const handleSelect = (option: ArrayProduct) => {
     setQuery("");
@@ -96,12 +132,11 @@ export default function SearchableDropdown({
 
   const displayValue = query || selectedVal || "";
 
-  const filteredOptions = options.filter((option) =>
-    String(option.product.name).toLowerCase().includes(query.toLowerCase())
-  );
-
-  console.log("Data Tinggi", heightBarcode);
-  console.log("DataColim", columBarcode);
+  const filteredOptions = useApiSearch
+    ? searchResults
+    : options.filter((option) =>
+        String(option.product.name).toLowerCase().includes(query.toLowerCase())
+      );
 
   const handlePrintBarcodes = (
     jumlahKolom = 1,
@@ -243,9 +278,9 @@ export default function SearchableDropdown({
             isOpen ? "open" : "hidden"
           }`}
         >
-          {loading ? (
+          {isLoading ? (
             <div className="p-2 text-center text-gray-500 dark:text-white/60">
-              Loading...
+              {useApiSearch ? "Mencari produk.." : "Loading"}
             </div>
           ) : filteredOptions.length > 0 ? (
             filteredOptions.map((option, index) => (
