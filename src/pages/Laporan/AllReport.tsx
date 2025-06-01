@@ -175,14 +175,22 @@ export default function AllReportPage() {
                 title="Total Order"
                 result={`${report?.reportOrders?.total_orders ?? 0}`}
                 iconColor="bg-cyan-100 text-cyan-600"
-                className="md:w-full md:col-span-2"
+                className={`${
+                  localStorage.getItem("role") === "ADMIN"
+                    ? `md:w-full md:col-span-2`
+                    : ""
+                }`}
               />
               <CardReport
                 icon={<FaPlaneDeparture size={30} />}
                 title="Biaya Lain"
                 result={`${report?.reportOrders?.total_transactions ?? 0}`}
                 iconColor="bg-blue-100 text-blue-600"
-                className="md:w-full md:col-span-2"
+                className={`${
+                  localStorage.getItem("role") === "ADMIN"
+                    ? `md:w-full md:col-span-2`
+                    : ""
+                }`}
               />
             </div>
           </div>
