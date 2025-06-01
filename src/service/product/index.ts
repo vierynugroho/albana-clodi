@@ -9,6 +9,8 @@ export type FilterState = {
   type: string | null;
   urutan: string;
   produkMarketplace: string;
+  limit?: string;
+  order: "desc" | "asc";
 };
 
 type ProductPrice = {
@@ -377,6 +379,7 @@ export async function getProducts(
       },
       params: {
         page,
+        order: "desc",
         ...query,
         search,
       },
