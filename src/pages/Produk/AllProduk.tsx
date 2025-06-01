@@ -19,6 +19,7 @@ type FilterState = {
   type: string | null;
   urutan: string;
   produkMarketplace: string;
+  order: "desc" | "asc";
 };
 
 export default function AllProdukPage() {
@@ -35,6 +36,7 @@ export default function AllProdukPage() {
     type: "",
     urutan: "",
     produkMarketplace: "",
+    order: "desc",
   });
 
   useEffect(() => {

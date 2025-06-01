@@ -66,6 +66,7 @@ export default function FilterProduk({ setFilter, onFilter }: Props) {
       type: "",
       urutan: "",
       produkMarketplace: "",
+      order: "asc",
     });
     const newUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, document.title, newUrl);

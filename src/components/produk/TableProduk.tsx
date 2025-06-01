@@ -35,7 +35,7 @@ export default function TableProduk({
   setLoadBrowser,
   optionFilter,
 }: PropsTableProduk) {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [products, setProducts] = useState<ArrayProduct[] | null>(null);
   const [modalDelete, setModalDelete] = useState(false);
@@ -69,6 +69,7 @@ export default function TableProduk({
     setLoading(true);
 
     if (!isSearch && !firstLoadBrowser) {
+      setLoading(false);
       return;
     }
 
@@ -92,6 +93,7 @@ export default function TableProduk({
         kategori: "",
         produkMarketplace: "",
         urutan: "",
+        order: "asc",
       });
       if (result.success && result.responseObject) {
         setCurrentPage(Number(result.responseObject.meta.currentPage));
@@ -102,7 +104,6 @@ export default function TableProduk({
       }
       setIsSearch.current = false;
     }
-    console.log("mencari data");
     setLoading(false);
   }, [
     currentPage,
@@ -244,7 +245,9 @@ export default function TableProduk({
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <Badge size="sm" color={"success"}>
-                      {produk.product.type}
+                      {produk.product.type
+                        ? produk.product.type
+                        : "UNCATEGORIZED"}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
