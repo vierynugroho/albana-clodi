@@ -38,6 +38,7 @@ import UploadOrderPage from "./pages/Order/UploadOrderPage";
 import DetailProduCtPage from "./pages/Produk/DetailProdukPage";
 import SupplierSettingForm from "./components/setting/form/SupplierSettingForm";
 import FormSettingAccount from "./components/setting/form/FormSeattingAccount";
+import EditOrderFomPage from "./components/order/form/EditOrderPage";
 export default function App() {
   return (
     <>
@@ -61,7 +62,7 @@ export default function App() {
             <Route path="/order/import_order" element={<UploadOrderPage />} />
             <Route
               path="/order/edit_order/:id"
-              // element={<EditOrderFomPage />}
+              element={<EditOrderFomPage />}
             />
 
             {/* Produk Page */}

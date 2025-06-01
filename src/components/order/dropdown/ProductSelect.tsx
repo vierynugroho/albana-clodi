@@ -1,7 +1,7 @@
 import AsyncSelect from "react-select/async";
 import { OptionProps } from "react-select";
 import { ProductItem } from "../../../service/order/create-order.type";
-import { fetchProduct } from "../../../service/order/create-order.service";
+import { fetchProduct } from "../../../service/order/order.service";
 import { useState } from "react";
 import ProdukImage from "../../../../public/images/icons/produk_image.jpg";
 

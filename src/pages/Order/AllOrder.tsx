@@ -15,7 +15,7 @@ import { FaPlus } from "react-icons/fa6";
 import OptionDropdownOrder from "../../components/order/dropdown/OptionDropdownOrder";
 import OrderToolbar from "../../components/order/orderToolbar";
 import { getOrders, OrderItem } from "../../service/order/index";
-import { exportOrdersToExcel } from "../../service/order/create-order.service";
+import { exportOrdersToExcel } from "../../service/order/order.service";
 
 export type FilterState = {
   ordererCustomerId?: string;
@@ -63,7 +63,7 @@ export default function AllOrderPage() {
     paymentMethodId: "",
     search: "",
     sort: "",
-    order: "desc",
+    // order: "desc",
   });
 
   const location = useLocation();
@@ -120,7 +120,7 @@ export default function AllOrderPage() {
         paymentMethodId: params.get("paymentMethodId") || "",
         search: params.get("search") || "",
         sort: params.get("sort") || "",
-        order: (params.get("order") as "asc" | "desc") || "desc",
+        // order: (params.get("order") as "asc" | "desc") || "desc",
       };
 
       setFilterOrder(filterFromURL);

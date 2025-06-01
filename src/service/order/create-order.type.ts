@@ -63,7 +63,53 @@ export enum PaymentStatus {
   SETTLEMENT = "Lunas",
 }
 
+export type OrderDetail = {
+  id: string;
+  orderDate: string;
+  note: string;
+  createdAt: string;
+  updatedAt: string;
 
+  ordererCustomerId: string;
+  deliveryTargetCustomerId: string;
+  deliveryPlaceId: string;
+  salesChannelId: string;
+
+  OrdererCustomer: TCustomer;
+  DeliveryTargetCustomer: TCustomer;
+  DeliveryPlace: TDeliveryPlace;
+  SalesChannel: SalesChannel;
+
+  OrderDetail: {
+    id: string;
+    orderId: string;
+    paymentMethodId: string;
+    code: string;
+    finalPrice: number;
+    paymentStatus: string;
+    paymentDate: string | null;
+    receiptNumber: string | null;
+    createdAt: string;
+    updatedAt: string;
+    otherFees: {
+      weight: number;
+      discount: {
+        type: "percent" | "amount";
+        value: number;
+      };
+      insurance: number;
+      shippingCost: {
+        cost: number;
+        type: string;
+        shippingService: string;
+      };
+    };
+    PaymentMethod: PaymentMethod;
+    // OrderProducts: OrderPayload[];
+  };
+
+  ShippingServices: ShippingService[];
+};
 
 // response dari customers 
 export interface TCustomer {

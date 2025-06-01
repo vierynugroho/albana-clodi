@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "../../ui/table";
 import { ShippingCostParams, ShippingService } from "../../../service/order/create-order.type";
-import { calculateShippingCost } from "../../../service/order/create-order.service";
+import { calculateShippingCost } from "../../../service/order/order.service";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 

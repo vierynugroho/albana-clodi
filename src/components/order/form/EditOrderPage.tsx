@@ -3,33 +3,82 @@ import OrderPageBreadcrumb from "../../../pages/Order/OrderPageBreadcrumb.tsx";
 import ComponentCard from "../../common/ComponentCard.tsx";
 import Label from "../../form/Label.tsx";
 import Input from "../../form/input/InputField.tsx";
-import Select from "../../form/Select.tsx";
-import DatePicker from "../../form/date-picker.tsx";
+import DatePicker from "react-datepicker";
 import TableAddOrder from "../table/TableAddOrder.tsx";
 import Button from "../../ui/button/Button.tsx";
 import { IoIosSave } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalAddCustomer from "../modal/ModalAddcustomer.tsx";
 import ShippingSection from "../card/ShippingSection.tsx";
+import AsyncSelect from "react-select/async";
+import {
+  SalesChannel,
+  TCustomer,
+  TDeliveryPlace,
+} from "../../../service/order/create-order.type.ts";
+import { CustomOption, DeliveryOption } from "../card/SelectOption.tsx";
+import {
+  fetchCustomers,
+  fetchDeliveryPlace,
+  fetchSalesChannels,
+  getOrderById,
+} from "../../../service/order/order.service.ts";
+import { useParams } from "react-router-dom";
+// import { getOrderById } from "../../../service/order/index.ts";
 
 export default function EditOrderFomPage() {
+  const { id } = useParams<{ id: string }>();
   const [showModal, setShowModal] = useState(false);
+  const [note, setNote] = useState("");
+  const [orderDate, setOrderDate] = useState<Date | null>(null);
+  const [selectedPemesan, setSelectedPemesan] = useState<TCustomer | null>(
+    null
+  );
+  const [isEditingPemesan, setisEditingPemesan] = useState(true);
+  const [selectedPenerima, setSelectedPenerima] = useState<TCustomer | null>(
+    null
+  );
+  const [isEditingPenerima, setisEditingPenerima] = useState(true);
+  const [selectedDeliveryPlace, setSelectedDeliveryPlace] =
+    useState<TDeliveryPlace | null>(null);
+  const [selectedSalesChannel, setSelectedSalesChannel] =
+    useState<SalesChannel | null>(null);
 
-  const salesChannelsOptions = [
-    { value: "shopee", label: "Shopee" },
-    { value: "tokopedia", label: "Tokopedia" },
-  ];
-
-  const senderOptions = [
-    {
-      value: "fina albanaa | Sanan Wetan, Kota Blitar",
-      label: "fina albanaa | Sanan Wetan, Kota Blitar",
-    },
-  ];
-
-  const handleSelectChange = () => {
-    // setFilter((prev) => ({ ...prev, [field]: value }));
+  const handleEditPemesan = () => {
+    setisEditingPemesan(true);
   };
+  const handleEditPenerima = () => {
+    setisEditingPenerima(true);
+  };
+
+  const pemesanOption = selectedPemesan
+  ? {
+      label: `${selectedPemesan.name} | ${selectedPemesan.city}, ${selectedPemesan.province}`,
+      value: selectedPemesan.id,
+      customer: selectedPemesan,
+    }
+  : null;
+
+
+  useEffect(() => {
+    const fetchOrderId = async () => {
+      if (!id) return;
+      try {
+        const order = await getOrderById(id);
+        setSelectedPemesan(order.OrdererCustomer);
+        setSelectedPenerima(order.DeliveryTargetCustomer);
+        setSelectedDeliveryPlace(order.DeliveryPlace);
+        setSelectedSalesChannel(order.SalesChannel);
+        setOrderDate(order.orderDate ? new Date(order.orderDate) : null)
+        // console.log("Order data:", order);
+        // console.log(selectedPemesan, selectedPenerima)
+      } catch (error) {
+        console.error("Gagal mengambil data order:", error);
+      }
+    };
+
+    fetchOrderId();
+  }, [id]);
 
   return (
     <div>
@@ -37,52 +86,107 @@ export default function EditOrderFomPage() {
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
       />
-      <OrderPageBreadcrumb pageTitle="Edit Order" />
-      <p className="py-2">Order#123421432</p>
+      <OrderPageBreadcrumb pageTitle={`Edit Order : ${id}`} />
       <hr className="border-1 border-gray-200" />
 
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Form kiri */}
-          <ComponentCard title="Informasi Order" className="max-h-8/12">
+          <ComponentCard
+            title="Informasi Order"
+            className="max-w-full md:max-h-fit"
+          >
             <div className="space-y-6">
               <div>
+                {/* Slicing Informasi Order */}
                 <Label htmlFor="namaPemesan" className="font-semibold text-md">
                   Nama Pemesan
                 </Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="namaPemesan"
-                    placeholder="Cari customer"
-                    className="w-full"
-                  />
-                  <button
-                    onClick={() => setShowModal(true)}
-                    className="btn-secondary border p-2 text-sm rounded-lg">
-                    <span className="px-1">+</span>
-                    Customer
-                  </button>
+                <div className="w-full">
+                  {isEditingPemesan ? (
+                    <AsyncSelect
+                      cacheOptions
+                      defaultOptions
+                      loadOptions={fetchCustomers}
+                      value={pemesanOption}
+                      onChange={(
+                        selectedOption: { customer: TCustomer } | null
+                      ) => {
+                        setSelectedPemesan(selectedOption?.customer || null);
+                        setisEditingPemesan(false);
+                      }}
+                      placeholder="Cari Pemesan"
+                      className="w-full"
+                      components={{
+                        Option: CustomOption,
+                      }}
+                    />
+                  ) : selectedPemesan ? (
+                    <div className="flex justify-between items-center px-3 py-2 border rounded-md bg-white">
+                      <div>
+                        <div className="font-semibold text-gray-900">
+                          {selectedPemesan.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {selectedPemesan.address}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="text-sm text-blue-500 underline ml-4"
+                        onClick={handleEditPemesan}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               </div>
 
               <div>
                 <Label
                   htmlFor="dikirimKepada"
-                  className="font-semibold text-md">
+                  className="font-semibold text-md"
+                >
                   Dikirim Kepada
                 </Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="namaPemesan"
-                    placeholder="Cari customer"
-                    className="w-full "
-                  />
-                  <button
-                    onClick={() => setShowModal(true)}
-                    className="btn-secondary border p-2 text-sm rounded-md">
-                    <span className="px-1">+</span>
-                    Customer
-                  </button>
+                <div className="w-full">
+                  {isEditingPenerima ? (
+                    <AsyncSelect
+                      cacheOptions
+                      defaultOptions
+                      loadOptions={fetchCustomers}
+                      onChange={(
+                        selectedOption: { customer: TCustomer } | null
+                      ) => {
+                        setSelectedPenerima(selectedOption?.customer || null);
+                        setisEditingPenerima(false);
+                      }}
+                      placeholder="Cari Penerima"
+                      className="w-full"
+                      components={{
+                        Option: CustomOption,
+                      }}
+                    />
+                  ) : selectedPenerima ? (
+                    <div className="flex justify-between items-center px-3 py-2 border rounded-md bg-white">
+                      <div>
+                        <div className="font-semibold text-gray-900">
+                          {selectedPenerima.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {selectedPenerima.address}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="text-sm text-blue-500 underline ml-4"
+                        onClick={handleEditPenerima}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               </div>
               {showModal && (
@@ -92,68 +196,67 @@ export default function EditOrderFomPage() {
               <div className="relative">
                 <Label
                   htmlFor="pengirimanDari"
-                  className="font-semibold text-md">
+                  className="font-semibold text-md"
+                >
                   Pengiriman Dari
                 </Label>
-                <Select
-                  options={senderOptions}
-                  onChange={handleSelectChange}
-                  placeholder="Pilih Pengirim"
-                  className="w-full h-10 pr-10 rounded-md border border-gray-300 dark:bg-dark-900"
-                />
-                <span className="pointer-events-none absolute right-3 bottom-1 -translate-y-1/2 text-gray-400">
-                  <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-                    <path
-                      d="M6 8l4 4 4-4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </div>
-
-              <div>
-                <DatePicker
-                  id="date-picker"
-                  label="Tanggal Order"
-                  placeholder="Select a date"
-                  onChange={(dates, currentDateString) => {
-                    // Handle your logic
-                    console.log({ dates, currentDateString });
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions
+                  loadOptions={fetchDeliveryPlace}
+                  onChange={(selectedOption) =>
+                    setSelectedDeliveryPlace(
+                      selectedOption ? selectedOption.place : null
+                    )
+                  }
+                  placeholder="Cari Lokasi Pengiriman"
+                  className="w-full"
+                  components={{
+                    Option: DeliveryOption,
                   }}
                 />
               </div>
 
-              <div className="relative">
-                <Label className="font-semibold text-md">Sales Channel</Label>
-                <Select
-                  options={salesChannelsOptions}
-                  placeholder="Pilih sales Channels"
-                  onChange={handleSelectChange}
-                  className="dark:bg-dark-900"
+              <div>
+                <Label htmlFor="datepicker">Pilih Tanggal:</Label>
+                <DatePicker
+                  id="datepicker"
+                  selected={orderDate}
+                  onChange={(date) => setOrderDate(date)}
+                  dateFormat="dd-MM-yyyy"
+                  className="border p-2 rounded"
+                  placeholderText="Pilih tanggal order"
                 />
-                <span className="pointer-events-none absolute right-3 bottom-1 -translate-y-1/2 text-gray-400">
-                  <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-                    <path
-                      d="M6 8l4 4 4-4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
+              </div>
+
+              <div className="relative">
+                <Label
+                  htmlFor="pengirimanDari"
+                  className="font-semibold text-md"
+                >
+                  Sales Channels
+                </Label>
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions
+                  loadOptions={fetchSalesChannels}
+                  placeholder="Pilih sales channels"
+                  className="w-full"
+                  onChange={(option) => {
+                    setSelectedSalesChannel(option ? option.channel : null);
+                  }}
+                />
               </div>
 
               <div>
-                <Label htmlFor="note" className="font-semibold text-md">
+                <label htmlFor="note" className="font-semibold text-md">
                   Catatan
-                </Label>
+                </label>
                 <textarea
                   id="note"
                   className="input h-30 w-full border border-gray-400 rounded-lg bg-gray-100"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
                 />
                 <div className="mt-2">
                   <label className="inline-flex items-center">

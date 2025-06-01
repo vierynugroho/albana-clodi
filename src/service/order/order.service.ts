@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   GetCustomersResponse,
   GetResponseDeliveryPlace,
+  OrderDetail,
   OrderPayload,
   PaymentMethod,
   PaymentResponse,
@@ -18,6 +19,7 @@ import {
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const token = localStorage.getItem('token');
+// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE3MDc1OTI2LTkxMDQtNDE1ZC1hZmM0LTQ2ZjYzNjQ5MWNhNiIsImlhdCI6MTc0ODc4MDg4NiwiZXhwIjoxNzQ4ODY3Mjg2fQ.0-IlO2_GZALlT-iXkPOi94pQOuvSlaJD9ZyzQkFcCK0"
 export const postOrder = async (data: OrderPayload) => {
   try {
     const response = await axios.post(`${apiUrl}/orders`, data, {
@@ -31,6 +33,21 @@ export const postOrder = async (data: OrderPayload) => {
     throw error;
   }
 };
+
+export const getOrderById = async (id: string) : Promise<OrderDetail> => {
+  try {
+    const response = await axios.get(`${apiUrl}/orders/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.responseObject;
+  } catch (error) {
+    console.error("Failed to get order by ID:", error);
+    throw error;
+  }
+};
+
 
 
 export const fetchCustomers = async (

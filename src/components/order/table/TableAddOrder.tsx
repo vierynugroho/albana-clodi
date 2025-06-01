@@ -292,13 +292,6 @@ export default function TableAddOrder({
         const val = Number(item.value.replace(/[^0-9.-]+/g, ""));
         return isNaN(val) ? acc : acc + val;
       }, 0);
-
-      if (total < 1) {
-        discountOrder = {
-          value: 0,
-          type: "nominal",
-        };
-      }
       if (total > 0) {
         discountOrder = {
           value: total ?? 0,

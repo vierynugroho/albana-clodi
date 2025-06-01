@@ -3,7 +3,7 @@ import { Dropdown } from "../../ui/dropdown/Dropdown";
 
 import { IoClose } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
-import { cancelOrder } from "../../../service/order/create-order.service";
+import { cancelOrder } from "../../../service/order/order.service";
 
 
 type Props = {
