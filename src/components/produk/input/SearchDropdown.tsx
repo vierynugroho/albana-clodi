@@ -10,6 +10,10 @@ type Props = {
   loading: boolean;
   selectedVal: string | number;
   handleChange: (value: string) => void;
+  nameExist: boolean;
+  priceExist: boolean;
+  heightBarcode: string;
+  columBarcode: string;
 };
 
 type SelectedVariantItem = {
@@ -26,6 +30,10 @@ export default function SearchableDropdown({
   selectedVal,
   loading,
   handleChange,
+  nameExist,
+  priceExist,
+  columBarcode,
+  heightBarcode,
 }: Props) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +41,7 @@ export default function SearchableDropdown({
   const [selectedProductsWithQty, setSelectedProductsWithQty] = useState<
     SelectedVariantItem[]
   >([]);
-  console.log(loading);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -92,15 +100,26 @@ export default function SearchableDropdown({
     String(option.product.name).toLowerCase().includes(query.toLowerCase())
   );
 
-  const handlePrintBarcodes = (jumlahKolom = 1, ukuranTinggi = 25) => {
+  console.log("Data Tinggi", heightBarcode);
+  console.log("DataColim", columBarcode);
+
+  const handlePrintBarcodes = (
+    jumlahKolom = 1,
+    ukuranTinggi = 25,
+    nameExist: boolean,
+    priceExist: boolean
+  ) => {
     const printContent = selectedProductsWithQty
       .map((item) =>
         Array.from({ length: item.quantity })
           .map(
             () => `
           <div class="barcode-item">
-            <div class="sku">Rp.${item.price}</div>
-            <img src="${item.imageBarcode}" alt="${item.sku}" />                 
+            <div class="sku">Rp.${priceExist ? item.price : ""}</div>
+            <img src="${item.imageBarcode}" alt="${item.sku}" />  
+            <div class="nameProduk">${
+              nameExist ? item.sku : ""
+            }</div>               
           </div>
         `
           )
@@ -145,11 +164,18 @@ export default function SearchableDropdown({
             page-break-inside: avoid;
           }
           
+          .nameProduk{
+           font-size: 8pt;
+            font-weight: bold;
+            margin-bottom: 1mm;
+            text-align: right;
+            line-height: 1;
+          }
           .sku {
             font-size: 8pt;
             font-weight: bold;
             margin-bottom: 1mm;
-            text-align: center;
+            text-align: left;
             line-height: 1;
           }
           
@@ -280,7 +306,14 @@ export default function SearchableDropdown({
       <Button
         disabled={selectedProductsWithQty.length === 0}
         className="mt-4"
-        onClick={() => handlePrintBarcodes()}
+        onClick={() =>
+          handlePrintBarcodes(
+            Number(columBarcode),
+            Number(heightBarcode),
+            nameExist,
+            priceExist
+          )
+        }
       >
         Cetak Barcode
         <FaPrint size={25} />

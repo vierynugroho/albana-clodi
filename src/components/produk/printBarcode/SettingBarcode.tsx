@@ -1,15 +1,29 @@
-import { useState } from "react";
+import React from "react";
 import Checkbox from "../../form/input/Checkbox";
 import Label from "../../form/Label";
 import Select from "../../form/Select";
 
-export default function SettingBarcode() {
-  const [isChecked, setIsChecked] = useState(false);
-  const [isCheckedTwo, setIsCheckedTwo] = useState(false);
+type PropsSettingBarcode = {
+  setHeight: React.Dispatch<React.SetStateAction<string>>;
+  setColumBarcode: React.Dispatch<React.SetStateAction<string>>;
+  setNameExist: React.Dispatch<React.SetStateAction<boolean>>;
+  setPriceExist: React.Dispatch<React.SetStateAction<boolean>>;
+  nameExist: boolean;
+  priceExist: boolean;
+};
+
+export default function SettingBarcode({
+  setColumBarcode,
+  setHeight,
+  setNameExist,
+  setPriceExist,
+  nameExist,
+  priceExist,
+}: PropsSettingBarcode) {
   const optionsLabel = [
-    { value: "33x15", label: "33 x 15 mm" },
-    { value: "33x19", label: "33 x 19 mm" },
-    { value: "33x25", label: "33 x 25 mm" },
+    { value: "15", label: "33 x 15 mm" },
+    { value: "19", label: "33 x 19 mm" },
+    { value: "25", label: "33 x 25 mm" },
   ];
 
   const columnCountOptions = [
@@ -18,9 +32,6 @@ export default function SettingBarcode() {
     { value: "3", label: "3" },
     { value: "4", label: "4" },
   ];
-  const handleSelectChange = (value: string) => {
-    console.log("Selected value:", value);
-  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -29,7 +40,9 @@ export default function SettingBarcode() {
         <Select
           options={optionsLabel}
           placeholder="Select Option"
-          onChange={handleSelectChange}
+          onChange={(value: string) => {
+            setHeight(value);
+          }}
           className="dark:bg-dark-900"
         />
       </div>
@@ -39,7 +52,9 @@ export default function SettingBarcode() {
         <Select
           options={columnCountOptions}
           placeholder="Select Option"
-          onChange={handleSelectChange}
+          onChange={(value: string) => {
+            setColumBarcode(value);
+          }}
           className="dark:bg-dark-900"
         />
       </div>
@@ -48,16 +63,12 @@ export default function SettingBarcode() {
         <Label>Data Yang Dicetak</Label>
         <div className="flex items-center gap-4 mt-4">
           <div className="flex items-center gap-3">
-            <Checkbox
-              checked={isChecked}
-              onChange={setIsChecked}
-              label="Nama Produk"
-            />
+            <Checkbox checked={nameExist} onChange={setNameExist} label="SKU" />
           </div>
           <div className="flex items-center gap-3">
             <Checkbox
-              checked={isCheckedTwo}
-              onChange={setIsCheckedTwo}
+              checked={priceExist}
+              onChange={setPriceExist}
               label="Harga"
             />
           </div>
