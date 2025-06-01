@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
@@ -12,9 +13,9 @@ import FilterStatusOrder from "../../components/order/filter/FilterStatusOrder";
 import { DownloadIcon } from "../../icons";
 import { FaPlus } from "react-icons/fa6";
 import OptionDropdownOrder from "../../components/order/dropdown/OptionDropdownOrder";
-import FilterOrderDropdown from "../../components/order/filter/FilterOrderDropdown";
 import OrderToolbar from "../../components/order/orderToolbar";
 import { getOrders, OrderItem } from "../../service/order/index";
+import { exportOrdersToExcel } from "../../service/order/create-order.service";
 
 export type FilterState = {
   ordererCustomerId?: string;
@@ -37,7 +38,7 @@ export type FilterState = {
 };
 
 export default function AllOrderPage() {
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
@@ -45,8 +46,6 @@ export default function AllOrderPage() {
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  console.log(isMobile);
-  console.log(loading);
   const [filterOrder, setFilterOrder] = useState<FilterState>({
     ordererCustomerId: "",
     deliveryTargetCustomerId: "",
@@ -64,7 +63,7 @@ export default function AllOrderPage() {
     paymentMethodId: "",
     search: "",
     sort: "",
-    // order: "desc",
+    order: "desc",
   });
 
   const location = useLocation();
@@ -77,13 +76,27 @@ export default function AllOrderPage() {
       if (keyword) params.set("search", keyword.toLowerCase());
 
       Object.entries(filter).forEach(([key, value]) => {
-        if (value) params.set(key, value);
+        if (value && value !== "") {
+          params.set(key, value);
+        }
       });
 
       navigate(`?${params.toString()}`);
     },
     [navigate]
   );
+
+  const handleStatusChange = (status: string) => {
+    setSelectedStatuses(status);
+
+    const newFilter = {
+      ...filterOrder,
+      paymentStatus: status || "",
+    };
+
+    setFilterOrder(newFilter);
+    handleSearchAndFilter(keyword, newFilter);
+  };
 
   useEffect(() => {
     async function fetchFilteredOrders() {
@@ -111,7 +124,16 @@ export default function AllOrderPage() {
       };
 
       setFilterOrder(filterFromURL);
-      const result = await getOrders(filterFromURL);
+      setSelectedStatuses(filterFromURL.paymentStatus || "");
+
+      // Hanya kirim properti yang ada nilainya
+      const filteredParams = Object.fromEntries(
+        Object.entries(filterFromURL).filter(
+          ([_, value]) => value !== "" && value !== undefined
+        )
+      );
+
+      const result = await getOrders(filteredParams);
 
       if (result.success && Array.isArray(result.responseObject)) {
         setOrders(result.responseObject);
@@ -123,7 +145,7 @@ export default function AllOrderPage() {
     }
 
     fetchFilteredOrders();
-  }, [location.search]);
+  }, [location.search, setLoading]);
 
   useEffect(() => {
     if (!location.search) {
@@ -148,10 +170,27 @@ export default function AllOrderPage() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [setIsMobile]);
+
+  function handleExport() {
+    exportOrdersToExcel()
+      .then(() => {
+        console.log("File berhasil diunduh");
+      })
+      .catch(() => {
+        alert("Gagal mengunduh file Excel.");
+      });
+  }
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <div>
+    <div className="dark:bg-white/[0.03] dark:text-white">
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
@@ -159,23 +198,21 @@ export default function AllOrderPage() {
       <PageBreadcrumb pageTitle="Halaman Order" />
       <hr className="my-6 border-gray-300 dark:border-gray-700" />
 
-      <div className="py-2 bg-gray-50">
+      <div className="py-2 bg-gray-50 dark:bg-white/[0]">
         <div
           className={`flex flex-wrap gap-2 ${
             window.innerWidth <= 768 ? "overflow-x-auto" : ""
           }`}
         >
           <FilterStatusOrder
+            onChange={handleStatusChange}
             selectedStatuses={selectedStatuses}
-            onChange={setSelectedStatuses}
           />
         </div>
 
         {/* Search and Filter Row */}
         <div className="flex flex-wrap items-center gap-2 mb-4 mt-3">
-          <div className="relative">
-            <FilterOrderDropdown />
-          </div>
+          <div className="relative">{/* <FilterOrderDropdown /> */}</div>
           <div className="flex-1">
             <SearchOrder
               onSearch={() => handleSearchAndFilter(keyword, filterOrder)}
@@ -208,6 +245,7 @@ export default function AllOrderPage() {
             <Button
               size="md"
               variant="outline"
+              onClick={handleExport}
               startIcon={<DownloadIcon className="size-5 text-blue-700" />}
             >
               Download
@@ -230,14 +268,9 @@ export default function AllOrderPage() {
             <p className="text-2xl font-medium">
               {orders.length} order ditemukan
             </p>
-            <div className="flex justify-between items-center bg-white p-3.5 rounded-lg">
-              <p className="text-md font-light">
-                Sisa kuota order:{" "}
-                <span className="text-green-600 font-semibold">826</span>
-              </p>
-              <span className="text-gray-400 mx-2">|</span>
+            <div className="flex justify-between items-center bg-white dark:bg-white/[0] dark:border dark:border-gray-700 p-3.5 rounded-lg">
               <Link to="/profile">
-                <span className="text-blue-600 text-md font-semibold">
+                <span className="text-blue-600 dark:text-white/[0.3] text-md font-semibold">
                   Lihat Detail
                 </span>
               </Link>
@@ -245,9 +278,25 @@ export default function AllOrderPage() {
           </div>
         </div>
         <div className="mb-6">
-          <OrderCard orders={orders} />
+          {loading ? (
+            <div className="text-center py-10">
+              {" "}
+              <div
+                className={`flex flex-wrap gap-2 ${
+                  isMobile ? "overflow-x-auto" : ""
+                }`}
+              ></div>
+            </div>
+          ) : (
+            <OrderCard orders={currentOrders} />
+          )}
         </div>
-        <OrderToolbar />
+        <OrderToolbar
+          currentPage={currentPage}
+          totalItems={orders.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

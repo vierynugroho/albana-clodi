@@ -17,8 +17,7 @@ import {
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwYjJhN2FlLTAzZjgtNDU3Yy04NmM4LTIzNWEyMmY1MTc5NSIsImlhdCI6MTc0ODQ4OTcyOCwiZXhwIjoxNzQ4NTc2MTI4fQ.K9SEJJh_2AtpxAjM_ZO9gJzN6FkglWwqBzQ9XPuXYyI";
+const token = localStorage.getItem("token");
 
 export const postOrder = async (data: OrderPayload) => {
   try {
@@ -33,7 +32,6 @@ export const postOrder = async (data: OrderPayload) => {
     throw error;
   }
 };
-
 
 export const fetchCustomers = async (
   query: string
@@ -144,12 +142,15 @@ export const fetchPayments = async (
   query: string
 ): Promise<{ label: string; value: string; payment: PaymentMethod }[]> => {
   try {
-    const response = await axios.get<PaymentResponse>(`${apiUrl}/payment-methods`, {
-      params: { search: query },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get<PaymentResponse>(
+      `${apiUrl}/payment-methods`,
+      {
+        params: { search: query },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const payments = response.data.responseObject;
 
@@ -159,7 +160,7 @@ export const fetchPayments = async (
       payment,
     }));
   } catch (error) {
-    console.error('Failed to fetch payments:', error);
+    console.error("Failed to fetch payments:", error);
     return [];
   }
 };
@@ -183,3 +184,47 @@ export const calculateShippingCost = async (
     throw new Error("Failed to calculate shipping cost");
   }
 };
+
+// cancel order 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const cancelOrder = async (orderId: string): Promise<any> => {
+  try {
+    const response = await axios.patch(
+      `${apiUrl}/orders/${orderId}/cancel`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Gagal membatalkan order:", error);
+    throw error?.response?.data || error;
+  }
+};
+
+export async function exportOrdersToExcel(): Promise<void> {
+  try {
+    const response = await axios.get("/orders/export/excel", {
+      responseType: "blob",
+      headers: {
+         Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Buat URL dari file blob
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "orders-export.xlsx");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Gagal mengunduh file Excel:", error);
+    throw error;
+  }
+}

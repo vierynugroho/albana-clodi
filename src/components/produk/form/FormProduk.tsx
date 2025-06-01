@@ -184,7 +184,9 @@ export default function FormProduk() {
           setProductDescription(result.responseObject.description);
           setProductWeight(result.responseObject.weight);
           setCategoryId(
-           result.responseObject.categoryId ?  result.responseObject.categoryId :''
+            result.responseObject.categoryId
+              ? result.responseObject.categoryId
+              : ""
           );
           setDiskon(
             diskonValue !== undefined && diskonValue !== null

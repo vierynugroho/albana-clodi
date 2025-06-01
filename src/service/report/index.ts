@@ -49,6 +49,23 @@ export type PaymentTransaction = {
 
 export type ProductSold = Record<string, number>;
 
+export type GrosProfit = Record<
+  string,
+  {
+    profit: number;
+  }
+>;
+
+type ResponseGrosProfit = {
+  success: boolean;
+  message: string;
+  responseObject?: {
+    keuntungan: number;
+    keuntungan_per_hari: GrosProfit;
+  };
+  statusCode?: number;
+};
+
 type ResponseProdcutSold = {
   success: boolean;
   message: string;
@@ -244,6 +261,38 @@ export async function reportForCardDashboard(): Promise<ResponseReportCatd> {
       message: "Berhasil Mendapatkan Data",
       responseObject: allReport,
     };
+  } catch (error) {
+    let message = "Terjadi kesalahan saat mengambil Data";
+
+    if (axios.isAxiosError(error)) {
+      message =
+        error.response?.data?.message ||
+        (error.request ? "Tidak dapat menghubungi server" : error.message);
+    } else {
+      message = (error as Error).message;
+    }
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
+export async function reportGrossProfit(
+  month?: string
+): Promise<ResponseGrosProfit> {
+  try {
+    const { data } = await axios.get(`${apiUrl}/reports/transactions`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      params: {
+        month,
+      },
+    });
+
+    return data;
   } catch (error) {
     let message = "Terjadi kesalahan saat mengambil Data";
 

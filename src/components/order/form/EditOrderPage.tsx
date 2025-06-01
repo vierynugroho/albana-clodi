@@ -10,20 +10,10 @@ import Button from "../../ui/button/Button.tsx";
 import { IoIosSave } from "react-icons/io";
 import { useState } from "react";
 import ModalAddCustomer from "../modal/ModalAddcustomer.tsx";
-import PaymentSection from "../card/PaymentSection.tsx";
 import ShippingSection from "../card/ShippingSection.tsx";
 
-export default function EditOrderFomPage({ orderId }: { orderId: string }) {
+export default function EditOrderFomPage() {
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    customerName: "",
-    shippingName: "",
-    sender: "",
-    orderDate: "",
-    salesChannel: "",
-    notes: "",
-    addToPrintLabel: false,
-  });
 
   const salesChannelsOptions = [
     { value: "shopee", label: "Shopee" },
@@ -37,18 +27,8 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
     },
   ];
 
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      salesChannel: value,
-    }));
-  };
-
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleSelectChange = () => {
+    // setFilter((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -58,7 +38,7 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
       />
       <OrderPageBreadcrumb pageTitle="Edit Order" />
-      <p className="py-2">Order#{orderId}</p>
+      <p className="py-2">Order#123421432</p>
       <hr className="border-1 border-gray-200" />
 
       <div className="p-6 bg-gray-50 min-h-screen">
@@ -75,10 +55,6 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
                     id="namaPemesan"
                     placeholder="Cari customer"
                     className="w-full"
-                    value={formData.customerName}
-                    onChange={(e) =>
-                      handleInputChange("customerName", e.target.value)
-                    }
                   />
                   <button
                     onClick={() => setShowModal(true)}
@@ -99,11 +75,7 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
                   <Input
                     id="namaPemesan"
                     placeholder="Cari customer"
-                    className="w-full"
-                    value={formData.shippingName}
-                    onChange={(e) =>
-                      handleInputChange("shippingName", e.target.value)
-                    }
+                    className="w-full "
                   />
                   <button
                     onClick={() => setShowModal(true)}
@@ -125,7 +97,7 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
                 </Label>
                 <Select
                   options={senderOptions}
-                  onChange={(value) => handleInputChange("sender", value)}
+                  onChange={handleSelectChange}
                   placeholder="Pilih Pengirim"
                   className="w-full h-10 pr-10 rounded-md border border-gray-300 dark:bg-dark-900"
                 />
@@ -148,7 +120,8 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
                   label="Tanggal Order"
                   placeholder="Select a date"
                   onChange={(dates, currentDateString) => {
-                    handleInputChange("orderDate", currentDateString);
+                    // Handle your logic
+                    console.log({ dates, currentDateString });
                   }}
                 />
               </div>
@@ -181,19 +154,10 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
                 <textarea
                   id="note"
                   className="input h-30 w-full border border-gray-400 rounded-lg bg-gray-100"
-                  value={formData.notes}
-                  onChange={(e) => handleInputChange("notes", e.target.value)}
                 />
                 <div className="mt-2">
                   <label className="inline-flex items-center">
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={formData.addToPrintLabel}
-                      onChange={(e) =>
-                        handleInputChange("addToPrintLabel", e.target.checked)
-                      }
-                    />
+                    <input type="checkbox" className="mr-2" />
                     Add To Print Label
                   </label>
                 </div>
@@ -210,8 +174,6 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
             <ComponentCard title="Orderan">
               <TableAddOrder />
             </ComponentCard>
-
-            <PaymentSection />
             <ShippingSection />
 
             {/* Tombol Aksi */}

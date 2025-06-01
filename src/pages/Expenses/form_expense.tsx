@@ -8,6 +8,7 @@ import {
   editExpense,
   getDetailExpense,
 } from "../../service/expense";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {
   changeModal: () => void;
@@ -54,10 +55,14 @@ export default function FormExpense({
       note: note,
     });
     if (result.success) {
-      console.log("Berhasil:", result.message);
+      toast.success(result.message, {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
       refreshData();
     } else {
-      console.log(result.message);
+      toast.error("Gagal Membuat Pengeluaran", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
     }
 
     changeModal();
@@ -74,10 +79,14 @@ export default function FormExpense({
       note: note,
     });
     if (result.success) {
-      console.log("Berhasil:", result.message);
+      toast.success(result.message, {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
       refreshData();
     } else {
-      console.log(result.message);
+      toast.error("Gagal Memperbarui Pengeluaran ", {
+        style: { marginTop: "10vh", zIndex: 100000 },
+      });
     }
 
     changeModal();
@@ -105,6 +114,7 @@ export default function FormExpense({
 
   return ReactDOM.createPortal(
     <div className="fixed z-[100000] inset-0 overflow-y-auto">
+      <Toaster />
       <div className="flex items-center justify-center min-h-screen px-4 text-center">
         <div className="fixed inset-0 bg-gray-500 opacity-75"></div>
         <div className="inline-block align-bottom bg-white rounded-lg px-6 pt-6 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">

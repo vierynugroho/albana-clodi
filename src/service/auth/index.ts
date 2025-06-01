@@ -1,6 +1,5 @@
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
-const token = localStorage.getItem("token");
 
 type ResponsAuth = {
   success: boolean;
@@ -68,7 +67,7 @@ export async function login(credentials: {
   }
 }
 
-export async function currentAuth(): Promise<ResponsAuthCurennt> {
+export async function currentAuth(token: string): Promise<ResponsAuthCurennt> {
   try {
     const { data } = await axios.get(`${apiUrl}/auth/current`, {
       headers: {
