@@ -32,6 +32,7 @@ export default function UserInfoCard() {
 
   const fetchUserProfile = useCallback(async (token: string) => {
     const result = await getUserProfile(token);
+    console.log(result);
     if (result.success && result.responseObject) {
       const { fullname, email } = result.responseObject;
       setUserProfile(result.responseObject);
@@ -125,7 +126,7 @@ export default function UserInfoCard() {
                 Nomor Telepon
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                08965517892
+                {userProfile?.phoneNumber ?? "--"}
               </p>
             </div>
 

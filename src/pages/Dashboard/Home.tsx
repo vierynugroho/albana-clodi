@@ -1,18 +1,22 @@
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import MonthlyGrossProfitChart from "../../components/ecommerce/MonthlyGrossProfitChart";
-// import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
-// import RecentOrders from "../../components/ecommerce/RecentOrders";
-// import DemographicCard from "../../components/ecommerce/DemographicCard";
 import PageMeta from "../../components/common/PageMeta";
 import SliderDashboard from "../../components/Carausel/SliderDasboard.";
 import SectionDasboard from "./SectionDasboard";
 import ProductSoldChart from "../../components/laporan/SalesChart";
 import { useEffect, useState } from "react";
-import { ProductSold, ProductSolds } from "../../service/report";
+import {
+  GrosProfit,
+  ProductSold,
+  ProductSolds,
+  reportGrossProfit,
+} from "../../service/report";
 import toast from "react-hot-toast";
 
 export default function Home() {
   const [productSold, setProductSold] = useState<ProductSold | null>(null);
+  const [grosProfit, setGrosProfit] = useState<GrosProfit | null>(null);
+  const [totalGrosProfit, setTotalGrosProfit] = useState<number>(0);
   const [totalProductSold, setTotalProductSold] = useState<number>(0);
 
   useEffect(() => {
@@ -27,7 +31,25 @@ export default function Home() {
         });
       }
     };
+
+    const fetchOrderSold = async () => {
+      const currentMonth = (new Date().getMonth() + 1)
+        .toString()
+        .padStart(2, "0");
+      const resultGrossProfit = await reportGrossProfit(currentMonth);
+
+      console.log(currentMonth);
+      if (resultGrossProfit.success && resultGrossProfit.responseObject) {
+        setGrosProfit(resultGrossProfit.responseObject.keuntungan_per_hari);
+        setTotalGrosProfit(resultGrossProfit.responseObject.keuntungan);
+      } else {
+        toast.error(resultGrossProfit.message, {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      }
+    };
     fetchProductSold();
+    fetchOrderSold();
   }, []);
   return (
     <>
@@ -48,7 +70,12 @@ export default function Home() {
           <div className="grid grid-cols-12 gap-4 md:gap-6">
             <div className="col-span-12 space-y-6">
               <EcommerceMetrics />
-              <MonthlyGrossProfitChart />
+              {localStorage.getItem("role") === "ADMIN" ? null : (
+                <MonthlyGrossProfitChart
+                  ProfitOrder={grosProfit}
+                  totalProfitOrder={totalGrosProfit}
+                />
+              )}
             </div>
             <div className="col-span-12">
               <ProductSoldChart

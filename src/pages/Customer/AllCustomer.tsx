@@ -17,7 +17,7 @@ import { FilterState } from "../../service/customer";
 import PaginationNavigation from "../../components/produk/pagination/PaginationNavigation";
 
 export default function AllCustomerPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [filter, setFilter] = useState<boolean>(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -194,6 +194,7 @@ export default function AllCustomerPage() {
             />
           ) : null}
           <TableCustomer
+            loading={isLoading}
             customers={customers}
             deleteCustomer={handleDeleteCustomer}
           />

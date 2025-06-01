@@ -1,11 +1,13 @@
 import axios from "axios";
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from "react";
 import { JSX } from "react/jsx-runtime";
+const token = localStorage.getItem("token");
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Tipe data sesuai struktur response Anda
 export type OrderItem = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   map(arg0: (item: { updatedAt: string | number | Date; bankName: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; accountNumber: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; nominal: number | bigint; status: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }, index: Key | null | undefined) => JSX.Element): import("react").ReactNode;
   length: number;
   id: string;
@@ -138,6 +140,8 @@ type OrderQuery = {
   month?: string;
   year?: string;
   week?: string;
+  paymentStatus?:string;
+  order?:string;
 };
 
 type OrderResponse = {
@@ -155,7 +159,7 @@ type ResponseSucces = {
 };
 
 
-const token = localStorage.getItem('token');
+
 export async function getOrders(query?: OrderQuery): Promise<ResponseSucces> {
   try {
     const { data } = await axios.get(`${apiUrl}/orders`, {

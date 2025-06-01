@@ -29,6 +29,16 @@ type Props = {
   onDelete: (index: number) => void;
 };
 
+function formatToRupiah(amount: number): string {
+  return new Intl.NumberFormat("id-ID", {
+    minimumFractionDigits: 0,
+  }).format(amount);
+}
+
+function parseRupiah(rupiahString: string): number {
+  return Number(rupiahString.replace(/[^0-9]/g, ""));
+}
+
 export default function VarianProduk({
   setVarian,
   index,
@@ -57,7 +67,7 @@ export default function VarianProduk({
       return updated;
     });
   }
-  console.log(variant.imageUrl)
+  console.log(variant.imageUrl);
   return (
     <div className="relative border rounded-2xl p-4 shadow-md mb-4 flex justify-evenly gap-6 whitespace-nowrap items-start">
       <DropzoneComponent
@@ -78,56 +88,66 @@ export default function VarianProduk({
         <div>
           <Label htmlFor="inputTwo">Harga Beli</Label>
           <Input
-            onChange={(val) => onChange(index, val.target.value, "buy")}
-            value={variant.productPrices?.buy ?? ""}
-            type="number"
-            min="0"
-            placeholder="5000"
+            onChange={(e) => {
+              const numeric = parseRupiah(e.target.value);
+              onChange(index, numeric, "buy"); // kirim angka murni
+            }}
+            value={formatToRupiah(variant.productPrices.buy)}
+            type="text"
+            placeholder="Rp0"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
         <hr />
         <div>
-          <Label htmlFor="inputTwo">Harga Jual Normal</Label>
+          <Label htmlFor="inputTwo">Harga Normal</Label>
           <Input
-            onChange={(val) => onChange(index, val.target.value, "normal")}
-            value={variant.productPrices?.normal ?? ""}
-            type="number"
-            min="0"
-            placeholder="40000"
+            onChange={(e) => {
+              const numeric = parseRupiah(e.target.value);
+              onChange(index, numeric, "normal"); // kirim angka murni
+            }}
+            value={formatToRupiah(variant.productPrices.normal)}
+            type="text"
+            placeholder="Rp0"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
         <div>
-          <Label htmlFor="inputTwo">Harga Jual Reseller</Label>
+          <Label htmlFor="inputTwo">Harga Reseller</Label>
           <Input
-            onChange={(val) => onChange(index, val.target.value, "reseller")}
-            value={variant.productPrices?.reseller ?? ""}
-            type="number"
-            min="0"
-            placeholder="13000"
+            onChange={(e) => {
+              const numeric = parseRupiah(e.target.value);
+              onChange(index, numeric, "reseller"); // kirim angka murni
+            }}
+            value={formatToRupiah(variant.productPrices.reseller)}
+            type="text"
+            placeholder="Rp0"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
         <div>
-          <Label htmlFor="inputTwo">Harga Jual Agent</Label>
+          <Label htmlFor="inputTwo">Harga Agent</Label>
           <Input
-            onChange={(val) => onChange(index, val.target.value, "agent")}
-            value={variant.productPrices?.agent ?? ""}
-            type="number"
-            min="0"
-            placeholder="15000"
+            onChange={(e) => {
+              const numeric = parseRupiah(e.target.value);
+              onChange(index, numeric, "agent"); // kirim angka murni
+            }}
+            value={formatToRupiah(variant.productPrices.agent)}
+            type="text"
+            placeholder="Rp0"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
         <div>
-          <Label htmlFor="inputTwo">Harga Jual Member</Label>
+          <Label htmlFor="inputTwo">Harga Member</Label>
           <Input
-            onChange={(val) => onChange(index, val.target.value, "member")}
-            value={variant.productPrices?.member ?? ""}
-            type="number"
-            min="0"
-            placeholder="20000"
+            onChange={(e) => {
+              const numeric = parseRupiah(e.target.value);
+              onChange(index, numeric, "member"); // kirim angka murni
+            }}
+            value={formatToRupiah(variant.productPrices.member)}
+            type="text"
+            placeholder="Rp0"
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>

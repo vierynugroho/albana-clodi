@@ -12,14 +12,20 @@ import { FaWhatsapp } from "react-icons/fa";
 import { Customer } from "../../service/customer";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import SpinnerLoading from "../produk/loading/SpinnerLoading";
 
 type Props = {
   customers: Customer[];
+  loading: boolean;
   deleteCustomer?: (id: string) => void;
   editCustomer?: (id: string) => void;
 };
 
-export default function TableCustomer({ customers, deleteCustomer }: Props) {
+export default function TableCustomer({
+  customers,
+  deleteCustomer,
+  loading,
+}: Props) {
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
@@ -87,53 +93,75 @@ export default function TableCustomer({ customers, deleteCustomer }: Props) {
               </TableCell>
             </TableRow>
           </TableHeader>
-
-          {/* Table Body */}
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            {customers.map((customer) => (
-              <TableRow key={customer.id}>
-                <TableCell className="py-4 px-3 sm:px-6 text-start text-gray-500">
-                  <div className="flex gap-4 justify-around">
-                    <img
-                      width={24}
-                      height={24}
-                      src={"/images/user/user-17.jpg"}
-                      className="size-9 mt-0 rounded-full"
-                    />
-                    <section className="flex-1 w-40"> {customer.name}</section>
-                  </div>
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {customer.category}
-                </TableCell>
-
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <div className="flex gap-2">
-                    <FaWhatsapp size={20} className="text-green-600" />
-                    {customer.phoneNumber}
-                  </div>
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {customer.address}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <div className="flex gap-5 justify-end">
-                    <CiEdit
-                      size={30}
-                      className="text-amber-500"
-                      onClick={() => handleEdit(customer.id)}
-                      style={{ cursor: "pointer" }}
-                    />
-                    <TiDelete
-                      size={30}
-                      className="text-red-600"
-                      onClick={() => handleDeleteClick(customer.id)}
-                      style={{ cursor: "pointer" }}
-                    />
-                  </div>
+            {/* Table Body */}
+            {loading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={8}
+                  className="px-4 text-gray-500 dark:text-gray-400 text-center font-bold h-20 text-2xl"
+                >
+                  <SpinnerLoading />
                 </TableCell>
               </TableRow>
-            ))}
+            ) : customers && customers.length >= 1 ? (
+              customers.map((customer) => (
+                <TableRow key={customer.id}>
+                  <TableCell className="py-4 px-3 sm:px-6 text-start text-gray-500">
+                    <div className="flex gap-4 justify-around">
+                      <img
+                        width={24}
+                        height={24}
+                        src={"/images/user/user-17.jpg"}
+                        className="size-9 mt-0 rounded-full"
+                      />
+                      <section className="flex-1 w-40">
+                        {" "}
+                        {customer.name}
+                      </section>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {customer.category}
+                  </TableCell>
+
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <div className="flex gap-2">
+                      <FaWhatsapp size={20} className="text-green-600" />
+                      {customer.phoneNumber}
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {customer.address}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <div className="flex gap-5 justify-end">
+                      <CiEdit
+                        size={30}
+                        className="text-amber-500"
+                        onClick={() => handleEdit(customer.id)}
+                        style={{ cursor: "pointer" }}
+                      />
+                      <TiDelete
+                        size={30}
+                        className="text-red-600"
+                        onClick={() => handleDeleteClick(customer.id)}
+                        style={{ cursor: "pointer" }}
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="px-4 text-gray-500 dark:text-gray-400 text-center font-bold h-20 text-2xl"
+                >
+                  Data User Tidak Ditemukan
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>

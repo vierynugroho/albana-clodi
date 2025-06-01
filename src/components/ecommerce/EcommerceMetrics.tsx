@@ -7,12 +7,11 @@ import { ArrowDownIcon, ArrowUpIcon } from "../../icons";
 import Badge from "../ui/badge/Badge";
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
-import { currentAuth } from "../../service/auth";
 import toast from "react-hot-toast";
 import { ReportCard, reportForCardDashboard } from "../../service/report";
 
 export default function EcommerceMetrics() {
-  const [role, setRole] = useState(localStorage.getItem("role") || "");
+  const role = localStorage.getItem("role");
   const [dataCard, setDataCard] = useState<ReportCard>({
     reportOrders: {
       laba_kotor: 0,
@@ -27,17 +26,7 @@ export default function EcommerceMetrics() {
 
   useEffect(() => {
     const getCurrentAuth = async () => {
-      const data = await currentAuth();
       const reportCard = await reportForCardDashboard();
-
-      if (data.success && data.responseObject?.role) {
-        setRole("SUPERADMIN"); // update state
-        localStorage.setItem("role", "SUPERADMIN"); // simpan juga ke localStorage
-      } else {
-        toast.error(data.message, {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
-      }
 
       if (reportCard.success && reportCard.responseObject) {
         setDataCard(reportCard.responseObject);

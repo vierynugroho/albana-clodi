@@ -12,12 +12,6 @@ type PropsProductSoldChart = {
 };
 
 export default function ProductSoldChart({ productsSold, totalProductsSold, year, month }: PropsProductSoldChart) {
-	console.log({
-		message: 'product terjual',
-		// data: fullDates,
-		month,
-		year,
-	});
 	const [showChartSaler, setShowChartSaler] = useState(true);
 	const currentYear = year && year.trim() !== '' ? year : new Date().getFullYear().toString();
 	const currentMonth = month && month.trim() !== '' ? month.padStart(2, '0') : (new Date().getMonth() + 1).toString().padStart(2, '0');
