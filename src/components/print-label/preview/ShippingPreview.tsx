@@ -9,7 +9,7 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
 
   return (
-    <div className="grid grid-cols-12 gap-4 gap-x-8 p-5 text-sm">
+    <div className="grid grid-cols-12 gap-4 gap-x-8 p-5 text-base">
       {/* Logo dan Shop Info */}
       {(has("Shop Logo") || has("Shop Info")) && (
         <div className="col-span-2 flex flex-col i-center justify-center items-center text-center space-y-2">

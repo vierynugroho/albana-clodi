@@ -787,7 +787,7 @@ span.flatpickr-weekday,
     margin: 0;
     padding: 5px;
     background: white;
-    font-size: 8px; 
+    font-size: 12px; 
     line-height: 1.2;
   }
 
@@ -806,12 +806,12 @@ span.flatpickr-weekday,
   }
 
   h1, h2, h3, h4, div, span {
-    font-size: 10px !important;
+    font-size: 12px !important;
   }
 
   img, svg {
     display: block !important;
-    max-width: 50%;
+    max-width: 85%;
     height: auto;
   }
 

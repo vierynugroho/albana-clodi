@@ -13,6 +13,10 @@ export default function PrintProductBarcode() {
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const dataProducts = useRef<ArrayProduct[]>([]);
+  const [heightBarcode, setHeight] = useState<string>("15");
+  const [columBarcode, setColumBarcode] = useState<string>("1");
+  const [nameExist, setNameExist] = useState<boolean>(false);
+  const [priceExist, setPriceExist] = useState<boolean>(false);
 
   useEffect(() => {
     setLoading(true);
@@ -48,7 +52,14 @@ export default function PrintProductBarcode() {
               </section>
             </div>
             {/* Component For Setting Barcode */}
-            <SettingBarcode />
+            <SettingBarcode
+              setColumBarcode={setColumBarcode}
+              setHeight={setHeight}
+              setNameExist={setNameExist}
+              setPriceExist={setPriceExist}
+              nameExist={nameExist}
+              priceExist={priceExist}
+            />
           </ComponentCard>
           <ComponentCard title="Pilih Produk" className="flex-1/2">
             <div className="flex gap-2 flex-col">
@@ -60,6 +71,10 @@ export default function PrintProductBarcode() {
                 loading={loading}
                 selectedVal={value}
                 handleChange={(val) => setValue(val)}
+                columBarcode={columBarcode}
+                heightBarcode={heightBarcode}
+                nameExist={nameExist}
+                priceExist={priceExist}
               />
             </div>
           </ComponentCard>

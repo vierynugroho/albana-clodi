@@ -1,63 +1,108 @@
 import { FaUserTimes } from "react-icons/fa";
 import { FaPeopleCarryBox } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
-import { IoIosWallet } from "react-icons/io";
 import Button from "../../components/ui/button/Button";
 import IconsCourier from "../../icons/choose-courier.svg";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import { getOrders, OrderItem } from "../../service/order";
+import { useEffect, useRef } from "react";
+
+function formatToReadableDate(dateString: string): string {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
 
 function SectionDasboard() {
+  const orderPending = useRef<OrderItem[]>([]);
+  const orderInstallment = useRef<OrderItem[]>([]);
+  const ROLE = localStorage.getItem("role");
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Selamat Pagi";
+    if (hour < 15) return "Selamat Siang";
+    if (hour < 18) return "Selamat Sore";
+    return "Selamat Malam";
+  };
+
+  // Fungsi untuk format tanggal lengkap
+  const getFullDate = () => {
+    const days = [
+      "Minggu",
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jumat",
+      "Sabtu",
+    ];
+    const months = [
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
+    ];
+
+    const now = new Date();
+    const dayName = days[now.getDay()];
+    const date = now.getDate();
+    const month = months[now.getMonth()];
+    const year = now.getFullYear();
+
+    return `${dayName}, ${date} ${month} ${year}`;
+  };
+
   const navigate = useNavigate();
-  const orders = [
-    {
-      id: 1,
-      orderNumber: "#57700 - Rifdah Alkhonsa",
-      amount: "Rp164.000",
-      timeAgo: "12 jam lalu",
-    },
-    {
-      id: 2,
-      orderNumber: "#57701 - Ahmad Fauzi",
-      amount: "Rp200.000",
-      timeAgo: "8 jam lalu",
-    },
-    {
-      id: 3,
-      orderNumber: "#57702 - Siti Aisyah",
-      amount: "Rp300.000",
-      timeAgo: "5 jam lalu",
-    },
-  ];
+
+  // Get Order Pending
+
+  useEffect(() => {
+    const functionGePendingOrders = async () => {
+      const result = await getOrders({
+        paymentStatus: "PENDING",
+        order: "desc",
+      });
+
+      if (result.success && result.responseObject) {
+        orderPending.current = result.responseObject as unknown as OrderItem[];
+      }
+    };
+    const functionGetinstallmentsOrders = async () => {
+      const result = await getOrders({
+        paymentStatus: "INSTALLMENTS",
+        order: "desc",
+      });
+
+      if (result.success && result.responseObject) {
+        orderInstallment.current =
+          result.responseObject as unknown as OrderItem[];
+      }
+    };
+    functionGePendingOrders();
+    functionGetinstallmentsOrders();
+  }, []);
+  console.log(orderPending.current);
 
   return (
     <div className="space-y-6 pl-3 lg:pl-3 ">
       <div className="px-4 py-1 bg-white rounded-xl shadow dark:bg-gray-800 dark:text-white">
         <h3 className="my-2 text-md font-semibold text-gray-800 dark:text-white">
-          Keuntungan Paket
+          {getGreeting()} {ROLE}
         </h3>
-        <div className="p-2.5 border border-gray-300 rounded-lg mt-4 mb-2">
-          <div className="flex justify-center gap-2.5 items-center">
-            <div>
-              <IoIosWallet className="text-blue-500 dark:text-white/90 size-6" />
-            </div>
-            <div className="mx-1">
-              <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
-                Kuota Order kamu: 900
-              </h3>
-              <span className="py-2 text-theme-xs font-medium text-gray-500 dark:text-white">
-                Jumlah kuota utama & tambahan
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center mt-2 my-3">
-          <Button
-            className="w-full h-9 border-blue-500 font-normal text-blue-400 py-2 rounded-lg"
-            variant="outlineblue"
-            onClick={() => console.log("Button clicked!")}>
-            Lihat Detail
-          </Button>
-        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+          {getFullDate()}
+        </p>
       </div>
 
       <div className="px-4 py-1 bg-white rounded-xl shadow dark:bg-gray-800 dark:text-white">
@@ -65,22 +110,55 @@ function SectionDasboard() {
           <div className="flex justify-between">
             <div className="mx-1">
               <h3 className="text-theme-sm font-medium text-gray-800 dark:text-white">
-                Order Belum Bayar
+                Order Belum Lunas
               </h3>
               <span className="py-2 text-2xl font-bold text-red-400 dark:text-white">
-                10
+                {orderInstallment.current.length}
               </span>
             </div>
             <FaUserTimes className="text-red-400 dark:dark:text-white/90 size-6 my-3" />
           </div>
         </div>
-        <div className="flex items-center justify-center h-48">
-          <p className="text-theme-sm font-medium text-gray-500 dark:text-gray-300">
-            Tidak ada order dalam tiga bulan
-          </p>
-        </div>
+
+        {orderInstallment.current.length == 0 && (
+          <div className="flex items-center justify-center h-48">
+            <p className="text-theme-sm font-medium text-gray-500 dark:text-gray-300">
+              Tidak ada Order Yang Belum Lunas
+            </p>
+          </div>
+        )}
+
+        {orderInstallment.current.map((order, index) => {
+          if (index === 3) return null;
+
+          return (
+            <div key={order.id} className="w-full my-2">
+              <div className="flex justify-between">
+                <div className="my-2">
+                  <h4 className="text-theme-sm font-medium text-gray-800 dark:text-white">
+                    {order.OrderDetail.code}
+                  </h4>
+                  <p className="text-theme-xs text-gray-500 dark:text-gray-300">
+                    {order.OrdererCustomer.name}
+                  </p>
+                </div>
+                <span className="text-theme-xs text-gray-400 dark:text-gray-500 my-2">
+                  {formatToReadableDate(order.createdAt)}
+                </span>
+              </div>
+              <hr className="border-gray-300 dark:border-gray-700 pt-2" />
+            </div>
+          );
+        })}
         <div className="flex items-center justify-end mt-2 font-semibold text-blue-600 my-2.5">
-          <p className="text-theme-sm font-semibold">Lihat Semua</p>
+          <p
+            className="text-theme-sm font-semibold cursor-pointer"
+            onClick={() => {
+              navigate("/order?paymentStatus=INSTALLMENTS&order=desc");
+            }}
+          >
+            Lihat Semua
+          </p>
           <IoIosArrowForward />
         </div>
       </div>
@@ -93,35 +171,45 @@ function SectionDasboard() {
                 Order Belum Diproses
               </h3>
               <span className="py-2 text-2xl font-bold text-yellow-500 dark:text-white">
-                3
+                {orderPending.current.length}
               </span>
             </div>
             <FaPeopleCarryBox className="text-yellow-500 size-6 dark:text-white/90 my-3" />
           </div>
         </div>
 
-        {orders.map((order) => (
-          <div key={order.id} className="w-full my-2">
-            <div className="flex justify-between">
-              <div className="my-2">
-                <h4 className="text-theme-sm font-medium text-gray-800 dark:text-white">
-                  {order.orderNumber}
-                </h4>
-                <p className="text-theme-xs text-gray-500 dark:text-gray-300">
-                  {order.amount}
-                </p>
+        {orderPending.current.map((order, index) => {
+          if (index === 3) return null;
+
+          return (
+            <div key={order.id} className="w-full my-2">
+              <div className="flex justify-between">
+                <div className="my-2">
+                  <h4 className="text-theme-sm font-medium text-gray-800 dark:text-white">
+                    {order.OrderDetail.code}
+                  </h4>
+                  <p className="text-theme-xs text-gray-500 dark:text-gray-300">
+                    {order.OrdererCustomer.name}
+                  </p>
+                </div>
+                <span className="text-theme-xs text-gray-400 dark:text-gray-500 my-2">
+                  {formatToReadableDate(order.createdAt)}
+                </span>
               </div>
-              <span className="text-theme-xs text-gray-400 dark:text-gray-500 my-2">
-                {order.timeAgo}
-              </span>
+              <hr className="border-gray-300 dark:border-gray-700 pt-2" />
             </div>
-            <hr className="border-gray-300 dark:border-gray-700 pt-2" />
-          </div>
-        ))}
+          );
+        })}
+
         <div className="flex items-center justify-end mt-2 font-semibold text-blue-600 my-2.5">
-          <Link to={"/order"}>
-            <p className="text-theme-sm font-semibold">Lihat Semua</p>
-          </Link>
+          <p
+            className="text-theme-sm font-semibold"
+            onClick={() => {
+              navigate("/order?paymentStatus=PENDING&order=desc");
+            }}
+          >
+            Lihat Semua
+          </p>
 
           <IoIosArrowForward />
         </div>
@@ -145,7 +233,8 @@ function SectionDasboard() {
         <div className="flex items-center mt-4">
           <Button
             className="w-full h-9 bg-blue-500 text-white font-normal py-2 rounded-lg"
-            onClick={() => navigate("/profile")}>
+            onClick={() => navigate("/profile")}
+          >
             Pilih Kurir
           </Button>
         </div>

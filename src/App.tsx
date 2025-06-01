@@ -50,7 +50,8 @@ export default function App() {
               <ProtectedRoute>
                 <AppLayout />
               </ProtectedRoute>
-            }>
+            }
+          >
             <Route index path="/" element={<Home />} />
 
             {/* Order Page */}

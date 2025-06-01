@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
@@ -5,85 +6,157 @@ import PageMeta from "../../components/common/PageMeta";
 import OrderCard from "../../components/order/card/OrderCard";
 import { TbFilterDiscount } from "react-icons/tb";
 import Button from "../../components/ui/button/Button";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import SearchOrder from "../../components/order/filter/SearchOrder";
 import FilterOrder from "../../components/order/filter/FilterOrder";
 import FilterStatusOrder from "../../components/order/filter/FilterStatusOrder";
 import { DownloadIcon } from "../../icons";
 import { FaPlus } from "react-icons/fa6";
 import OptionDropdownOrder from "../../components/order/dropdown/OptionDropdownOrder";
-import FilterOrderDropdown from "../../components/order/filter/FilterOrderDropdown";
+import OrderToolbar from "../../components/order/orderToolbar";
+import { getOrders, OrderItem } from "../../service/order/index";
+import { exportOrdersToExcel } from "../../service/order/create-order.service";
 
-type FilterState = {
-  pembayaran: string;
-  pengiriman: string;
-  admin: string;
-  bank: string;
-  kurir: string;
-  pickup: string;
-  salesChannels: string;
-  kategoriCustomer: string;
-  gudang: string;
-  produk: string;
-  printLabel: string;
-  tanggal: string;
+export type FilterState = {
+  ordererCustomerId?: string;
+  deliveryTargetCustomerId?: string;
+  salesChannelId?: string;
+  deliveryPlaceId?: string;
+  orderDate?: string;
+  orderStatus?: string;
+  orderMonth?: string;
+  orderYear?: string;
+  startDate?: string;
+  endDate?: string;
+  customerCategory?: string;
+  paymentStatus?: string;
+  productId?: string;
+  paymentMethodId?: string;
+  search?: string;
+  sort?: string;
+  order?: "asc" | "desc";
 };
 
 export default function AllOrderPage() {
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>("");
+
+  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [filterOrder, setFilterOrder] = useState<FilterState>({
-    pembayaran: "",
-    pengiriman: "",
-    admin: "",
-    bank: "",
-    kurir: "",
-    pickup: "",
-    salesChannels: "",
-    kategoriCustomer: "",
-    gudang: "",
-    produk: "",
-    printLabel: "semua",
-    tanggal: "order",
+    ordererCustomerId: "",
+    deliveryTargetCustomerId: "",
+    salesChannelId: "",
+    deliveryPlaceId: "",
+    orderDate: "",
+    orderStatus: "",
+    orderMonth: "",
+    orderYear: "",
+    startDate: "",
+    endDate: "",
+    customerCategory: "",
+    paymentStatus: "",
+    productId: "",
+    paymentMethodId: "",
+    search: "",
+    sort: "",
+    order: "desc",
   });
 
+  const location = useLocation();
   const navigate = useNavigate();
 
-  // Handle Search and Filter Query
   const handleSearchAndFilter = useCallback(
     (keyword: string, filter: FilterState) => {
       const params = new URLSearchParams();
-      // for search
-      params.set("keyword", keyword.toLowerCase());
 
-      // for filter
-      params.set("pembayaran", filter.pembayaran);
-      params.set("pengiriman", filter.pengiriman);
-      params.set("admin", filter.admin);
-      params.set("bank", filter.bank);
-      params.set("kurir", filter.kurir);
-      params.set("pickup", filter.pickup);
-      params.set("salesChannels", filter.salesChannels);
-      params.set("kategoriCustomer", filter.kategoriCustomer);
-      params.set("gudang", filter.gudang);
-      params.set("produk", filter.produk);
-      params.set("printLabel", filter.printLabel);
-      params.set("tanggal", filter.tanggal);
+      if (keyword) params.set("search", keyword.toLowerCase());
+
+      Object.entries(filter).forEach(([key, value]) => {
+        if (value && value !== "") {
+          params.set(key, value);
+        }
+      });
 
       navigate(`?${params.toString()}`);
     },
     [navigate]
   );
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedFilter(event.target.value);
-    // 🔍 Optional: panggil fungsi filter data berdasarkan nilai ini
-    console.log("Filter dipilih:", event.target.value);
+  const handleStatusChange = (status: string) => {
+    setSelectedStatuses(status);
+
+    const newFilter = {
+      ...filterOrder,
+      paymentStatus: status || "",
+    };
+
+    setFilterOrder(newFilter);
+    handleSearchAndFilter(keyword, newFilter);
   };
+
+  useEffect(() => {
+    async function fetchFilteredOrders() {
+      setLoading(true);
+      const params = new URLSearchParams(location.search);
+
+      const filterFromURL: FilterState = {
+        ordererCustomerId: params.get("ordererCustomerId") || "",
+        deliveryTargetCustomerId: params.get("deliveryTargetCustomerId") || "",
+        salesChannelId: params.get("salesChannelId") || "",
+        deliveryPlaceId: params.get("deliveryPlaceId") || "",
+        orderDate: params.get("orderDate") || "",
+        orderStatus: params.get("orderStatus") || "",
+        orderMonth: params.get("orderMonth") || "",
+        orderYear: params.get("orderYear") || "",
+        startDate: params.get("startDate") || "",
+        endDate: params.get("endDate") || "",
+        customerCategory: params.get("customerCategory") || "",
+        paymentStatus: params.get("paymentStatus") || "",
+        productId: params.get("productId") || "",
+        paymentMethodId: params.get("paymentMethodId") || "",
+        search: params.get("search") || "",
+        sort: params.get("sort") || "",
+        order: (params.get("order") as "asc" | "desc") || "desc",
+      };
+
+      setFilterOrder(filterFromURL);
+      setSelectedStatuses(filterFromURL.paymentStatus || "");
+
+      // Hanya kirim properti yang ada nilainya
+      const filteredParams = Object.fromEntries(
+        Object.entries(filterFromURL).filter(
+          ([_, value]) => value !== "" && value !== undefined
+        )
+      );
+
+      const result = await getOrders(filteredParams);
+
+      if (result.success && Array.isArray(result.responseObject)) {
+        setOrders(result.responseObject);
+      } else {
+        setOrders([]);
+      }
+
+      setLoading(false);
+    }
+
+    fetchFilteredOrders();
+  }, [location.search, setLoading]);
+
+  useEffect(() => {
+    if (!location.search) {
+      const savedFilter = localStorage.getItem("orderFilter");
+      if (savedFilter) {
+        const parsedFilter: FilterState = JSON.parse(savedFilter);
+        setFilterOrder(parsedFilter);
+        handleSearchAndFilter(keyword, parsedFilter);
+      }
+    }
+  }, [handleSearchAndFilter, keyword, location.search]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -97,10 +170,27 @@ export default function AllOrderPage() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [setIsMobile]);
+
+  function handleExport() {
+    exportOrdersToExcel()
+      .then(() => {
+        console.log("File berhasil diunduh");
+      })
+      .catch(() => {
+        alert("Gagal mengunduh file Excel.");
+      });
+  }
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <div>
+    <div className="dark:bg-white/[0.03] dark:text-white">
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
@@ -108,22 +198,21 @@ export default function AllOrderPage() {
       <PageBreadcrumb pageTitle="Halaman Order" />
       <hr className="my-6 border-gray-300 dark:border-gray-700" />
 
-      <div className="py-2 bg-gray-50">
+      <div className="py-2 bg-gray-50 dark:bg-white/[0]">
         <div
           className={`flex flex-wrap gap-2 ${
             window.innerWidth <= 768 ? "overflow-x-auto" : ""
-          }`}>
+          }`}
+        >
           <FilterStatusOrder
+            onChange={handleStatusChange}
             selectedStatuses={selectedStatuses}
-            onChange={setSelectedStatuses}
           />
         </div>
 
         {/* Search and Filter Row */}
         <div className="flex flex-wrap items-center gap-2 mb-4 mt-3">
-          <div className="relative">
-            <FilterOrderDropdown />
-          </div>
+          <div className="relative">{/* <FilterOrderDropdown /> */}</div>
           <div className="flex-1">
             <SearchOrder
               onSearch={() => handleSearchAndFilter(keyword, filterOrder)}
@@ -132,16 +221,14 @@ export default function AllOrderPage() {
             />
           </div>
           <div className="flex gap-2 ml-auto">
-            {/* <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded">
-              <FaPlus size={14} /> Tambah Order
-            </button> */}
             <Link to={"/order/form_add_order"}>
               <div className="mx-auto w-full flex justify-start gap-3">
                 <Button
                   size="md"
                   variant="primary"
                   className="flex-1"
-                  startIcon={<FaPlus className="size-5 text-white" />}>
+                  startIcon={<FaPlus className="size-5 text-white" />}
+                >
                   Tambah Order
                 </Button>
               </div>
@@ -150,14 +237,17 @@ export default function AllOrderPage() {
               size="md"
               variant="outline"
               startIcon={<TbFilterDiscount className="size-5 text-blue-700" />}
-              onClick={() => setFilter((prev) => !prev)}>
+              onClick={() => setFilter((prev) => !prev)}
+            >
               Filter
             </Button>
 
             <Button
               size="md"
               variant="outline"
-              startIcon={<DownloadIcon className="size-5 text-blue-700" />}>
+              onClick={handleExport}
+              startIcon={<DownloadIcon className="size-5 text-blue-700" />}
+            >
               Download
             </Button>
             <OptionDropdownOrder />
@@ -175,24 +265,38 @@ export default function AllOrderPage() {
 
           {/* Info */}
           <div className="flex justify-between items-center mt-6">
-            <p className="text-2xl font-medium">279 order ditemukan</p>
-            <div className="flex justify-between items-center bg-white p-3.5 rounded-lg">
-              <p className="text-md font-light">
-                Sisa kuota order:{" "}
-                <span className="text-green-600 font-semibold">826</span>
-              </p>
-              <span className="text-gray-400 mx-2">|</span>
+            <p className="text-2xl font-medium">
+              {orders.length} order ditemukan
+            </p>
+            <div className="flex justify-between items-center bg-white dark:bg-white/[0] dark:border dark:border-gray-700 p-3.5 rounded-lg">
               <Link to="/profile">
-                <span className="text-blue-600 text-md font-semibold">
+                <span className="text-blue-600 dark:text-white/[0.3] text-md font-semibold">
                   Lihat Detail
                 </span>
               </Link>
             </div>
           </div>
         </div>
-        <div>
-          <OrderCard />
+        <div className="mb-6">
+          {loading ? (
+            <div className="text-center py-10">
+              {" "}
+              <div
+                className={`flex flex-wrap gap-2 ${
+                  isMobile ? "overflow-x-auto" : ""
+                }`}
+              ></div>
+            </div>
+          ) : (
+            <OrderCard orders={currentOrders} />
+          )}
         </div>
+        <OrderToolbar
+          currentPage={currentPage}
+          totalItems={orders.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

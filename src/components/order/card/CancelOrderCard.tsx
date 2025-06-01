@@ -157,7 +157,7 @@ export default function CancelOrderCard() {
                 </div>
 
                 {showModal && (
-                  <ModalRiwayatTran changeModal={() => setShowModal(false)} />
+                  <ModalRiwayatTran changeModal={() => setShowModal(false)} orderId={""} />
                 )}
               </div>
 

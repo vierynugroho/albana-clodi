@@ -14,7 +14,7 @@ export const SettingFeatureCard: React.FC<Props> = ({
   className = "",
 }) => {
   return (
-    <div className={`bg-white p-5 rounded-lg shadow ${className}`}>
+    <div className={`bg-white p-5 rounded-lg shadow dark:border dark:bg-white/[0] dark:border-gray-700 dark:text-white ${className}`}>
       <h3 className="font-semibold mb-3">Pengaturan</h3>
       {features.length === 0 ? (
         <p className="text-gray-500 italic">Tidak ada fitur untuk format ini.</p>

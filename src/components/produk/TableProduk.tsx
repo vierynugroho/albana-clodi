@@ -16,6 +16,7 @@ import { type ArrayProduct } from "../../service/product";
 import { Link } from "react-router";
 import ModalDeleteProduct from "./modal/ModalDeleteProduct";
 import PaginationNavigation from "./pagination/PaginationNavigation";
+import SpinnerLoading from "./loading/SpinnerLoading";
 
 type PropsTableProduk = {
   search: string;
@@ -126,6 +127,7 @@ export default function TableProduk({
       checked ? [...prev, id] : prev.filter((item) => item !== id)
     );
   }, []);
+  console.log(message);
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
@@ -184,9 +186,20 @@ export default function TableProduk({
           {/* Table Body */}
 
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            {products && products.length > 0 ? (
-              products.map((produk, index) => (
-                <TableRow key={index}>
+            {loading ? (
+              <TableRow className="">
+                <TableCell
+                  colSpan={8}
+                  className="px-4 text-gray-500 dark:text-gray-400 text-center font-bold h-20 text-2xl"
+                >
+                  <SpinnerLoading />
+                </TableCell>
+              </TableRow>
+            ) : products && products.length > 0 ? (
+              products.map((produk) => (
+                <TableRow key={produk.product.id}>
+                  {" "}
+                  {/* Gunakan ID sebagai key, bukan index */}
                   <TableCell className="px-5 py-4 sm:px-5 text-start">
                     <Checkbox
                       id={produk.product.id}
@@ -196,13 +209,14 @@ export default function TableProduk({
                       }
                     />
                   </TableCell>
-                  <TableCell className=" w-1/4 px-6 py-4  text-start">
+                  <TableCell className="w-1/4 px-6 py-4 text-start">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 overflow-hidden rounded-full">
                         <img
                           width={30}
                           height={30}
                           src="/images/icons/empty_box.svg"
+                          alt="Product"
                         />
                       </div>
                       <div>
@@ -214,7 +228,7 @@ export default function TableProduk({
                             {produk.product.name}
                           </Link>
                         </span>
-                        <span className="block text-gray-500  dark:text-gray-400 text-xl font-semibold">
+                        <span className="block text-gray-500 dark:text-gray-400 text-xl font-semibold">
                           Rp {produk.price.normal.toLocaleString("IND")}
                         </span>
                       </div>
@@ -236,21 +250,20 @@ export default function TableProduk({
                   <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {produk.product.description}
                   </TableCell>
-                  <TableCell className="px-4 text-gray-500 text-theme-sm dark:text-gray-40">
+                  <TableCell className="px-4 text-gray-500 text-theme-sm dark:text-gray-400">
                     <div>Tidak Ada Harga Grosir</div>
                   </TableCell>
-                  <TableCell className="px-4 text-gray-500 text-theme-sm dark:text-gray-40">
+                  <TableCell className="px-4 text-gray-500 text-theme-sm dark:text-gray-400">
                     <div className="flex gap-2 items-stretch">
                       <Link to={`/produk/edit/${produk.product.id}`}>
                         <FaEdit className="w-6 h-5 text-amber-500 cursor-pointer" />
                       </Link>
-
                       <AiFillDelete
                         onClick={() => {
                           handleModal();
                           setIdDeleteProduct(produk.product.id);
                         }}
-                        className="w-6 h-5  text-red-700 cursor-pointer"
+                        className="w-6 h-5 text-red-700 cursor-pointer"
                       />
                     </div>
                   </TableCell>
@@ -260,9 +273,9 @@ export default function TableProduk({
               <TableRow className="">
                 <TableCell
                   colSpan={8}
-                  className="px-4 text-gray-500  dark:text-gray-40 text-center font-bold h-20 text-2xl"
+                  className="px-4 text-gray-500 dark:text-gray-400 text-center font-bold h-20 text-2xl"
                 >
-                  <div>{message}</div>
+                  <div>Produk Tidak Ditemukan</div>
                 </TableCell>
               </TableRow>
             )}
