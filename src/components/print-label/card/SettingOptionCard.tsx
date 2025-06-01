@@ -1,8 +1,8 @@
 import React from "react";
-import { PrintSetting } from "../../../service/order/print/order.type";
+import { TPrintSetting } from "../../../service/order/print/order.type";
 
 interface Props {
-  options: PrintSetting[];
+  options: TPrintSetting[];
   selectedOption: string;
   onChange: (optionId: string) => void;
   className?: string;
@@ -10,7 +10,7 @@ interface Props {
 
 export const SettingOptionCard: React.FC<Props> = ({ options, selectedOption, onChange, className }) => {
   return (
-    <div className={`bg-white p-5 rounded-lg shadow ${className}`}>
+    <div className={`bg-white p-5 dark:bg-white/[0]  dark:border dark:border-gray-700 dark:text-white rounded-lg shadow ${className}`}>
       <h3 className="font-semibold mb-3">Pengaturan Cetak</h3>
       <div className="space-y-2">
         {options.map((opt) => (

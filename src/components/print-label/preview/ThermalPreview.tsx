@@ -26,7 +26,7 @@ const ThermalPreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
 
   return (
-    <div className="font-mono px-1 w-64 py-5 text-[10px] space-y-3">
+    <div className="font-mono px-1 w-64 py-5 text-xs space-y-3">
       <div className="px-4 flex flex-col justify-center items-center text-center space-y-2">
         {has("Logo") && (
           <img src={Logo} alt="" className="w-2/3 filter grayscale" />
