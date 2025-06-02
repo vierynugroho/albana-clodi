@@ -103,6 +103,10 @@ export default function App() {
               element={<SupplierSettingForm />}
             />
             <Route
+              path="/setting/form_supplier/:id"
+              element={<SupplierSettingForm />}
+            />
+            <Route
               path="/setting/form_account"
               element={<FormSettingAccount />}
             />
@@ -136,7 +140,7 @@ export default function App() {
 
           {/* Print Label  */}
           <Route path="/order/print-label/:id" element={<PrintLabelPage />} />
-          
+
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>

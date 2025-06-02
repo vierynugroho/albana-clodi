@@ -13,23 +13,23 @@ export default function DeliverySettingForm() {
   const hasFetched = useRef(false);
   const [deliveries, setDeliveries] = useState<Supplier[]>([]);
 
-  useEffect(() => {
-    const getAllSupplier = async () => {
-      const result = await getSuppliers();
-      if (result.success && result.responseObject) {
-        setDeliveries(result.responseObject);
-        if (!hasFetched.current) {
-          toast.success(result.message, {
-            style: { marginTop: "10vh", zIndex: 100000 },
-          });
-        } else {
-          toast.error("Gagal Mendapatkan Data", {
-            style: { marginTop: "10vh", zIndex: 100000 },
-          });
-        }
+  const getAllSupplier = async () => {
+    const result = await getSuppliers();
+    if (result.success && result.responseObject) {
+      setDeliveries(result.responseObject);
+      if (!hasFetched.current) {
+        toast.success(result.message, {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
+      } else {
+        toast.error("Gagal Mendapatkan Data", {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        });
       }
-    };
+    }
     hasFetched.current = true;
+  };
+  useEffect(() => {
     getAllSupplier();
   }, []);
 
@@ -53,8 +53,7 @@ export default function DeliverySettingForm() {
       <div>
         <TableDelivery
           deliveries={deliveries}
-          setEditDelivery={() => {}}
-          deleteDelivery={() => {}}
+          refresData={() => getAllSupplier()}
         />
       </div>
     </div>

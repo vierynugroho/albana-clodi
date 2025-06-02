@@ -26,8 +26,8 @@ const Select: React.FC<SelectProps> = ({
   defaultValue = "",
 }) => {
   // Manage the selected value
-
   const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
+
   useEffect(() => {
     setSelectedValue(defaultValue);
   }, [defaultValue]);
