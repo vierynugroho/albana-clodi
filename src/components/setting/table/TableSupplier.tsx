@@ -9,18 +9,20 @@ import {
 import { CiEdit } from "react-icons/ci";
 import { TiDelete } from "react-icons/ti";
 import { DeliveryPlace } from "../../../service/DeliveryPlace";
+import { useState } from "react";
+import DeleteSupplierModal from "../modal/DeleteSupplierModal";
+import { useNavigate } from "react-router";
 
 type Props = {
   deliveries: DeliveryPlace[];
-  setEditDelivery: (id: string) => void;
-  deleteDelivery: (id: string) => void;
+  refresData: () => void;
 };
 
-export default function TableDelivery({
-  deliveries,
-  setEditDelivery,
-  deleteDelivery,
-}: Props) {
+export default function TableDelivery({ deliveries, refresData }: Props) {
+  const navigate = useNavigate();
+  const [id, setId] = useState<string>("");
+  const [modalDelete, setModalDelete] = useState<boolean>(false);
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] mt-5">
       <div className="max-w-full overflow-x-auto">
@@ -30,32 +32,38 @@ export default function TableDelivery({
             <TableRow>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400 w-1">
+                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400 w-1"
+              >
                 No
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400"
+              >
                 Nama Toko
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400"
+              >
                 Asal Pengiriman
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400"
+              >
                 No. Telepon
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-gray-500 text-start text-theme-sm dark:text-gray-400"
+              >
                 Alamat
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-gray-500 text-end text-theme-sm dark:text-gray-400">
+                className="px-5 py-3 font-semibold text-gray-500 text-end text-theme-sm dark:text-gray-400"
+              >
                 <div className="flex justify-end items-center">
                   <IoSettings size={15} />
                 </div>
@@ -87,18 +95,32 @@ export default function TableDelivery({
                     <CiEdit
                       size={30}
                       className="text-amber-500 cursor-pointer"
-                      onClick={() => setEditDelivery(delivery.id)}
+                      onClick={() => {
+                        navigate(`/setting/form_supplier/${delivery.id}`);
+                      }}
                     />
                     <TiDelete
                       size={30}
                       className="text-red-600 cursor-pointer"
-                      onClick={() => deleteDelivery(delivery.id)}
+                      onClick={() => {
+                        setId(delivery.id);
+                        setModalDelete(true);
+                      }}
                     />
                   </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
+          {modalDelete && (
+            <DeleteSupplierModal
+              id={id}
+              changeModal={() => {
+                setModalDelete(false);
+              }}
+              refreshData={refresData}
+            />
+          )}
         </Table>
       </div>
     </div>

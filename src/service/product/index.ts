@@ -315,7 +315,6 @@ export async function deleteProduct(id: string): Promise<ResponseSucces> {
     } else {
       message = (error as Error).message;
     }
-
     return {
       success: false,
       message,
@@ -371,7 +370,6 @@ export async function getProducts(
   query?: FilterState
 ): Promise<ResponseSucces> {
   try {
-    console.log(query);
     const { data } = await axios.get(`${apiUrl}/products`, {
       headers: {
         "ngrok-skip-browser-warning": "true",
