@@ -15,7 +15,8 @@ import { FaPlus } from "react-icons/fa6";
 import OptionDropdownOrder from "../../components/order/dropdown/OptionDropdownOrder";
 import OrderToolbar from "../../components/order/orderToolbar";
 import { getOrders, OrderItem } from "../../service/order/index";
-import { exportOrdersToExcel } from "../../service/order/create-order.service";
+import { exportOrdersToExcel } from "../../service/order/order.service";
+import toast from "react-hot-toast";
 
 export type FilterState = {
   ordererCustomerId?: string;
@@ -63,7 +64,7 @@ export default function AllOrderPage() {
     paymentMethodId: "",
     search: "",
     sort: "",
-    order: "desc",
+    // order: "desc",
   });
 
   const location = useLocation();
@@ -120,7 +121,7 @@ export default function AllOrderPage() {
         paymentMethodId: params.get("paymentMethodId") || "",
         search: params.get("search") || "",
         sort: params.get("sort") || "",
-        order: (params.get("order") as "asc" | "desc") || "desc",
+        // order: (params.get("order") as "asc" | "desc") || "desc",
       };
 
       setFilterOrder(filterFromURL);
@@ -173,14 +174,15 @@ export default function AllOrderPage() {
   }, [setIsMobile]);
 
   function handleExport() {
-    exportOrdersToExcel()
-      .then(() => {
-        console.log("File berhasil diunduh");
-      })
-      .catch(() => {
-        alert("Gagal mengunduh file Excel.");
-      });
-  }
+  toast.promise(
+    exportOrdersToExcel(),
+    {
+      loading: "Mengunduh file...",
+      success: "File berhasil diunduh!",
+      error: "Gagal mengunduh file Excel.",
+    }
+  );
+}
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
