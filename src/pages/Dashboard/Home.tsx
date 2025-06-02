@@ -12,12 +12,28 @@ import {
   reportGrossProfit,
 } from "../../service/report";
 import toast from "react-hot-toast";
+import { currentAuth } from "../../service/auth";
 
 export default function Home() {
   const [productSold, setProductSold] = useState<ProductSold | null>(null);
   const [grosProfit, setGrosProfit] = useState<GrosProfit | null>(null);
   const [totalGrosProfit, setTotalGrosProfit] = useState<number>(0);
   const [totalProductSold, setTotalProductSold] = useState<number>(0);
+
+  const authUser = localStorage.getItem("token");
+  useEffect(() => {
+    const verifyToken = async () => {
+      if (!authUser) {
+        return;
+      }
+      const result = await currentAuth(authUser);
+      if (!result.success) {
+        localStorage.clear();
+      }
+    };
+
+    verifyToken();
+  }, [authUser]);
 
   useEffect(() => {
     const fetchProductSold = async () => {

@@ -28,6 +28,8 @@ export default function EcommerceMetrics() {
     const getCurrentAuth = async () => {
       const reportCard = await reportForCardDashboard();
 
+      console.log(reportCard);
+
       if (reportCard.success && reportCard.responseObject) {
         setDataCard(reportCard.responseObject);
       } else {
