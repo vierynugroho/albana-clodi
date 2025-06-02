@@ -172,6 +172,7 @@ const convertToFormData = (data: CreateProductRequest): FormData => {
 
   // Product fields
   Object.entries(data.product).forEach(([key, value]) => {
+    if (value == null || value === "") return;
     formData.append(`product.${key}`, String(value));
   });
 
@@ -186,7 +187,10 @@ const convertToFormData = (data: CreateProductRequest): FormData => {
       formData.append(`productVariants[${index}].id`, variant.id);
     }
     formData.append(`productVariants[${index}].sku`, variant.sku);
-    formData.append(`productVariants[${index}].stock`, String(variant.stock));
+    formData.append(
+      `productVariants[${index}].stock`,
+      String(variant.stock ? variant.stock : 0)
+    );
     formData.append(`productVariants[${index}].size`, variant.size ?? "");
     formData.append(`productVariants[${index}].color`, variant.color ?? "");
     formData.append(`productVariants[${index}].barcode`, variant.barcode ?? "");
@@ -195,13 +199,15 @@ const convertToFormData = (data: CreateProductRequest): FormData => {
     //   `productVariants[${index}].image`,
     //   variant.imageUrl ?? ""
     // );
-    formData.append(`images`, variant.imageUrl ?? "");
+    if (variant.imageUrl instanceof File) {
+      formData.append("images", variant.imageUrl);
+    }
 
     // Product prices
     Object.entries(variant.productPrices).forEach(([key, value]) => {
       formData.append(
         `productVariants[${index}].productPrices.${key}`,
-        String(value)
+        String(value ? value : 0)
       );
     });
   });
@@ -315,7 +321,6 @@ export async function deleteProduct(id: string): Promise<ResponseSucces> {
     } else {
       message = (error as Error).message;
     }
-
     return {
       success: false,
       message,
@@ -371,7 +376,6 @@ export async function getProducts(
   query?: FilterState
 ): Promise<ResponseSucces> {
   try {
-    console.log(query);
     const { data } = await axios.get(`${apiUrl}/products`, {
       headers: {
         "ngrok-skip-browser-warning": "true",

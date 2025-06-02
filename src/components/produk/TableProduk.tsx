@@ -199,7 +199,6 @@ export default function TableProduk({
             ) : products && products.length > 0 ? (
               products.map((produk) => (
                 <TableRow key={produk.product.id}>
-                  {" "}
                   {/* Gunakan ID sebagai key, bukan index */}
                   <TableCell className="px-5 py-4 sm:px-5 text-start">
                     <Checkbox
