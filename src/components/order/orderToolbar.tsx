@@ -1,6 +1,4 @@
 import {
-  FaPrint,
-  FaChevronDown,
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
@@ -32,7 +30,7 @@ export default function OrderToolbar({
     <div className="flex justify-between items-center px-4 py-2  relative">
       {/* Kiri */}
       <div className="flex items-center space-x-4">
-        <label className="inline-flex items-center space-x-2">
+        {/* <label className="inline-flex items-center space-x-2">
           <input
             type="checkbox"
             className="form-checkbox h-4 w-4 text-blue-600"
@@ -48,7 +46,7 @@ export default function OrderToolbar({
           <button className="px-2 border-l border-blue-500 text-blue-600">
             <FaChevronDown />
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Kanan (Pagination) */}

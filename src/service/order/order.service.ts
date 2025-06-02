@@ -3,6 +3,7 @@ import {
   GetCustomersResponse,
   GetResponseDeliveryPlace,
   OrderPayload,
+  OrderResponse,
   PaymentMethod,
   PaymentResponse,
   ProductItem,
@@ -18,7 +19,6 @@ import {
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const token = localStorage.getItem("token");
-
 export const postOrder = async (data: OrderPayload) => {
   try {
     const response = await axios.post(`${apiUrl}/orders`, data, {
@@ -29,6 +29,33 @@ export const postOrder = async (data: OrderPayload) => {
     return response.data;
   } catch (error) {
     console.error("Failed to post order:", error);
+    throw error;
+  }
+};
+export const updateOrder = async (id: string, data: OrderPayload) => {
+  try {
+    const response = await axios.put(`${apiUrl}/orders/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update order:", error);
+    throw error;
+  }
+};
+
+export const getOrderById = async (id: string) : Promise<OrderResponse> => {
+  try {
+    const response = await axios.get(`${apiUrl}/orders/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.responseObject;
+  } catch (error) {
+    console.error("Failed to get order by ID:", error);
     throw error;
   }
 };
@@ -155,7 +182,7 @@ export const fetchPayments = async (
     const payments = response.data.responseObject;
 
     return payments.map((payment: PaymentMethod) => ({
-      label: payment.name,
+      label: `${payment.bankName} - ${payment.bankBranch} ( ${payment.accountNumber} )`,
       value: payment.id,
       payment,
     }));

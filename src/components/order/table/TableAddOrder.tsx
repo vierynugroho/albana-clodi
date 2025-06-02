@@ -9,7 +9,7 @@ import {
 
 import EmptyBox from "../../../../public/images/icons/empty_box.svg";
 import TableCourierSelection from "./TableCourierSelect";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ComponentCard from "../../common/ComponentCard.tsx";
 import ProductSelect from "../dropdown/ProductSelect.tsx";
 import { ProductItem } from "../../../service/order/create-order.type.ts";
@@ -19,6 +19,7 @@ import ModalFormDiscount, {
   ItemType,
 } from "../modal/ModalDiskon";
 import DropdownAction from "../dropdown/DropdownMenuList.tsx";
+import { getHargaByCustomerCategory } from "../getPriceByCustomerCategory.ts";
 
 interface ItemData {
   type: ItemType;
@@ -30,6 +31,7 @@ interface ItemData {
 interface TableAddOrderProps {
   shipperDestinationId?: number;
   receiverDestinationId?: number;
+  customerCategory?: string;
   onChange?: (data: {
     orderProducts: {
       productId: string;
@@ -50,12 +52,35 @@ interface TableAddOrderProps {
       type: "nominal" | "percent";
     } | null;
   }) => void;
+    initialData?: {
+    orders?: {
+      productId: string;
+      productVariantId: string;
+      name: string;
+      harga: number;
+      qty: number;
+      subtotal: number;
+      subBerat: number;
+      discount?: number;
+      discountType?: "Rp" | "%";
+      finalPrice?: number;
+    }[];
+    items?: ItemData[];
+    note?: string;
+    shipping?: {
+      cost: number;
+      service: string;
+      name: string;
+    };
+  };
 }
 
 export default function TableAddOrder({
   shipperDestinationId,
   receiverDestinationId,
   onChange,
+  initialData,
+  customerCategory
 }: TableAddOrderProps) {
   const [selectedShippingCost, setSelectedShippingCost] = useState(0);
   const [selectedShippingName, setSelectedShippingName] = useState<string>("");
@@ -77,13 +102,30 @@ export default function TableAddOrder({
     }[]
   >([]);
 
+const isInitialized = useRef(false);
+
+useEffect(() => {
+  if (initialData && !isInitialized.current) {
+    if (initialData.orders) setOrders(initialData.orders);
+    if (initialData.items) setItems(initialData.items);
+    if (initialData.shipping) {
+      setSelectedShippingCost(initialData.shipping.cost);
+      setSelectedShippingName(initialData.shipping.name);
+      setSelectedShippingService(initialData.shipping.service);
+    }
+    isInitialized.current = true;
+  }
+}, [initialData]);
+
+
+
   const handleAddProduct = (product: ProductItem | null) => {
     if (!product) return;
 
     const productId = product.product.id;
     const productVariantId = product.variant[0]?.id ?? "";
     const name = product.product.name;
-    const harga = product.price.normal;
+    const harga = getHargaByCustomerCategory(product.price, customerCategory ?? "CUSTOMER");
     const berat = product.product.weight;
 
     const existing = orders.find((o) => o.productId === productId);
@@ -170,7 +212,7 @@ export default function TableAddOrder({
       const productId = product.product.id;
       const productVariantId = product.variant?.[0]?.id ?? "";
       const name = product.product.name;
-      const harga = product.price.normal;
+      const harga = getHargaByCustomerCategory(product.price, customerCategory ?? "CUSTOMER");
       const berat = product.product.weight;
 
       const addedSet = (window as any).addedProducts as Set<string>;
@@ -206,7 +248,7 @@ export default function TableAddOrder({
 
     window.addEventListener("product:add", handleAddProduct);
     return () => window.removeEventListener("product:add", handleAddProduct);
-  }, []);
+  }, [customerCategory]);
 
   const [modalType, setModalType] = useState<null | ItemType>(null);
   const [items, setItems] = useState<ItemData[]>([]);
@@ -223,7 +265,7 @@ export default function TableAddOrder({
       ...prev,
       {
         title: "Ongkir 1 kg",
-        name: "Ongkir",
+        name: "Diskon Ongkir",
         value: "10000",
         type: "ongkir" as ItemType,
         discountType: "Rp",
@@ -240,7 +282,7 @@ export default function TableAddOrder({
     let otherAdditions = 0;
     items.forEach((item) => {
       const val = parseValue(item.value);
-      if (item.title === "Diskon Order" || item.title === "Ongkir 1 Kg") {
+      if (item.title === "Diskon Order" || item.title === "Ongkir 1 kg") {
         if (item.discountType === "%") {
           discountAmount += (totalSubtotal * val) / 100;
         } else {
@@ -292,13 +334,6 @@ export default function TableAddOrder({
         const val = Number(item.value.replace(/[^0-9.-]+/g, ""));
         return isNaN(val) ? acc : acc + val;
       }, 0);
-
-      if (total < 1) {
-        discountOrder = {
-          value: 0,
-          type: "nominal",
-        };
-      }
       if (total > 0) {
         discountOrder = {
           value: total ?? 0,

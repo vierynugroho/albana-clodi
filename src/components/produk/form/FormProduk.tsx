@@ -152,10 +152,16 @@ export default function FormProduk() {
           style: { marginTop: "10vh", zIndex: 100000 },
         });
       } else {
-        toast.error("Terjadi Kesalahan Edit Produk", {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
-        setError("Pastikan Semua Kolom Terisi");
+        if (result.message == "Insufficient stock") {
+          toast.error("Admin Tidak Bisa Mengurangi Stok", {
+            style: { marginTop: "10vh", zIndex: 100000 },
+          });
+        } else {
+          toast.error("Terjadi Kesalahan Edit Produk", {
+            style: { marginTop: "10vh", zIndex: 100000 },
+          });
+        }
+        setError("");
       }
     }
   };
@@ -234,10 +240,9 @@ export default function FormProduk() {
         style: { marginTop: "10vh", zIndex: 100000 },
       });
     } else {
-      toast.error("Terjadi Kesalahan Membuat Produk", {
+      toast.error("Terjadi Kesalahan Menambahkan Produk", {
         style: { marginTop: "10vh", zIndex: 100000 },
       });
-      setError("Pastikan Semua Kolom Terisi");
     }
   };
 

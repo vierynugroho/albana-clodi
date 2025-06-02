@@ -49,7 +49,7 @@ export default function OrderCard({ orders }: Props) {
           {/* Header */}
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-md text-blue-600 font-semibold">#{order.id}</p>
+              <p className="text-md text-blue-600 font-semibold">#{order.OrderDetail.code}</p>
               <p className="text-sm text-gray-400">
                 dari <span className="font-semibold text-black">App</span> (
                 {order.orderDate
@@ -233,11 +233,11 @@ export default function OrderCard({ orders }: Props) {
           {/* Actions */}
           <div className="mt-6 flex justify-between gap-2">
             <div className="flex gap-2">
-              <input
+              {/* <input
                 type="checkbox"
                 id={`check-${order.id}`}
                 className="w-6 h-10 mr-2 border-blue-600 rounded-full"
-              />
+              /> */}
               <Link to={`/order/print-label/${order.id}`}>
               <button className="flex items-center gap-2 border border-blue-600 px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100 text-sm">
                 <FaPrint /> Print

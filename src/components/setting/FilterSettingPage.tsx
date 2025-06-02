@@ -12,7 +12,7 @@ type Props = {
 };
 export default function FilterSettingPage({ setPage, page }: Props) {
   return (
-    <div className="mx-auto w-full flex justify-start gap-3">
+    <div className="mx-auto w-full flex  max-md:flex-wrap  justify-start gap-3">
       <Button
         size="md"
         variant={page === "pengaturanUmum" ? "primary" : "outline"}
