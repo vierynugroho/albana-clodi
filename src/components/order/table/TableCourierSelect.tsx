@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "../../ui/table";
 import { ShippingCostParams, ShippingService } from "../../../service/order/create-order.type";
-import { calculateShippingCost } from "../../../service/order/create-order.service";
+import { calculateShippingCost } from "../../../service/order/order.service";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 
@@ -27,7 +27,7 @@ const manualServices = [
     is_manual: true,
   },
   {
-    shipping_name: "M",
+    shipping_name: "Ekspedisi",
     service_name: "Nama Kurir",
     weight: 0,
     is_cod: false,
@@ -136,7 +136,7 @@ export default function TableCourierSelection({
                   key={idx}
                   onClick={() => {
                     setSelectedIndex(idx);
-                    if (item.is_manual && item.shipping_name === "M") {
+                    if (item.is_manual && item.shipping_name === "") {
                       setSelectedManualIndex(idx);
                     } else {
                       setSelectedManualIndex(null);
@@ -151,7 +151,7 @@ export default function TableCourierSelection({
                 >
                   <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                     <div className="flex items-center gap-2">
-                      <span className="bg-yellow-300 text-white text-xs font-bold rounded text-center w-12 px-2 py-2">
+                      <span className="bg-yellow-300 text-white text-xs font-bold rounded text-center w-fit px-2 py-2">
                         {item.shipping_name}
                       </span>
                       <span>{item.shipping_name}</span>

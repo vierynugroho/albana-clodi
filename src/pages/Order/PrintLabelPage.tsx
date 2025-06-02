@@ -136,7 +136,7 @@ export default function PrintSettingsPage() {
       <PageTitle title="Pengaturan Cetak" />
 
       <div className="flex justify-end items-center gap-2">
-        <Button variant="outline">Simpan</Button>
+        {/* <Button variant="outline">Simpan</Button> */}
         <Button variant="primary" onClick={handlePrintReact}>
           Cetak
         </Button>

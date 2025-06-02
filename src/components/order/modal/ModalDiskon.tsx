@@ -98,10 +98,10 @@ export default function ModalFormDiscount({
             <hr className="pt-0 pb-3 border-gray-300 dark:border-gray-700" />
 
             {/* Buttons */}
-            <div className="flex justify-between mt-4">
-              <button className="px-4 py-2 border border-gray-300 rounded-md">
+            <div className="flex justify-end mt-4">
+              {/* <button className="px-4 py-2 border border-gray-300 rounded-md">
                 Simpan Template
-              </button>
+              </button> */}
               <button
                 onClick={handleSubmit}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md"
