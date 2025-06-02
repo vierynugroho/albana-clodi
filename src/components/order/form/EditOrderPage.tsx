@@ -167,12 +167,15 @@ export default function EditOrderFomPage() {
           order.OrderDetail.paymentStatus as keyof typeof PaymentStatus
         );
         setPaymentDate(
-          order.Installment.paymentDate
+          order.Installment?.paymentDate
             ? new Date(order.Installment.paymentDate)
+            : order.OrderDetail.paymentDate
+            ? new Date(order.OrderDetail.paymentDate)
             : null
         );
         setNominalPayment(
-          order.Installment.amount !== undefined &&
+          order.Installment &&
+            order.Installment.amount !== undefined &&
             order.Installment.amount !== null
             ? order.Installment.amount.toString()
             : undefined
@@ -250,6 +253,7 @@ export default function EditOrderFomPage() {
         };
 
         setInitialData(mappedInitialData);
+        console.log(mappedInitialData)
       } catch (error) {
         console.error("Gagal mengambil data order:", error);
       }

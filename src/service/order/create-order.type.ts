@@ -72,7 +72,7 @@ export interface OrderResponse {
   note: string;
   createdAt: string;
   updatedAt: string;
-  Installment: Installment; 
+  Installment?: Installment; 
   SalesChannel: SalesChannel;
   DeliveryPlace: TDeliveryPlace;
   OrdererCustomer: TCustomer;
@@ -83,9 +83,9 @@ export interface OrderResponse {
 }
 
 export interface Installment {
-  id : string;
-  amount : number;
-  paymentDate: string;
+  id ?: string;
+  amount? : number;
+  paymentDate?: string;
 }
 
 export interface OrderDetail {
