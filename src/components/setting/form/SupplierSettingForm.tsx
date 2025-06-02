@@ -47,6 +47,7 @@ export default function SupplierSettingForm() {
 
   const handleEdit = async () => {
     setLoading(true);
+    console.log(formData)
     if (id) {
       const result = await editSupplier(id, formData);
       if (result.success) {

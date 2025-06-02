@@ -155,7 +155,7 @@ export default function FormProduk() {
         toast.error("Terjadi Kesalahan Edit Produk", {
           style: { marginTop: "10vh", zIndex: 100000 },
         });
-        setError(result.message);
+        setError("Pastikan Semua Kolom Terisi");
       }
     }
   };
@@ -200,7 +200,6 @@ export default function FormProduk() {
           );
           setVarian(result.responseObject.productVariants);
         }
-        console.log(result);
       } else {
         return;
       }
@@ -238,7 +237,7 @@ export default function FormProduk() {
       toast.error("Terjadi Kesalahan Membuat Produk", {
         style: { marginTop: "10vh", zIndex: 100000 },
       });
-      setError(result.message);
+      setError("Pastikan Semua Kolom Terisi");
     }
   };
 
@@ -250,13 +249,21 @@ export default function FormProduk() {
           <ComponentCard title="Informasi Produk" className="md:min-w-[780px]">
             <div className="space-y-6">
               <div>
-                <Label htmlFor="inputTwo">Nama Produk</Label>
+                <Label htmlFor="inputTwo">
+                  Nama Produk <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="text"
                   placeholder="Baju Anak"
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
+                  error={!productName}
                 />
+                {!productName && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Nama Produk wajib diisi.
+                  </p>
+                )}
               </div>
 
               <div>
@@ -271,16 +278,25 @@ export default function FormProduk() {
               </div>
 
               <div>
-                <Label>Jenis Produk</Label>
+                <Label>
+                  Jenis Produk <span className="text-red-500">*</span>
+                </Label>
                 <div className="flex flex-wrap items-center gap-8">
                   {options.map((opt) => {
                     return renderRadio(opt.value, opt.label);
                   })}
                 </div>
+                {!selectedValue && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Jenis Produk wajib diisi.
+                  </p>
+                )}
               </div>
 
               <div>
-                <Label>Deskripsi Produk</Label>
+                <Label>
+                  Deskripsi Produk <span className="text-red-500">*</span>
+                </Label>
                 <textarea
                   id="productDescription"
                   placeholder="Tulis deskripsi produk di sini..."
@@ -288,12 +304,18 @@ export default function FormProduk() {
                   value={productDescription}
                   onChange={(e) => setProductDescription(e.target.value)}
                 />
+                {!productDescription && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Deskripsi Produk wajib diisi.
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-5">
                 <div>
-                  {" "}
-                  <Label>Berat</Label>
+                  <Label>
+                    Berat <span className="text-red-500">*</span>
+                  </Label>
                   <div className="relative">
                     <Input
                       placeholder="Berat (gr)"

@@ -120,13 +120,13 @@ export default function TablExpense({
                     {expense.itemName}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {expense.itemPrice}
+                    Rp.{expense.itemPrice.toLocaleString('IND')}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {expense.qty}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {expense.itemPrice * expense.qty}
+                    Rp.{(expense.itemPrice * expense.qty).toLocaleString('IND')}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-end text-theme-sm dark:text-gray-400">
                     <div className="flex gap-5 justify-end">
