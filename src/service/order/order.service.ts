@@ -2,8 +2,8 @@ import axios from "axios";
 import {
   GetCustomersResponse,
   GetResponseDeliveryPlace,
-  OrderDetail,
   OrderPayload,
+  OrderResponse,
   PaymentMethod,
   PaymentResponse,
   ProductItem,
@@ -32,8 +32,21 @@ export const postOrder = async (data: OrderPayload) => {
     throw error;
   }
 };
+export const updateOrder = async (id: string, data: OrderPayload) => {
+  try {
+    const response = await axios.put(`${apiUrl}/orders/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update order:", error);
+    throw error;
+  }
+};
 
-export const getOrderById = async (id: string) : Promise<OrderDetail> => {
+export const getOrderById = async (id: string) : Promise<OrderResponse> => {
   try {
     const response = await axios.get(`${apiUrl}/orders/${id}`, {
       headers: {
@@ -46,8 +59,6 @@ export const getOrderById = async (id: string) : Promise<OrderDetail> => {
     throw error;
   }
 };
-
-
 
 export const fetchCustomers = async (
   query: string
@@ -171,7 +182,7 @@ export const fetchPayments = async (
     const payments = response.data.responseObject;
 
     return payments.map((payment: PaymentMethod) => ({
-      label: payment.name,
+      label: `${payment.bankName} - ${payment.bankBranch} ( ${payment.accountNumber} )`,
       value: payment.id,
       payment,
     }));

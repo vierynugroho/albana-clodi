@@ -12,7 +12,12 @@ export interface OrderPayload {
     detail: {
       code?: string;
       otherFees?: {
-        installment?: number;
+        installments?: {
+          paymentMethodId?: string;
+          paymentDate?: string;
+          amount?: number;
+        };
+        // installment?: number;
         packaging?: number;
         insurance?: number;
         weight?: number;
@@ -22,7 +27,7 @@ export interface OrderPayload {
           type?: string;
           weight?: string;
         };
-        discount: {
+        discount?: {
           value?: number;
           type?: "percent" | "nominal";
         };
@@ -56,62 +61,101 @@ export interface OrderPayload {
   };
 }
 
-// enum 
-export enum PaymentStatus {
-  PENDING = "Belum Bayar",
-  INSTALLMENTS = "Cicilan",
-  SETTLEMENT = "Lunas",
-}
-
-export type OrderDetail = {
+// response order
+export interface OrderResponse {
   id: string;
-  orderDate: string;
-  note: string;
-  createdAt: string;
-  updatedAt: string;
-
   ordererCustomerId: string;
   deliveryTargetCustomerId: string;
   deliveryPlaceId: string;
   salesChannelId: string;
-
+  orderDate: string; 
+  note: string;
+  createdAt: string;
+  updatedAt: string;
+  Installment: Installment; 
+  SalesChannel: SalesChannel;
+  DeliveryPlace: TDeliveryPlace;
   OrdererCustomer: TCustomer;
   DeliveryTargetCustomer: TCustomer;
-  DeliveryPlace: TDeliveryPlace;
-  SalesChannel: SalesChannel;
+  OrderDetail: OrderDetail;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ShippingServices: any[];
+}
 
-  OrderDetail: {
-    id: string;
-    orderId: string;
-    paymentMethodId: string;
-    code: string;
-    finalPrice: number;
-    paymentStatus: string;
-    paymentDate: string | null;
-    receiptNumber: string | null;
-    createdAt: string;
-    updatedAt: string;
-    otherFees: {
-      weight: number;
-      discount: {
-        type: "percent" | "amount";
-        value: number;
-      };
-      insurance: number;
-      shippingCost: {
-        cost: number;
-        type: string;
-        shippingService: string;
-      };
-    };
-    PaymentMethod: PaymentMethod;
-    // OrderProducts: OrderPayload[];
-  };
+export interface Installment {
+  id : string;
+  amount : number;
+  paymentDate: string;
+}
 
-  ShippingServices: ShippingService[];
-};
+export interface OrderDetail {
+  id: string;
+  orderId: string;
+  paymentMethodId: string;
+  code: string;
+  otherFees: OtherFees;
+  finalPrice: number;
+  paymentStatus: string;
+  paymentDate: string;
+  receiptNumber: string | null;
+  createdAt: string;
+  updatedAt: string;
+  productId: string | null;
+  OrderProducts: OrderProduct[];
+  PaymentMethod: PaymentMethod;
+}
 
-// response dari customers 
+export interface OtherFees {
+  weight: number;
+  discount: Discount;
+  insurance: number;
+  shippingCost: ShippingCost;
+}
+
+export interface Discount {
+  type: "nominal" | "percent";
+  value: number;
+}
+
+export interface ShippingCost {
+  cost: number;
+  type: string;
+  weight: string;
+  shippingService: string;
+}
+
+export interface OrderProduct {
+  id: string;
+  orderId: string;
+  orderDetailId: string;
+  productId: string;
+  productQty: number;
+  createdAt: string;
+  updatedAt: string;
+  Product: TProduct;
+}
+
+export interface TProduct {
+  id: string;
+  categoryId: string | null;
+  name: string;
+  type: string | null;
+  description: string;
+  weight: number;
+  isPublish: boolean;
+  createdAt: string;
+  updatedAt: string;
+  productVariants: Variant[];
+}
+
+// enum
+export enum PaymentStatus {
+  PENDING = "Belum Bayar",
+  INSTALLMENTS = "Cicilan",
+  SETTLEMENT = "Lunas",
+  CANCEL = "Batal",
+}
+// response dari customers
 export interface TCustomer {
   id: string;
   name: string;
@@ -127,8 +171,8 @@ export interface TCustomer {
   destinationId: number | null;
   email: string;
   status: "ACTIVE" | "INACTIVE";
-  createdAt: string; 
-  updatedAt: string; 
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CustomerMeta {
@@ -169,7 +213,6 @@ export interface GetResponseDeliveryPlace {
   statusCode: number;
 }
 
-
 // Response Product
 export type ProductResponse = {
   success: boolean;
@@ -178,7 +221,6 @@ export type ProductResponse = {
     data: ProductItem[];
   };
 };
-
 
 export type ProductItem = {
   product: Product;
@@ -190,13 +232,13 @@ type Product = {
   id: string;
   categoryId: string | null;
   name: string;
-  type: string; 
+  type: string;
   description: string;
   weight: number;
   isPublish: boolean;
-  createdAt: string; 
+  createdAt: string;
   updatedAt: string;
-  category: string | null; 
+  category: string | null;
 };
 
 type Variant = {
@@ -225,7 +267,7 @@ type ProductPrice = {
   updatedAt: string;
 };
 
-// Payment Method 
+// Payment Method
 export interface PaymentMethod {
   id: string;
   name: string;
@@ -243,14 +285,13 @@ export interface PaymentResponse {
   statusCode: number;
 }
 
-
 // Shiping Cost
 export interface ShippingCostParams {
   shipper_destination_id: number;
   receiver_destination_id: number;
   weight?: number;
   item_value?: number;
-  cod? : string;
+  cod?: string;
 }
 
 export interface ShippingService {
@@ -281,7 +322,7 @@ export interface ShippingCostResponse {
   statusCode: number;
 }
 
-// response sales chanel 
+// response sales chanel
 export interface SalesChannel {
   id: string;
   name: string;

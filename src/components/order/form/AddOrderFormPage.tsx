@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import PageMeta from "../../common/PageMeta.tsx";
 import OrderPageBreadcrumb from "../../../pages/Order/OrderPageBreadcrumb.tsx";
 import ComponentCard from "../../common/ComponentCard.tsx";
@@ -29,6 +30,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Input from "../../form/input/InputField.tsx";
 import { CustomOption, DeliveryOption } from "../card/SelectOption.tsx";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function AddOrderFomPage() {
   const [showModal, setShowModal] = useState(false);
@@ -70,12 +73,10 @@ export default function AddOrderFomPage() {
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<
     keyof typeof PaymentStatus | null
   >(null);
-
   const paymentOptions = Object.entries(PaymentStatus).map(([key, label]) => ({
     label,
-    value: key, // simpan key, bukan label
+    value: key,
   }));
-
   const [recieptNumber, setReceiptNumber] = useState<string | undefined>(
     undefined
   );
@@ -94,7 +95,6 @@ export default function AddOrderFomPage() {
   const handleEditPenerima = () => {
     setisEditingPenerima(true);
   };
-
   const handleChangeOrder = useCallback(
     (data: {
       orderProducts: {
@@ -130,9 +130,86 @@ export default function AddOrderFomPage() {
     },
     []
   );
-
+  const navigate = useNavigate();
   const handleSubmit = async () => {
+    if (!selectedPemesan) {
+      toast.error("Pilih Pemesan terlebih dahulu");
+      return;
+    }
+    if (!selectedPenerima) {
+      toast.error("Pilih Penerima terlebih dahulu");
+      return;
+    }
+    if (!selectedDeliveryPlace) {
+      toast.error("Pilih Tempat Pengiriman terlebih dahulu");
+      return;
+    }
+    if (!selectedSalesChannel) {
+      toast.error("Pilih Sales Channel terlebih dahulu");
+      return;
+    }
+    if (!orderDate) {
+      toast.error("Pilih Tanggal Order terlebih dahulu");
+      return;
+    }
+    if (
+      selectedPaymentStatus === "INSTALLMENTS" &&
+      (!nominalPayment || nominalPayment.trim() === "")
+    ) {
+      toast.error("Masukkan nominal pembayaran untuk cicilan");
+      return;
+    }
     setLoading(true);
+
+    const otherFees: any = {};
+
+    if (
+      selectedPaymentStatus === "INSTALLMENTS" &&
+      nominalPayment !== undefined &&
+      nominalPayment !== ""
+    ) {
+      otherFees.installments = {
+        paymentDate: paymentDate,
+        paymentMethodId: selectedPaymentMethod
+          ? selectedPaymentMethod.id
+          : undefined,
+        amount: Number(nominalPayment),
+      };
+    }
+
+    if (shippingCost && shippingCost.cost) {
+      otherFees.shippingCost = shippingCost;
+    }
+
+    if (insurance !== undefined) {
+      otherFees.insurance = insurance;
+    }
+
+    if (ongkirDiscountValue !== undefined) {
+      otherFees.weight = ongkirDiscountValue;
+    }
+
+    if (discount?.value && discount.value > 0) {
+      otherFees.discount = discount;
+    }
+
+    const paymentMethodPayload: any = {
+      status: selectedPaymentStatus ?? "PENDING",
+      date: paymentDate ? paymentDate.toISOString() : new Date().toISOString(),
+    };
+    if (selectedPaymentMethod?.id) {
+      paymentMethodPayload.id = selectedPaymentMethod.id;
+    }
+
+    const orderDetailPayload = {
+      detail: {
+        otherFees,
+        receiptNumber: recieptNumber,
+      },
+      paymentMethod: paymentMethodPayload,
+      orderProducts: orderProducts,
+    };
+
     const payload: OrderPayload = {
       order: {
         ordererCustomerId: selectedPemesan?.id || "",
@@ -143,39 +220,17 @@ export default function AddOrderFomPage() {
             : "",
         salesChannelId: selectedSalesChannel?.id || "",
         orderDate: orderDate ? orderDate.toISOString() : "",
-        note: note,
+        note,
       },
-      orderDetail: {
-        detail: {
-          otherFees: {
-            // packaging: 5000,
-            installment:
-              nominalPayment !== undefined && nominalPayment !== ""
-                ? Number(nominalPayment)
-                : undefined,
-            insurance: insurance,
-            weight: ongkirDiscountValue,
-            shippingCost: shippingCost,
-            discount: discount || {},
-          },
-          receiptNumber: recieptNumber,
-        },
-        paymentMethod: {
-          id: selectedPaymentMethod?.id || "",
-          status: selectedPaymentStatus ?? "PENDING",
-          date: paymentDate
-            ? paymentDate.toISOString()
-            : new Date().toISOString(),
-        },
-        orderProducts: orderProducts,
-      },
+      orderDetail: orderDetailPayload,
     };
-
     try {
-      const res = await postOrder(payload);
-      console.log("Order response:", res);
-    } catch (error) {
-      console.error("Order submission error:", error);
+      await postOrder(payload);
+      toast.success("Order berhasil ditambahkan");
+      navigate("/order");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: any) {
+      toast.error("Terjadi kesalahan saat menambahkan order.");
     } finally {
       setLoading(false);
     }
@@ -377,6 +432,7 @@ export default function AddOrderFomPage() {
               receiverDestinationId={
                 selectedDeliveryPlace?.destinationId ?? undefined
               }
+              customerCategory={selectedPemesan?.category}
               onChange={handleChangeOrder}
             />
 
@@ -476,9 +532,9 @@ export default function AddOrderFomPage() {
 
             {/* Tombol Aksi */}
             <div className="flex flex-wrap justify-end gap-4 pt-2">
-              <button className="flex items-center gap-1 px-3 py-1.5 text-sm border border-blue-600 text-blue-600 hover:text-white rounded-md hover:bg-blue-600 transition">
+              {/* <button className="flex items-center gap-1 px-3 py-1.5 text-sm border border-blue-600 text-blue-600 hover:text-white rounded-md hover:bg-blue-600 transition">
                 Simpan dan tambah order baru
-              </button>
+              </button> */}
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
