@@ -39,12 +39,10 @@ import DetailProduCtPage from "./pages/Produk/DetailProdukPage";
 import SupplierSettingForm from "./components/setting/form/SupplierSettingForm";
 import FormSettingAccount from "./components/setting/form/FormSeattingAccount";
 import EditOrderFomPage from "./components/order/form/EditOrderPage";
-import { Toaster } from "react-hot-toast";
 export default function App() {
   return (
     <>
       <Router>
-        <Toaster position="bottom-center" reverseOrder={false} />
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
