@@ -43,7 +43,6 @@ export default function App() {
   return (
     <>
       <Router>
-        {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
