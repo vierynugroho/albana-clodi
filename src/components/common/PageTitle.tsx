@@ -16,7 +16,7 @@ const PageTitle: FC<PageTitleProps> = ({ title, showBackButton = true }) => {
         {showBackButton && (
           <button
             onClick={() => navigate(-1)}
-            className="p-1.5 rounded-md bg-gray-200 hover:bg-gray-400 dark:hover:bg-amber-700 transition-colors"
+            className="p-1.5 rounded-md bg-gray-200 hover:bg-gray-400 dark:hover:bg-blue-700 transition-colors dark:bg-gray-800 dark:text-gray-300"
             aria-label="Go back"
           >
             <IoChevronBackSharp className="w-auto h-7 dark:text-amber-50 text-gray-500" />

@@ -114,6 +114,7 @@ const ProductSelect: React.FC<ProductSelectProps> = () => {
       loadOptions={fetchProduct}
       placeholder="Cari Produk"
       className="w-full"
+      classNamePrefix="custom-select"
       components={{ Option: ProductOption }}
       onChange={() => {}}
     />
