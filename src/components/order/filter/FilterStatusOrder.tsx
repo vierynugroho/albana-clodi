@@ -8,9 +8,9 @@ type FilterStatusOrderProps = {
 // Mapping status yang ditampilkan → nilai paymentStatus
 const statusToPaymentStatusMap: Record<string, string> = {
   "Belum Bayar": "PENDING",
-  "Belum Lunas": "INSTALEMENTS",
+  "Belum Lunas": "INSTALLMENTS",
   "Belum Diproses": "PENDING",
-  "Semua Order": "",
+  // "Semua Order": "ALL",
 };
 
 export default function FilterStatusOrder({
@@ -35,7 +35,7 @@ export default function FilterStatusOrder({
         return (
           <button
             key={statusOrder}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md border transition-colors duration-200 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-md border transition-colors duration-200 dark:border-gray-800 dark:bg-white/[0.03] ${
               isSelected ? "text-blue-600 border-blue-600" : "text-gray-700 border-gray-300"
             } cursor-pointer`}
             onClick={() => {

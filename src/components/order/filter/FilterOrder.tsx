@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { FilterState } from "../../../pages/Order/AllOrder";
-import DatePicker from "../../form/date-picker";
 import Label from "../../form/Label";
 import Select from "../../form/Select";
 import Button from "../../ui/button/Button";
+import DateRangePicker from "../../form/switch/date-range-picker";
+import { useEffect, useState } from "react";
 
 type Props = {
   filter: FilterState;
@@ -11,44 +12,50 @@ type Props = {
   onFilter: () => void;
 };
 export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
-
   const navigate = useNavigate();
+  const [date, setDate] = useState({
+    startDate: "",
+    endDate: "",
+  });
   const filters = [
     {
       label: "Status Order",
       name: "orderStatus",
       options: [
-        { value: "", label: "Semua" },
-        { value: "belum-diproses", label: "Belum Diproses" },
-        { value: "diproses", label: "Diproses" },
-        { value: "dikirim", label: "Dikirim" },
-        { value: "selesai", label: "Selesai" },
+        { value: "ALL", label: "Semua" },
+        { value: "PENDING", label: "Belum Diproses" },
+        { value: "PENDING", label: "Diproses" },
+        { value: "SEND", label: "Dikirim" },
+        { value: "SETTLEMENT", label: "Selesai" },
       ],
     },
     {
       label: "Kategori Customer",
       name: "customerCategory",
       options: [
-        { value: "", label: "Semua" },
+        { value: "ALL", label: "Semua" },
+        { value: "CUSTOMER", label: "Customer" },
+        { value: "MEMBER", label: "Member" },
         { value: "RESELLER", label: "Reseller" },
-        { value: "ENDUSER", label: "End User" },
+        { value: "DROPSHIP", label: "Dropship" },
+        { value: "AGENT", label: "Agent" },
       ],
     },
     {
       label: "Status Pembayaran",
       name: "paymentStatus",
       options: [
-        { value: "", label: "Semua" },
-        { value: "belum-bayar", label: "Belum Bayar" },
-        { value: "cicilan", label: "Cicilan" },
-        { value: "lunas", label: "Lunas" },
+        { value: "ALL", label: "Semua" },
+        { value: "PENDING", label: "Belum Bayar" },
+        { value: "INSTALLMENTS", label: "Cicilan" },
+        { value: "SETTLEMENT", label: "Lunas" },
       ],
     },
     {
       label: "Sales Channel",
       name: "salesChannelId",
       options: [
-        { value: "", label: "Semua" },
+        { value: "ALL", label: "Semua" },
         { value: "SHOPEE", label: "Shopee" },
         { value: "TOKOPEDIA", label: "Tokopedia" },
       ],
@@ -57,20 +64,20 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
       label: "Tempat Pengiriman",
       name: "deliveryPlaceId",
       options: [
-        { value: "", label: "Semua" },
+        { value: "ALL", label: "Semua" },
         { value: "GUDANGUTAMA", label: "Gudang Utama" },
       ],
     },
-    {
-      label: "Produk",
-      name: "productId",
-      options: [
-        { value: "", label: "Semua" },
-        { value: "produk-sendiri", label: "Produk Sendiri" },
-        { value: "supplier-lain", label: "Supplier Lain" },
-        { value: "produk-preorder", label: "Produk Pre-Order" },
-      ],
-    },
+    // {
+    //   label: "Produk",
+    //   name: "productId",
+    //   options: [
+    //     { value: "", label: "Semua" },
+    //     { value: "produk-sendiri", label: "Produk Sendiri" },
+    //     { value: "supplier-lain", label: "Supplier Lain" },
+    //     { value: "produk-preorder", label: "Produk Pre-Order" },
+    //   ],
+    // },
     {
       label: "Metode Pembayaran",
       name: "paymentMethodId",
@@ -81,26 +88,34 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
       ],
     },
   ];
-  const toggleFilters = [
-    {
-      label: "Print Label",
-      name: "printLabel",
-      options: [
-        { value: "", label: "Semua" },
-        { value: "printed", label: "Printed" },
-        { value: "unprinted", label: "Unprinted" },
-      ],
-    },
-    {
-      label: "Tanggal",
-      name: "tanggal",
-      options: [
-        { value: "", label: "Semua" },
-        { value: "order", label: "Order" },
-        { value: "bayar", label: "Bayar" },
-      ],
-    },
-  ];
+  // const toggleFilters = [
+  // {
+  //   label: "Print Label",
+  //   name: "printLabel",
+  //   options: [
+  //     { value: "", label: "Semua" },
+  //     { value: "printed", label: "Printed" },
+  //     { value: "unprinted", label: "Unprinted" },
+  //   ],
+  // },
+  // {
+  //   label: "Tanggal",
+  //   name: "tanggal",
+  //   options: [
+  //     { value: "", label: "Semua" },
+  //     { value: "order", label: "Order" },
+  //     { value: "bayar", label: "Bayar" },
+  //   ],
+  // },
+  // ];
+
+  useEffect(() => {
+    setFilter((prev) => ({
+      ...prev,
+      startDate: date.startDate,
+      endDate: date.endDate,
+    }));
+  }, [date, setFilter]);
 
   const handleSelectChange = (field: string, value: string) => {
     setFilter((prev) => ({ ...prev, [field]: value }));
@@ -130,26 +145,28 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
     setFilter(defaultFilter);
     localStorage.removeItem("orderFilter");
 
-  navigate("?", { replace: true });
+    navigate("?", { replace: true });
 
-  onFilter();
+    onFilter();
 
-    onFilter(); 
+    onFilter();
   };
 
-  const saveFilter = () => {
-    localStorage.setItem("orderFilter", JSON.stringify(filter));
-  };
+  // const saveFilter = () => {
+  //   localStorage.setItem("orderFilter", JSON.stringify(filter));
+  // };
 
   return (
     <div
-      className={`rounded-2xl mt-5 mb-5 border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] `}>
+      className={`rounded-2xl mt-5 mb-5 border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] `}
+    >
       <div className="p-3 border-t border-gray-100 dark:border-gray-800 ">
         <div className="py-2 px-4 flex items-center justify-between">
           <h3 className="text-start text-xl font-semibold ">Filter Order</h3>
           <p
             onClick={resetFilters}
-            className="text-md font-semibold hover:underline cursor-pointer text-blue-600">
+            className="text-md font-semibold hover:underline cursor-pointer text-blue-600"
+          >
             Reset Filter
           </p>
         </div>
@@ -176,7 +193,8 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
                         width="20"
                         height="20"
                         fill="none"
-                        viewBox="0 0 20 20">
+                        viewBox="0 0 20 20"
+                      >
                         <path
                           d="M6 8l4 4 4-4"
                           stroke="currentColor"
@@ -193,7 +211,7 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
           </div>
           {/* Kanan */}
           <div className="flex flex-col gap-6 min-w-[300px]">
-            {toggleFilters.map(({ label, name, options }) => (
+            {/* {toggleFilters.map(({ label, name, options }) => (
               <div key={name} className="flex flex-col gap-2">
                 <Label className="text-left font-bold">{label}</Label>
                 <div className="flex gap-2 border border-gray-300 dark:border-gray-700 rounded-lg p-2">
@@ -219,30 +237,18 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
                   ))}
                 </div>
               </div>
-            ))}
+            ))} */}
 
             <div className="flex flex-col gap-2">
               <Label className="text-left font-bold">Range Tanggal</Label>
-              <DatePicker
-                id="date-picker"
-                placeholder="Pilih Tanggal"
-                onChange={(_, currentDateString) => {
-                  const [start, end] = currentDateString || [];
-                  setFilter((prev) => ({
-                    ...prev,
-                    startDate: start || "",
-                    endDate: end || "",
-                  }));
-                }}
-              />
-
+              <DateRangePicker setDate={setDate} />
             </div>
           </div>
         </div>
         <hr className="mt-4 border-gray-300 dark:border-brand-500" />
       </div>
       <div className="flex gap-3 justify-end pb-3 pr-3">
-        <Button onClick={saveFilter}>Simpan Filter</Button>
+        {/* <Button onClick={saveFilter}>Simpan Filter</Button> */}
 
         <Button onClick={onFilter}>Gunakan Filter</Button>
       </div>

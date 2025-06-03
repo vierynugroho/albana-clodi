@@ -192,7 +192,7 @@ export default function AllOrderPage() {
   const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <div className="dark:bg-white/[0.03] dark:text-white">
+    <div className="dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400">
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"

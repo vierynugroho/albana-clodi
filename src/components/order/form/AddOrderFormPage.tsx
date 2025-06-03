@@ -237,15 +237,15 @@ export default function AddOrderFomPage() {
   };
 
   return (
-    <div>
+    <div className="dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400">
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
       />
       <OrderPageBreadcrumb pageTitle="Tambah Order" />
-      <hr className="border-1 border-gray-200" />
+      <hr className="border-1 border-gray-200 dark:border-gray-500" />
 
-      <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="p-6 bg-gray-50 min-h-screen dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Form kiri */}
           <ComponentCard
@@ -272,6 +272,7 @@ export default function AddOrderFomPage() {
                       }}
                       placeholder="Cari Pemesan"
                       className="w-full"
+                      classNamePrefix="custom-select"
                       components={{
                         Option: CustomOption,
                       }}
@@ -319,6 +320,7 @@ export default function AddOrderFomPage() {
                       }}
                       placeholder="Cari Penerima"
                       className="w-full"
+                      classNamePrefix="custom-select"
                       components={{
                         Option: CustomOption,
                       }}
@@ -365,21 +367,22 @@ export default function AddOrderFomPage() {
                     )
                   }
                   placeholder="Cari Lokasi Pengiriman"
-                  className="w-full"
+                  className="w-full" 
+                  classNamePrefix="custom-select"
                   components={{
                     Option: DeliveryOption,
                   }}
                 />
               </div>
 
-              <div>
+              <div className="flex flex-col spcace-y-2">
                 <Label htmlFor="datepicker">Pilih Tanggal:</Label>
                 <DatePicker
                   id="datepicker"
                   selected={orderDate}
                   onChange={(date) => setOrderDate(date)}
                   dateFormat="dd-MM-yyyy"
-                  className="border p-2 rounded"
+                  className="border p-2 rounded w-full dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300"
                   placeholderText="Pilih tanggal order"
                 />
               </div>
@@ -397,28 +400,29 @@ export default function AddOrderFomPage() {
                   loadOptions={fetchSalesChannels}
                   placeholder="Pilih sales channels"
                   className="w-full"
+                   classNamePrefix="custom-select"
                   onChange={(option) => {
                     setSelectedSalesChannel(option ? option.channel : null);
                   }}
                 />
               </div>
 
-              <div>
+              <div className="flex flex-col space-y-2">
                 <label htmlFor="note" className="font-semibold text-md">
                   Catatan
                 </label>
                 <textarea
                   id="note"
-                  className="input h-30 w-full border border-gray-400 rounded-lg bg-gray-100"
+                  className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 input h-30 w-full border border-gray-400 rounded-lg bg-gray-100"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 />
-                <div className="mt-2">
+                {/* <div className="mt-2">
                   <label className="inline-flex items-center">
                     <input type="checkbox" className="mr-2" />
                     Add To Print Label
                   </label>
-                </div>
+                </div> */}
               </div>
             </div>
           </ComponentCard>
@@ -493,6 +497,7 @@ export default function AddOrderFomPage() {
                       loadOptions={fetchPayments}
                       placeholder="Pilih metode pembayaran"
                       className="w-full"
+                       classNamePrefix="custom-select"
                       onChange={(option) => {
                         setSelectedPaymentMethod(
                           option ? option.payment : null

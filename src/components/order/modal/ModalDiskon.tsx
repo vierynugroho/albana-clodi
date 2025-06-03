@@ -44,10 +44,10 @@ export default function ModalFormDiscount({
   };
 
   return ReactDOM.createPortal(
-    <div className="fixed z-[100000] inset-0 overflow-y-auto">
+    <div className="fixed z-[100000] inset-0 overflow-y-auto ">
       <div className="flex items-center justify-center min-h-screen px-4">
         <div className="fixed inset-0 bg-black opacity-40" onClick={changeModal} />
-        <div className="bg-white rounded-xl shadow-lg z-50 w-full max-w-md p-6 relative">
+        <div className="bg-white rounded-xl shadow-lg z-50 w-full max-w-md p-6 relative dark:bg-gray-900 dark:border-gray-700 dark:text-white">
           {/* Header */}
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">{title}</h2>
@@ -81,7 +81,7 @@ export default function ModalFormDiscount({
                 onChange={(e) =>
                   setDiscountType(e.target.value as DiscountValueType )
                 }
-                className="border rounded-l px-3 py-2 bg-white"
+                className="border rounded-l px-3 py-2 bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300"
               >
                 <option value="Rp">Rp</option>
                 <option value="%">%</option>
@@ -90,7 +90,7 @@ export default function ModalFormDiscount({
                 type="number"
                 value={nominal}
                 onChange={(e) => setNominal(e.target.value)}
-                className="w-full border-t border-b border-r rounded-r px-4 py-2"
+                className="w-full border-t border-b border-r rounded-r px-4 py-2 dark:border-gray-700"
               />
             </div>
             </div>
