@@ -8,7 +8,6 @@ import ManageProduk from "../switch/ManageProduk";
 import ManagePrivorAndStorefront from "../switch/ManagePrivorAndStorefront";
 import VarianProduk from "./VarianProduk";
 import Button from "../button/Button";
-import { GiWeight } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
 import {
   createProduct,
@@ -22,6 +21,7 @@ import {
   getCategories,
 } from "../../../service/product/category";
 import toast, { Toaster } from "react-hot-toast";
+import { LuWeight } from "react-icons/lu";
 
 type SwichStatesType = {
   varian: boolean;
@@ -323,7 +323,7 @@ export default function FormProduk() {
                   </Label>
                   <div className="relative">
                     <Input
-                      placeholder="Berat (gr)"
+                      placeholder="Berat (gram)"
                       type="number"
                       min="0"
                       className="pl-[62px] appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
@@ -331,7 +331,7 @@ export default function FormProduk() {
                       onChange={(e) => setProductWeight(Number(e.target.value))}
                     />
                     <span className="absolute left-0 top-1/2 -translate-y-1/2 border-r border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
-                      <GiWeight className="size-6" />
+                      <LuWeight className="size-6" />
                     </span>
                   </div>
                 </div>
