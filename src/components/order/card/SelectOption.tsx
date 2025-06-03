@@ -1,24 +1,29 @@
 import { OptionProps } from "react-select";
-import { TCustomer, TDeliveryPlace } from "../../../service/order/create-order.type";
+import {
+  TCustomer,
+  TDeliveryPlace,
+} from "../../../service/order/create-order.type";
 import { useState } from "react";
 import AsyncSelect from "react-select/async";
 import Label from "../../form/Label";
 import { fetchCustomers } from "../../../service/order/order.service";
 
-export const CustomOption = (
-  props: OptionProps<CustomerOption, false>
-) => {
+export const CustomOption = (props: OptionProps<CustomerOption, false>) => {
   const { data, innerRef, innerProps, isFocused } = props;
   return (
     <div
       ref={innerRef}
       {...innerProps}
-      className={`p-3 cursor-pointer ${
-        isFocused ? "bg-blue-100 text-blue-900" : "bg-white text-gray-900"
+      className={`p-3 cursor-pointer dark:border-gray-800 dark:bg-white/[0.03] ${
+        isFocused
+          ? "bg-blue-100 text-blue-900 dark:border-gray-800 dark:bg-white/[0.03]"
+          : "bg-white text-gray-900 dark:border-gray-800 dark:bg-white/[0.03]"
       }`}
     >
       <div className="font-semibold">{data.customer.name}</div>
-      <div className="text-sm text-gray-500">{data.customer.address}</div>
+      <div className="text-sm text-gray-500 dark:text-gray-400">
+        {data.customer.address}
+      </div>
     </div>
   );
 };
@@ -33,11 +38,15 @@ export const DeliveryOption = (
       ref={innerRef}
       {...innerProps}
       className={`p-3 cursor-pointer ${
-        isFocused ? "bg-blue-100 text-blue-900" : "bg-white text-gray-900"
+        isFocused
+          ? "bg-blue-100 text-blue-900 dark:border-gray-800 dark:bg-white/[0.03] "
+          : "bg-white text-gray-900 dark:border-gray-800 dark:bg-white/[0.03]"
       }`}
     >
       <div className="font-semibold">{data.place.name}</div>
-      <div className="text-sm text-gray-500">{data.place.address}</div>
+      <div className="text-sm text-gray-500 dark:text-gray-400">
+        {data.place.address}
+      </div>
     </div>
   );
 };
@@ -70,7 +79,7 @@ export const CustomerSelect = ({
   return (
     <div>
       <Label className="font-semibold text-md">{label}</Label>
-      <div className="w-full">
+      <div className="w-full ">
         {isEditing ? (
           <AsyncSelect
             cacheOptions
@@ -82,16 +91,17 @@ export const CustomerSelect = ({
               setIsEditing(false);
             }}
             placeholder={`Cari ${label}`}
-            className="w-full"
+            className="w-full dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400"
+            classNamePrefix="custom-select"
             components={{ Option: CustomOption }}
           />
         ) : selectedCustomer ? (
-          <div className="flex justify-between items-center px-3 py-2 border rounded-md bg-white">
+          <div className="flex justify-between items-center px-3 py-2 border rounded-md bg-white dark:border-gray-800 dark:bg-white/[0.03] ">
             <div>
-              <div className="font-semibold text-gray-900">
+              <div className="font-semibold text-gray-900 dark:text-gray-400">
                 {selectedCustomer.name}
               </div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 {selectedCustomer.address}
               </div>
             </div>
@@ -104,7 +114,9 @@ export const CustomerSelect = ({
             </button>
           </div>
         ) : (
-          <div className="text-sm text-gray-500 italic">Belum dipilih</div>
+          <div className="text-sm text-gray-500 dark:text-gray-400 italic">
+            Belum dipilih
+          </div>
         )}
       </div>
     </div>
