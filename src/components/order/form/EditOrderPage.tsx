@@ -167,14 +167,15 @@ export default function EditOrderFomPage() {
           order.OrderDetail.paymentStatus as keyof typeof PaymentStatus
         );
         setPaymentDate(
-          order.Installment.paymentDate
+          order.Installment?.paymentDate
             ? new Date(order.Installment.paymentDate)
             : null
+         
         );
         setNominalPayment(
-          order.Installment.amount !== undefined &&
-            order.Installment.amount !== null
-            ? order.Installment.amount.toString()
+          order.Installment?.amount !== undefined &&
+            order.Installment?.amount !== null
+            ? order.Installment?.amount.toString()
             : undefined
         );
         setReceiptNumber(order.OrderDetail.receiptNumber ?? undefined);
