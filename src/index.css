@@ -776,6 +776,26 @@ span.flatpickr-weekday,
 .simplebar-scrollbar.simplebar-visible:before {
   @apply opacity-100;
 }
+/* contoh dengan tailwindcss + dark mode */
+.custom-select__control {
+  @apply bg-white border border-gray-300 dark:bg-gray-900 dark:border-gray-700 dark:text-white;
+}
+
+.custom-select__menu {
+  @apply bg-white dark:bg-gray-900 dark:text-white;
+}
+
+.custom-select__option {
+  @apply text-gray-900 dark:text-white;
+}
+
+.custom-select__option--is-focused {
+  @apply bg-blue-100 text-blue-900 dark:bg-blue-700 dark:text-white;
+}
+
+.custom-select__single-value {
+  @apply dark:text-white;
+}
 
 /* index.css atau tailwind.css */
 @media print {

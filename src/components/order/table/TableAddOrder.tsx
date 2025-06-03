@@ -411,12 +411,12 @@ useEffect(() => {
 
   return (
     <>
-      <div className="rounded-2xl border p-4 border-gray-200 bg-white dark:border-gray-800 dark:bg-hite/[0.03]">
+      <div className="rounded-2xl border p-4 border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <ProductSelect onSelect={handleAddProduct} />
       </div>
 
       <ComponentCard title="Orderan">
-        <div className="overflow-hidden bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="overflow-hidden bg-white dark:border-white/[0.05] dark:bg-transparent">
           <div className="max-w-full overflow-x-auto">
             <Table>
               {/* Table Header */}
@@ -516,7 +516,7 @@ useEffect(() => {
             </div>
 
             <div className="flex space-x-2">
-              <button className="px-4 py-2 text-sm font-medium rounded-md border border-blue-500 text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <button className="px-4 py-2 text-sm font-medium rounded-md border border-blue-500 text-blue-600 bg-blue-50 dark:bg-white/[0.03] dark:border-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 Semua kurir
               </button>
             </div>

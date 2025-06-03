@@ -9,7 +9,7 @@ const ProdukPageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
     <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
       <div className="flex gap-2 items-center justify-between">
         <Link to={"/order"}>
-          <button className="p-1.5 rounded-md bg-gray-200 hover:bg-gray-400 dark:hover:bg-amber-700 transition-colors">
+          <button className="p-1.5 rounded-md bg-gray-200 hover:bg-gray-400 dark:hover:bg-amber-700 transition-colors dark:bg-gray-800 dark:text-gray-300">
             <IoChevronBackSharp className="w-auto h-7 dark:text-amber-50 text-gray-500" />
           </button>
         </Link>

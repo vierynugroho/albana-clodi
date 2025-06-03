@@ -29,7 +29,7 @@ export const PreviewOutput: React.FC<PreviewOutputProps> = ({
   };
 
   return (
-    <div className={`bg-white border dark:bg-white/[0] dark:border-gray-700 dark:text-white border-black ${className}`}>
+    <div className={`bg-white border dark:bg-white/[0] dark:border-gray-700 dark:text-gray-300 border-black ${className}`}>
       {renderPreview()}
     </div>
   );
