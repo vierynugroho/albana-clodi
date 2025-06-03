@@ -74,6 +74,7 @@ export default function FormCustomer() {
     districts: false,
     villages: false,
   });
+  const [loadingInput, setLoadingInput] = useState<boolean>(false);
   console.log(isLoading);
 
   const { id } = useParams();
@@ -88,7 +89,7 @@ export default function FormCustomer() {
             ...prev,
             id: customerDetail.id,
             name: customerDetail.name,
-            phoneNumber:customerDetail.phoneNumber,
+            phoneNumber: customerDetail.phoneNumber,
             category: customerDetail.category.toLowerCase(),
             provinceName: customerDetail.province,
             cityName: customerDetail.city,
@@ -185,61 +186,54 @@ export default function FormCustomer() {
   }
 
   const handleSubmit = () => {
+    setLoadingInput(true);
     const payload = {
       //   id: crypto.randomUUID(),
       name: formData.name,
       category: formData.category.toUpperCase(),
       address: formData.address,
       province: formData.provinceName,
-      village: formData.villageName,
+      village: formData.villageName ?? "",
       district: formData.districtName,
       city: formData.cityName,
-      postalCode: formData.postalCode,
+      postalCode: formData.postalCode ?? "",
       phoneNumber: formData.phoneNumber,
-      email: formData.email,
+      email: formData.email ?? "",
       status: "ACTIVE",
       //   createdAt: new Date().toISOString(),
       //   updatedAt: new Date().toISOString(),
     };
-
+    console.log(payload);
+    const afterSubmit = () => {
+      setLoadingInput(false);
+    };
     // For Edit Data
     if (id) {
       editCustomer(id, payload)
         .then((response) => {
           if (response.success) {
-            toast.success("Customer berhasil diPerbarui");
-            setFormData({
-              id: "",
-              name: "",
-              category: "",
-              address: "",
-              provinceId: "",
-              provinceName: "",
-              cityId: "",
-              cityName: "",
-              districtId: "",
-              districtName: "",
-              villageId: "",
-              villageName: "",
-              postalCode: "",
-              phoneNumber: "",
-              email: "",
+            toast.success("Customer berhasil diperbarui", {
+              style: { marginTop: "10vh", zIndex: 100000 },
             });
-            // Redirect ke halaman customer setelah berhasil menambahkan
-            window.location.href = "/customer";
           } else {
-            toast.error("Customer gagal diperbarui");
+            toast.error("Customer gagal diperbarui", {
+              style: { marginTop: "10vh", zIndex: 100000 },
+            });
             console.error("Gagal menambahkan customer:", response.message);
           }
         })
         .catch((error) => {
+          toast.error("Customer gagal diperbarui");
           console.error("Error saat menambahkan customer:", error);
-        });
+        })
+        .finally(afterSubmit);
     } else {
       createCustomer(payload)
         .then((response) => {
           if (response.success) {
-            toast.success("Customer berhasil ditambahkan");
+            toast.success("Customer berhasil ditambahkan", {
+              style: { marginTop: "10vh", zIndex: 100000 },
+            });
             setFormData({
               id: "",
               name: "",
@@ -260,13 +254,21 @@ export default function FormCustomer() {
             // Redirect ke halaman customer setelah berhasil menambahkan
             window.location.href = "/customer";
           } else {
-            toast.error("Customer gagal ditambahkan");
+            const errorMessage =
+              response.message === "Customer already exists"
+                ? "Nama Customer Sudah Ada"
+                : "Customer gagal ditambahkan";
+
+            toast.error(errorMessage, {
+              style: { marginTop: "10vh", zIndex: 100000 },
+            });
             console.error("Gagal menambahkan customer:", response.message);
           }
         })
         .catch((error) => {
           console.error("Error saat menambahkan customer:", error);
-        });
+        })
+        .finally(afterSubmit);
     }
   };
 
@@ -277,7 +279,9 @@ export default function FormCustomer() {
         <ComponentCard title="Informasi Customer" className="flex-1/2">
           <div className="space-y-6 flex flex-wrap gap-4">
             <div className="flex-1/3">
-              <Label>Kategori Customer</Label>
+              <Label>
+                Kategori Customer <span className="text-red-500">*</span>{" "}
+              </Label>
               <Select
                 defaultValue={categoryUser}
                 options={optionsCustomers}
@@ -285,9 +289,16 @@ export default function FormCustomer() {
                 onChange={(val) => handleChange("category", val)}
                 className="dark:bg-dark-900"
               />
+              {!formData.category && (
+                <p className="text-red-500 text-sm mt-1">
+                  Category tidak boleh kosong.
+                </p>
+              )}
             </div>
             <div className="flex-1/3">
-              <Label htmlFor="inputTwo">Nama Lengkap</Label>
+              <Label htmlFor="inputTwo">
+                Nama Lengkap <span className="text-red-500">*</span>{" "}
+              </Label>
               <Input
                 type="text"
                 id="inputTwo"
@@ -295,6 +306,11 @@ export default function FormCustomer() {
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
               />
+              {!formData.name && (
+                <p className="text-red-500 text-sm mt-1">
+                  Nama tidak boleh kosong.
+                </p>
+              )}
             </div>
 
             <div className="flex-1/3">
@@ -432,7 +448,11 @@ export default function FormCustomer() {
             </div>
 
             <Button size="md" className="w-full" onClick={handleSubmit}>
-              {id ? "Edit Customer" : "Tambah Customer"}
+              {loadingInput
+                ? "Loading.."
+                : id
+                ? "Edit Customer"
+                : "Create Customer"}
             </Button>
           </div>
         </ComponentCard>
