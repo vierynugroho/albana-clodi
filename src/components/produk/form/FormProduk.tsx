@@ -23,6 +23,15 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { LuWeight } from "react-icons/lu";
 
+const toastStyle = { marginTop: "10vh", zIndex: 100000 };
+
+const errorMessages: Record<string, string> = {
+  "Insufficient stock": "Admin Tidak Bisa Mengurangi Stok",
+  "Product already exists": "Pastikan SKU produk berbeda",
+  errorEdit: "Terjadi Kesalahan Edit Produk",
+  errorCreate: "Gagal Membuat Produk",
+};
+
 type SwichStatesType = {
   varian: boolean;
   diskon: boolean;
@@ -148,20 +157,12 @@ export default function FormProduk() {
       const result = await editProduct(payload, id);
       setLoading(false);
       if (result.success) {
-        toast.success("Berhasil Memperbarui Produk", {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
+        toast.success("Berhasil Edit Produk", { style: toastStyle });
+        window.location.href = "/produk";
       } else {
-        if (result.message == "Insufficient stock") {
-          toast.error("Admin Tidak Bisa Mengurangi Stok", {
-            style: { marginTop: "10vh", zIndex: 100000 },
-          });
-        } else {
-          toast.error("Terjadi Kesalahan Edit Produk", {
-            style: { marginTop: "10vh", zIndex: 100000 },
-          });
-        }
-        setError("");
+        const message =
+          errorMessages[result.message] || errorMessages["errorEdit"];
+        toast.error(message, { style: toastStyle });
       }
     }
   };
@@ -236,13 +237,12 @@ export default function FormProduk() {
     setLoading(false);
 
     if (result.success) {
-      toast.success("Berhasil Membuat Produk", {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.success("Berhasil Membuat Produk", { style: toastStyle });
+      window.location.href = "/produk";
     } else {
-      toast.error("Terjadi Kesalahan Menambahkan Produk", {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      const message =
+        errorMessages[result.message] || errorMessages["errorCreate"];
+      toast.error(message, { style: toastStyle });
     }
   };
 
