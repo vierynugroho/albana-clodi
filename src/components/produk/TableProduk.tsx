@@ -209,7 +209,7 @@ export default function TableProduk({
                       }
                     />
                   </TableCell>
-                  <TableCell className="w-1/4 px-6 py-4 text-start">
+                  <TableCell className="w-1/4 py-4 text-start">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 overflow-hidden rounded-full">
                         <img
@@ -219,7 +219,7 @@ export default function TableProduk({
                           alt="Product"
                         />
                       </div>
-                      <div>
+                      <div className="w-full">
                         <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
                           <Link
                             to={`/produk/detail_produk/${produk.product.id}`}
