@@ -212,6 +212,7 @@ export default function FormCustomer() {
       editCustomer(id, payload)
         .then((response) => {
           if (response.success) {
+            window.location.href = "/customer";
             toast.success("Customer berhasil diperbarui", {
               style: { marginTop: "10vh", zIndex: 100000 },
             });
