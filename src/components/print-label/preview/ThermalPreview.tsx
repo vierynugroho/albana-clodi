@@ -4,23 +4,6 @@ import { TPreviewProps, TProduct } from "../../../service/order/print/order.type
 import { formatDateTimeIndo } from "../../../utils/format-date.utils";
 import { formatDate } from "@fullcalendar/core/index.js";
 import { formatPrice } from "../../../utils/format-price.utils";
-const rekening = [
-  {
-    bank: "BCA",
-    number: "2141341341431",
-    owner: "Nama Pemilik Rekening",
-  },
-  {
-    bank: "BNI",
-    number: "1234567890123",
-    owner: "John Doe",
-  },
-  {
-    bank: "Mandiri",
-    number: "9876543210987",
-    owner: "Jane Smith",
-  },
-];
 
 const ThermalPreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
@@ -104,12 +87,12 @@ const ThermalPreview: React.FC<TPreviewProps> = ({ features, data }) => {
         });
       })}
 
-      <hr className="border-t border-black border-dashed my-2" />
-      <div className="flex justify-between">
+      {/* <hr className="border-t border-black border-dashed my-2" /> */}
+      {/* <div className="flex justify-between">
         <span>{data?.shipping_name}</span>
         <span>{data?.weight}</span>
         <span>{formatPrice(data?.shipping_cost ?? 0)}</span>
-      </div>
+      </div> */}
       {has("Diskon") && (
         <div className="flex justify-between">
           <span>Diskon</span>
@@ -145,13 +128,7 @@ const ThermalPreview: React.FC<TPreviewProps> = ({ features, data }) => {
       {has("Nomor Rekening") && (
         <>
           <div>Rekening Pembayaran</div>
-          {rekening.map((account, index) => (
-            <div key={index} className="space-y-1">
-              <div>Bank: {account.bank}</div>
-              <div>No.Rek: {account.number}</div>
-              <div>A.n. {account.owner}</div>
-            </div>
-          ))}
+          <div>{data?.payment_method}</div>
           <div className="border-t border-dashed border-black my-2" />
         </>
       )}

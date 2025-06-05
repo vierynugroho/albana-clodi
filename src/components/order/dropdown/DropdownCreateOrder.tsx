@@ -48,7 +48,7 @@ export default function DropdownCreateOrder({
 
       {open && (
         <div className="absolute right-0 flex items-center justify-center gap-3 z-10 bg-white border rounded shadow-lg p-2 text-xs">
-          {/* <button
+          <button
             onClick={() => {
               setOpenDiscount(true);
               setOpen(false);
@@ -56,7 +56,7 @@ export default function DropdownCreateOrder({
             className="text-green-600 hover:bg-green-600 hover:text-white rounded-md p-2 px-5 border border-green-600"
           >
             Diskon
-          </button> */}
+          </button>
           <button
             onClick={() => {
               setQty(order.qty);

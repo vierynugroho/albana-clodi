@@ -31,6 +31,7 @@ export interface OrderPayload {
           value?: number;
           type?: "percent" | "nominal";
         };
+        productDiscount: ProductDiscount[];
       };
       receiptNumber?: string;
     };
@@ -82,6 +83,11 @@ export interface OrderResponse {
   ShippingServices: any[];
 }
 
+interface ProductDiscount {
+  produkVariantId: number | string; // sesuaikan tipe ID-nya
+  discountType: string;             // misal "percentage" atau "fixed"
+  discountAmount: number;
+}
 export interface Installment {
   id ?: string;
   amount? : number;

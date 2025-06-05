@@ -99,32 +99,7 @@ export default function VarianProduk({
           />
         </div>
         <hr />
-        <div>
-          <Label htmlFor="inputTwo">Harga Normal</Label>
-          <Input
-            onChange={(e) => {
-              const numeric = parseRupiah(e.target.value);
-              onChange(index, numeric, "normal"); // kirim angka murni
-            }}
-            value={formatToRupiah(variant.productPrices.normal)}
-            type="text"
-            placeholder="Rp0"
-            className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
-          />
-        </div>
-        <div>
-          <Label htmlFor="inputTwo">Harga Reseller</Label>
-          <Input
-            onChange={(e) => {
-              const numeric = parseRupiah(e.target.value);
-              onChange(index, numeric, "reseller"); // kirim angka murni
-            }}
-            value={formatToRupiah(variant.productPrices.reseller)}
-            type="text"
-            placeholder="Rp0"
-            className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
-          />
-        </div>
+
         <div>
           <Label htmlFor="inputTwo">Harga Agent</Label>
           <Input
@@ -138,6 +113,21 @@ export default function VarianProduk({
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
+
+        <div>
+          <Label htmlFor="inputTwo">Harga Reseller</Label>
+          <Input
+            onChange={(e) => {
+              const numeric = parseRupiah(e.target.value);
+              onChange(index, numeric, "reseller"); // kirim angka murni
+            }}
+            value={formatToRupiah(variant.productPrices.reseller)}
+            type="text"
+            placeholder="Rp0"
+            className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
+          />
+        </div>
+
         <div>
           <Label htmlFor="inputTwo">Harga Member</Label>
           <Input
@@ -151,6 +141,21 @@ export default function VarianProduk({
             className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
           />
         </div>
+
+        <div>
+          <Label htmlFor="inputTwo">Harga Normal</Label>
+          <Input
+            onChange={(e) => {
+              const numeric = parseRupiah(e.target.value);
+              onChange(index, numeric, "normal"); // kirim angka murni
+            }}
+            value={formatToRupiah(variant.productPrices.normal)}
+            type="text"
+            placeholder="Rp0"
+            className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
+          />
+        </div>
+        
       </div>
       <div className=" flex flex-col gap-4">
         <div>

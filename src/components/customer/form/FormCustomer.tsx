@@ -105,6 +105,7 @@ export default function FormCustomer() {
       getDetailCostumer();
     }
   }, [id]);
+
   useEffect(() => {
     async function fetchProvinces() {
       setIsLoading((prev) => ({ ...prev, provinces: true }));

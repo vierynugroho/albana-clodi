@@ -182,7 +182,7 @@ export const fetchPayments = async (
     const payments = response.data.responseObject;
 
     return payments.map((payment: PaymentMethod) => ({
-      label: `${payment.bankName} - ${payment.bankBranch} ( ${payment.accountNumber} )`,
+      label: `${payment.bankName}`,
       value: payment.id,
       payment,
     }));

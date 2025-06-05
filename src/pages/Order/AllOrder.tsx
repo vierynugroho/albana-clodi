@@ -127,7 +127,6 @@ export default function AllOrderPage() {
       setFilterOrder(filterFromURL);
       setSelectedStatuses(filterFromURL.paymentStatus || "");
 
-      // Hanya kirim properti yang ada nilainya
       const filteredParams = Object.fromEntries(
         Object.entries(filterFromURL).filter(
           ([_, value]) => value !== "" && value !== undefined
@@ -135,9 +134,11 @@ export default function AllOrderPage() {
       );
 
       const result = await getOrders(filteredParams);
-
       if (result.success && Array.isArray(result.responseObject)) {
-        setOrders(result.responseObject);
+        const filteredOrders = result.responseObject.filter(
+          (order) => order.OrderDetail.paymentStatus !== "CANCEL"
+        );
+        setOrders(filteredOrders);
       } else {
         setOrders([]);
       }
@@ -174,15 +175,12 @@ export default function AllOrderPage() {
   }, [setIsMobile]);
 
   function handleExport() {
-  toast.promise(
-    exportOrdersToExcel(),
-    {
+    toast.promise(exportOrdersToExcel(), {
       loading: "Mengunduh file...",
       success: "File berhasil diunduh!",
       error: "Gagal mengunduh file Excel.",
-    }
-  );
-}
+    });
+  }
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -190,6 +188,41 @@ export default function AllOrderPage() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
+
+  const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
+
+  const handleSelectAll = (checked: boolean) => {
+    const currentPageIds = currentOrders.map((order) => order.id);
+    if (checked) {
+      setSelectedOrderIds((prev) => [
+        ...prev,
+        ...currentPageIds.filter((id) => !prev.includes(id)),
+      ]);
+    } else {
+      setSelectedOrderIds((prev) =>
+        prev.filter((id) => !currentPageIds.includes(id))
+      );
+    }
+  };
+
+  const isAllSelected = currentOrders.every((order) =>
+    selectedOrderIds.includes(order.id)
+  );
+
+  const handleToggleSelect = (orderId: string) => {
+    setSelectedOrderIds((prev) =>
+      prev.includes(orderId)
+        ? prev.filter((id) => id !== orderId)
+        : [...prev, orderId]
+    );
+  };
+
+  const handleMassPrint = () => {
+    if (selectedOrderIds.length === 0) return;
+
+    const query = selectedOrderIds.join(",");
+    navigate(`/order/print-label?ids=${query}`);
+  };
 
   return (
     <div className="dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400">
@@ -290,7 +323,11 @@ export default function AllOrderPage() {
               ></div>
             </div>
           ) : (
-            <OrderCard orders={currentOrders} />
+            <OrderCard
+              orders={currentOrders}
+              selectedOrderIds={selectedOrderIds}
+              onToggleSelect={handleToggleSelect}
+            />
           )}
         </div>
         <OrderToolbar
@@ -298,7 +335,10 @@ export default function AllOrderPage() {
           totalItems={orders.length}
           itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
-        />
+          onSelectAll={handleSelectAll}
+          isAllSelected={isAllSelected}
+          selectedCount={selectedOrderIds.length}
+          onMassPrint={handleMassPrint} selectedOrderIds={[]}        />
       </div>
     </div>
   );

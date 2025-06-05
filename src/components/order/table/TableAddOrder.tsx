@@ -51,8 +51,13 @@ interface TableAddOrderProps {
       value: number;
       type: "nominal" | "percent";
     } | null;
+    productDiscount?: {
+      produkVariantId: string;
+      discountType: "nominal" | "percent";
+      discountAmount: number;
+    }[];
   }) => void;
-    initialData?: {
+  initialData?: {
     orders?: {
       productId: string;
       productVariantId: string;
@@ -80,7 +85,7 @@ export default function TableAddOrder({
   receiverDestinationId,
   onChange,
   initialData,
-  customerCategory
+  customerCategory,
 }: TableAddOrderProps) {
   const [selectedShippingCost, setSelectedShippingCost] = useState(0);
   const [selectedShippingName, setSelectedShippingName] = useState<string>("");
@@ -102,22 +107,20 @@ export default function TableAddOrder({
     }[]
   >([]);
 
-const isInitialized = useRef(false);
+  const isInitialized = useRef(false);
 
-useEffect(() => {
-  if (initialData && !isInitialized.current) {
-    if (initialData.orders) setOrders(initialData.orders);
-    if (initialData.items) setItems(initialData.items);
-    if (initialData.shipping) {
-      setSelectedShippingCost(initialData.shipping.cost);
-      setSelectedShippingName(initialData.shipping.name);
-      setSelectedShippingService(initialData.shipping.service);
+  useEffect(() => {
+    if (initialData && !isInitialized.current) {
+      if (initialData.orders) setOrders(initialData.orders);
+      if (initialData.items) setItems(initialData.items);
+      if (initialData.shipping) {
+        setSelectedShippingCost(initialData.shipping.cost);
+        setSelectedShippingName(initialData.shipping.name);
+        setSelectedShippingService(initialData.shipping.service);
+      }
+      isInitialized.current = true;
     }
-    isInitialized.current = true;
-  }
-}, [initialData]);
-
-
+  }, [initialData]);
 
   const handleAddProduct = (product: ProductItem | null) => {
     if (!product) return;
@@ -125,7 +128,10 @@ useEffect(() => {
     const productId = product.product.id;
     const productVariantId = product.variant[0]?.id ?? "";
     const name = product.product.name;
-    const harga = getHargaByCustomerCategory(product.price, customerCategory ?? "CUSTOMER");
+    const harga = getHargaByCustomerCategory(
+      product.price,
+      customerCategory ?? "CUSTOMER"
+    );
     const berat = product.product.weight;
 
     const existing = orders.find((o) => o.productId === productId);
@@ -212,7 +218,10 @@ useEffect(() => {
       const productId = product.product.id;
       const productVariantId = product.variant?.[0]?.id ?? "";
       const name = product.product.name;
-      const harga = getHargaByCustomerCategory(product.price, customerCategory ?? "CUSTOMER");
+      const harga = getHargaByCustomerCategory(
+        product.price,
+        customerCategory ?? "CUSTOMER"
+      );
       const berat = product.product.weight;
 
       const addedSet = (window as any).addedProducts as Set<string>;
@@ -368,28 +377,16 @@ useEffect(() => {
       return acc + val;
     }, 0);
 
-    // Diskon untuk tiap product
-    // let isRupiah = false;
-    // let totalDiscountValue = 0;
-
-    // orders.forEach((order) => {
-    //   if (!order.discount || !order.discountType) return;
-
-    //   if (order.discountType === "Rp") {
-    //     isRupiah = true;
-    //     totalDiscountValue += order.discount * order.qty;
-    //   } else if (!isRupiah && order.discountType === "%") {
-    //     totalDiscountValue += order.discount;
-    //   }
-    // });
-
-    // const discountOrder: { value: number; type: "nominal" | "percent" } | null =
-    //   totalDiscountValue
-    //     ? {
-    //         value: totalDiscountValue,
-    //         type: isRupiah ? "nominal" : "percent",
-    //       }
-    //     : null;
+    const productDiscount = orders
+      .filter(
+        (order) =>
+          order.discount !== undefined && order.discountType !== undefined
+      )
+      .map((order) => ({
+        produkVariantId: order.productVariantId,
+        discountType: order.discountType === "Rp" ? "nominal" as const : "percent" as const,
+        discountAmount: order.discount ?? 0,
+      }));
 
     onChange({
       orderProducts,
@@ -397,6 +394,7 @@ useEffect(() => {
       discountOrder,
       insuranceValue,
       ongkirDiscountValue,
+      productDiscount,
     });
   }, [
     items,
@@ -531,7 +529,11 @@ useEffect(() => {
               itemValue={totalSubtotal}
               shipperDestinationId={shipperDestinationId}
               receiverDestinationId={receiverDestinationId}
+              selectedShippingCost={selectedShippingCost}
+              selectedShippingName={selectedShippingName}
+              selectedShippingService={selectedShippingService}
             />
+
             <div>
               {items.map((item, index) => (
                 <div
