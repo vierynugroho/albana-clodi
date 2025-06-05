@@ -22,7 +22,7 @@ export const PreviewOutput: React.FC<PreviewOutputProps> = ({
         return <ShippingPreview features={selectedFeatures} data={data} />;
       case "invoice":
         return <InvoicePreview features={selectedFeatures} data={data} />;
-      case "thermal-56":
+      case "thermal-58":
         return <ThermalPreview features={selectedFeatures} data={data} />;
       default:
     }

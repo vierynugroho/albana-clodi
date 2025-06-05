@@ -4,24 +4,6 @@ import { TPreviewProps } from "../../../service/order/print/order.type";
 import { formatDateIndo } from "../../../utils/format-date.utils";
 import { formatPrice } from "../../../utils/format-price.utils";
 
-const rekening = [
-  {
-    bank: "BCA",
-    number: "2141341341431",
-    owner: "Nama Pemilik Rekening",
-  },
-  {
-    bank: "BNI",
-    number: "1234567890123",
-    owner: "John Doe",
-  },
-  {
-    bank: "Mandiri",
-    number: "9876543210987",
-    owner: "Jane Smith",
-  },
-];
-
 const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
 
@@ -99,7 +81,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
 
               const discountedPrice =
                 originalPrice - (data?.discount?.nominal ?? 0);
-              const qty = 1;
+              const qty = data?.total_items ?? 0;
               const subtotal = discountedPrice * qty;
 
               return (
@@ -126,7 +108,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
 
                   <td className="text-center justify-center flex items-center gap-4">
                     <span className="line-through text-gray-400">
-                      Rp {formatPrice(originalPrice)}
+                      Rp {formatPrice(data?.discount?.nominal ?? 0)}
                     </span>
                     <span className="text-red-500">
                       Rp {formatPrice(discountedPrice)}
@@ -185,10 +167,11 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
             </td>
             {has("Total Item") && (
               <td className="p-2 text-center">
-                {data?.products.reduce(
+                {data?.total_items}
+                {/* {data?.products.reduce(
                   (acc, p) => acc + p.product_variants.length,
                   0
-                )}
+                )} */}
               </td>
             )}
             <td colSpan={4} className="text-right px-2 text-bold">
@@ -201,15 +184,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
               <td className="p-2 grid grid-cols-3">
                 <div>Rekening Pembayaran</div>
                 <div className="col-span-2 flex flex-col gap-3">
-                  {rekening.map((rek, index) => (
-                    <div key={index} className="space-y-1">
-                      <div className="text-lg font-bold">{rek.bank}</div>
-                      <div>
-                        No Rekening <span>{rek.number}</span>
-                      </div>
-                      <div>A.n. {rek.owner}</div>
-                    </div>
-                  ))}
+                  <div className="text-lg font-bold">{data?.payment_method}</div>
                 </div>
               </td>
             </tr>

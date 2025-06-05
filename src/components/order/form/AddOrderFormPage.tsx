@@ -39,6 +39,13 @@ export default function AddOrderFomPage() {
   const [orderProducts, setOrderProducts] = useState<
     { productId: string; productVariantId: string; productQty: number }[]
   >([]);
+  const [productDiscount, setProductDiscount] = useState<
+    {
+      produkVariantId: string;
+      discountType: "nominal" | "percent";
+      discountAmount: number;
+    }[]
+  >([]);
   const [shippingCost, setShippingCost] = useState<{
     shippingService?: string;
     cost?: number;
@@ -111,6 +118,11 @@ export default function AddOrderFomPage() {
       discountOrder?: { value?: number; type?: "nominal" | "percent" } | null;
       insuranceValue?: number;
       ongkirDiscountValue?: number;
+       productDiscount?: {
+        produkVariantId: string;
+        discountType: "nominal" | "percent";
+        discountAmount: number;
+      }[];
     }) => {
       setOrderProducts(data.orderProducts);
       setShippingCost(
@@ -127,6 +139,11 @@ export default function AddOrderFomPage() {
       setDiscount(data.discountOrder ? data.discountOrder : {});
       setInsurance(data.insuranceValue);
       setOngkirDiscountValue(data.ongkirDiscountValue);
+       if (data.productDiscount) {
+        setProductDiscount(data.productDiscount);
+      } else {
+        setProductDiscount([]);
+      }
     },
     []
   );
@@ -191,6 +208,9 @@ export default function AddOrderFomPage() {
 
     if (discount?.value && discount.value > 0) {
       otherFees.discount = discount;
+    }
+    if (productDiscount.length > 0) {
+      otherFees.productDiscount = productDiscount;
     }
 
     const paymentMethodPayload: any = {

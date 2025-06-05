@@ -6,7 +6,10 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { ShippingCostParams, ShippingService } from "../../../service/order/create-order.type";
+import {
+  ShippingCostParams,
+  ShippingService,
+} from "../../../service/order/create-order.type";
 import { calculateShippingCost } from "../../../service/order/order.service";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
@@ -43,16 +46,26 @@ const manualServices = [
 ];
 
 interface TableCourierSelectionProps {
-  onSelectCourier: (shippingCost: number, shippingName: string, shippingService: string) => void;
+  onSelectCourier: (
+    shippingCost: number,
+    shippingName: string,
+    shippingService: string
+  ) => void;
   totalBerat: number;
   shipperDestinationId?: number;
   receiverDestinationId?: number;
   itemValue?: number;
   cod?: string;
+  selectedShippingCost?: number;
+  selectedShippingName?: string;
+  selectedShippingService?: string;
 }
 
 export default function TableCourierSelection({
   onSelectCourier,
+  selectedShippingCost,
+  selectedShippingName,
+  selectedShippingService,
   totalBerat,
   itemValue,
   shipperDestinationId,
@@ -65,8 +78,15 @@ export default function TableCourierSelection({
   );
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
+  console.log(
+    selectedShippingName,
+    selectedShippingCost,
+    selectedShippingService
+  );
+
   useEffect(() => {
     const fetchShippingData = async () => {
+      console.log(shipperDestinationId);
       if (totalBerat <= 0 || !shipperDestinationId || !receiverDestinationId) {
         setCourier(manualServices);
         return;
@@ -85,11 +105,17 @@ export default function TableCourierSelection({
           ...res.responseObject.calculate_cargo,
           ...res.responseObject.calculate_instant,
         ];
-        setCourier([...allServices, ...manualServices]);
+
+        if (allServices.length > 0) {
+          setCourier(allServices);
+        } else {
+          setCourier(manualServices);
+        }
       } catch (err) {
         console.log(
           err instanceof Error ? err : new Error("Gagal mengambil ongkos kirim")
         );
+        setCourier(manualServices);
       }
     };
 
@@ -136,12 +162,16 @@ export default function TableCourierSelection({
                   key={idx}
                   onClick={() => {
                     setSelectedIndex(idx);
-                    if (item.is_manual && item.shipping_name === "") {
+                    if (item.is_manual && item.shipping_name === "Ekspedisi") {
                       setSelectedManualIndex(idx);
                     } else {
                       setSelectedManualIndex(null);
                     }
-                    onSelectCourier(item.shipping_cost, item.shipping_name, item.service_name);
+                    onSelectCourier(
+                      item.shipping_cost,
+                      item.shipping_name,
+                      item.service_name
+                    );
                   }}
                   className={`cursor-pointer transition ${
                     selectedIndex === idx
@@ -196,10 +226,16 @@ export default function TableCourierSelection({
                 placeholder="Masukkan tarif"
                 value={courier[selectedManualIndex].shipping_cost / 100}
                 onChange={(e) => {
+                  let inputValue = Number(e.target.value);
+                  if (isNaN(inputValue) || inputValue < 0) inputValue = 0;
+
                   const updated = [...courier];
-                  const newShippingCost = Number(e.target.value) * 100;
-                  updated[selectedManualIndex].shipping_cost = newShippingCost;
+                  const newShippingCost = inputValue * 100;
+
+                  updated[selectedManualIndex].shipping_cost = newShippingCost; // <-- di sini!
                   setCourier(updated);
+
+                  // Update kurir yang dipilih ke parent
                   onSelectCourier(
                     newShippingCost,
                     updated[selectedManualIndex].shipping_name,
