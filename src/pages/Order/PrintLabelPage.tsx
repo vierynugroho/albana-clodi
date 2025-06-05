@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { FaBluetooth } from "react-icons/fa";
 import {
   SettingFeatureValue,
@@ -13,14 +13,35 @@ import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/ui/button/Button";
 import { PreviewOutput } from "../../components/print-label/preview/PreviewOutput";
 import { getReceiptByOrderId } from "../../service/order/print";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 
 export default function PrintSettingsPage() {
-  const { id: id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const idsParam = queryParams.get("ids"); // ambil string ids dari query
+
+  // pakai useMemo supaya ids array hanya dibuat ulang kalau idsParam berubah
+  const ids = useMemo(() => {
+    return idsParam ? idsParam.split(",").filter(Boolean) : [];
+  }, [idsParam]);
+
   const [selectedFeature, setselectedFeature] = useState("shipping");
-  const [selectedOption, setselectedOption] = useState<SettingOptionValue>({});
-  const [receiptData, setReceiptData] = useState<TReceiptData | null>(null);
+  const [selectedOption, setselectedOption] = useState<SettingOptionValue>({
+    shipping: [
+      "Detail Order",
+      "Ekspedisi",
+      "Item Produk",
+      "Catatan",
+      "No Resi",
+      "Shop Logo",
+      "Shop Info",
+    ],
+    invoice: ["Alamat Pengiriman", "Invoice Note"],
+    "thermal-58": ["Logo", "Nama Toko", "Nomor Resi"],
+  });
+
+  const [receiptDataList, setReceiptDataList] = useState<TReceiptData[]>([]);
   const componentRef = useRef<HTMLDivElement>(null);
 
   const handlePrintReact = useReactToPrint({
@@ -32,8 +53,8 @@ export default function PrintSettingsPage() {
     { id: "shipping", label: "Shipping Label" },
     { id: "invoice", label: "Invoice" },
     {
-      id: "thermal-56",
-      label: "Invoice Thermal (56mm)",
+      id: "thermal-58",
+      label: "Invoice Thermal (58mm)",
       icon: <FaBluetooth className="inline ml-1 text-sm" />,
     },
   ];
@@ -75,7 +96,7 @@ export default function PrintSettingsPage() {
       "Biaya Tambahan",
       "Rincian Biaya Cicilan",
     ],
-    "thermal-56": [
+    "thermal-58": [
       "Logo",
       "Invoice Note",
       "Nama Toko",
@@ -115,17 +136,23 @@ export default function PrintSettingsPage() {
   const selectedFeatures = selectedOption[selectedFeature] || [];
 
   useEffect(() => {
-    async function fetchReceipt() {
-      if (!id) return;
-      const response = await getReceiptByOrderId(id);
-      if (response.success) {
-        setReceiptData(response.responseObject);
-      }
+    async function fetchReceipts() {
+      if (ids.length === 0) return;
+
+      // ambil semua receipts satu per satu secara paralel
+      const promises = ids.map((id) => getReceiptByOrderId(id));
+      const results = await Promise.all(promises);
+
+      // filter hasil yang sukses dan ambil responseObject-nya
+      const successfulReceipts = results
+        .filter((res) => res.success && res.responseObject)
+        .map((res) => res.responseObject);
+
+      setReceiptDataList(successfulReceipts);
     }
 
-    fetchReceipt();
-  }, [id]);
-
+    fetchReceipts();
+  }, [ids]);
 
   return (
     <div className="p-5 md:p-10 space-y-5">
@@ -156,13 +183,17 @@ export default function PrintSettingsPage() {
         />
       </div>
 
-      <div id="print-area" ref={componentRef} >
-        <PreviewOutput
-          selectedFeature={selectedFeature}
-          selectedFeatures={selectedFeatures}
-          data={receiptData ?? undefined}
-          className={selectedFeature === "thermal-56" ? "inline-block" : ""}
-        />
+      <div id="print-area" className="space-y-5" ref={componentRef}>
+        {receiptDataList.length === 0 && <p>Tidak ada data receipt.</p>}
+        {receiptDataList.map((data, idx) => (
+          <PreviewOutput
+            key={idx}
+            selectedFeature={selectedFeature}
+            selectedFeatures={selectedOption[selectedFeature] || []}
+            data={data}
+            className={selectedFeature === "thermal-58" ? "flex flex-col w-fit" : ""}
+          />
+        ))}
       </div>
     </div>
   );

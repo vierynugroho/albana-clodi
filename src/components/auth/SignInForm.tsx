@@ -18,7 +18,7 @@ export default function SignInForm() {
   const [redirect, setRedirect] = useState(false);
 
   if (redirect) {
-    return <Navigate to="/" replace />;
+    return (window.location.href = "/");
   }
 
   if (authUser) {

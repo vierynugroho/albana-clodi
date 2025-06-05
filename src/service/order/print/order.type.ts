@@ -8,8 +8,8 @@ export type SettingOptionValue = Record<string, string[]>;
 export type SettingFeatureValue = Record<string, string[]>;
 
 export interface TPreviewProps {
-    features: string[]
-    data?: TReceiptData
+  features: string[];
+  data?: TReceiptData;
 }
 
 // Receipt Response Type
@@ -21,6 +21,7 @@ export interface TReceiptResponse {
 }
 
 export interface TReceiptData {
+  id?: string;
   order_id: string;
   order_code: string;
   admin_name: string;

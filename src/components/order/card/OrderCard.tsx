@@ -7,15 +7,27 @@ import { LuPackageCheck } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { OrderItem } from "../../../service/order";
 import { cancelOrder } from "../../../service/order/order.service";
-import { IoClose } from "react-icons/io5";
+import {
+  IoBagHandleOutline,
+  IoClose,
+} from "react-icons/io5";
 import toast from "react-hot-toast";
+import { MdDeleteForever } from "react-icons/md";
 
 type Props = {
   orders: OrderItem[];
   onOrderCancelled?: () => void;
+  selectedOrderIds?: string[];
+  onToggleSelect?: (orderId: string) => void;
+  variant?: "default" | "cancel";
 };
 
-export default function OrderCard({ orders }: Props) {
+export default function OrderCard({
+  orders,
+  selectedOrderIds,
+  onToggleSelect,
+  variant = "default",
+}: Props) {
   const [showModal, setShowModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
@@ -263,44 +275,70 @@ export default function OrderCard({ orders }: Props) {
           <hr className="my-6 border-gray-300 dark:border-gray-500" />
 
           {/* Actions */}
-          <div className="mt-6 flex justify-between gap-2">
-            <div className="flex gap-2">
-              {/* <input
-                type="checkbox"
-                id={`check-${order.id}`}
-                className="w-6 h-10 mr-2 border-blue-600 rounded-full"
-              /> */}
-              <Link to={`/order/print-label/${order.id}`}>
-                <button className="flex items-center gap-2 border border-blue-600 dark:hover:bg-white/[0.03] px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100 text-sm">
-                  <FaPrint /> Print
-                </button>
-              </Link>
-            </div>
+          {variant === "default" ? (
+            <div className="mt-6 flex justify-between gap-2">
+              <div className="flex gap-2">
+                <input
+                  type="checkbox"
+                  checked={(selectedOrderIds ?? []).includes(order.id)}
+                  onChange={() => onToggleSelect?.(order.id)}
+                  className="w-5 h-5"
+                />
+                <Link to={`/order/print-label/${order.id}`}>
+                  <button className="flex items-center gap-2 border border-blue-600 dark:hover:bg-white/[0.03] px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100 text-sm">
+                    <FaPrint /> Print
+                  </button>
+                </Link>
+              </div>
 
-            <div className="flex gap-2">
-              {/* <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+              <div className="flex gap-2">
+                {/* <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
                 Update Resi
               </button>
               <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700">
                 Tandai diterima
               </button> */}
-              <Link to={`/order/edit_order/${order.id}`}>
-                <button className="flex items-center w-full gap-2 border border-blue-600 px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100  dark:hover:bg-white/[0.03] text-sm">
-                  <FaEdit /> Edit Order
+                <Link to={`/order/edit_order/${order.id}`}>
+                  <button className="flex items-center w-full gap-2 border border-blue-600 px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100  dark:hover:bg-white/[0.03] text-sm">
+                    <FaEdit /> Edit Order
+                  </button>
+                </Link>
+                <button
+                  onClick={() => handleCancelOrder(order.id)}
+                  className="flex items-center border-red-500 border gap-2 px-4 py-2 font-medium text-red-500 rounded-lg cursor-pointer group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-300"
+                >
+                  <IoClose size={20} />
+                  Cancel Order
                 </button>
-              </Link>
-              <button
-                onClick={() => handleCancelOrder(order.id)}
-                className="flex items-center border-red-500 border gap-2 px-4 py-2 font-medium text-red-500 rounded-lg cursor-pointer group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-300"
-              >
-                <IoClose size={20} />
-                Cancel Order
-              </button>
-              <div className="flex gap-2">
-                {/* <DropdownCancelOrder orderId={order.id} /> */}
+                <div className="flex gap-2">
+                  {/* <DropdownCancelOrder orderId={order.id} /> */}
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="mt-6 flex justify-end gap-2">
+              <div className="flex gap-2">
+                <button className="flex items-center gap-2 text-red-600 border border-red-600 px-4 py-3 rounded-lg text-sm">
+                  <MdDeleteForever />
+                  Hapus Order
+                </button>
+                {/* <button
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center gap-2 text-black bg-gray-100 px-4 py-3 border border-black rounded-lg text-sm"
+                >
+                  <IoDocumentTextOutline />
+                  Payment Detail
+                </button> */}
+                <div className="flex gap-2">
+                  <Link to="/order">
+                    <button className="flex items-center bg-green-600 border-green-600 gap-2 border px-4 py-3 rounded-lg text-white  text-sm">
+                      <IoBagHandleOutline /> Kembalikan Orderan
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ))}
     </>

@@ -102,21 +102,23 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
               </div>
             )}
 
-            {(has("No Resi") || has("Barcode No Resi")) && (
-              <div className="border font-semibold border-black p-3 w-fit">
-                {has("No Resi") && (
-                  <div>NO RESI : {data?.tracking_number ?? "-"}</div>
-                )}
-                {has("Barcode No Resi") && (
-                  <Barcode
-                    value={data?.tracking_number ?? ""}
-                    height={50}
-                    width={2}
-                    displayValue={false}
-                  />
-                )}
-              </div>
-            )}
+            {(has("No Resi") || has("Barcode No Resi")) &&
+              data?.tracking_number &&
+              data.tracking_number.toLowerCase() !== "tidak ada nomor resi" && (
+                <div className="border font-semibold border-black p-3 w-fit">
+                  {has("No Resi") && (
+                    <div>NO RESI : {data.tracking_number}</div>
+                  )}
+                  {has("Barcode No Resi") && (
+                    <Barcode
+                      value={data.tracking_number}
+                      height={50}
+                      width={2}
+                      displayValue={false}
+                    />
+                  )}
+                </div>
+              )}
           </div>
         )}
       </div>
