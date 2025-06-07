@@ -67,7 +67,7 @@ export default function VarianProduk({
       return updated;
     });
   }
-  console.log(variant.imageUrl);
+
   return (
     <div className="relative border rounded-2xl p-4 shadow-md mb-4 flex justify-evenly gap-6 whitespace-nowrap items-start">
       <DropzoneComponent

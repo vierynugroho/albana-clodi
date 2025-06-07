@@ -25,6 +25,8 @@ import { LuWeight } from "react-icons/lu";
 
 const toastStyle = { marginTop: "10vh", zIndex: 100000 };
 
+const existingSkus = new Set<string>();
+
 const errorMessages: Record<string, string> = {
   "Insufficient stock": "Admin Tidak Bisa Mengurangi Stok",
   "Product already exists": "Pastikan SKU produk berbeda",
@@ -65,6 +67,45 @@ const options = [
   { value: "BARANG_PRE_ORDER", label: "Barang Pre-Order" },
 ];
 
+function generateUniqueSKU(
+  baseName: string,
+  count: number,
+  existingSkus: Set<string>
+): string[] {
+  const prefix = baseName
+    .trim()
+    .split(/\s+/) // Pisah berdasarkan spasi
+    .map((word) => word[0]) // Ambil huruf pertama tiap kata
+    .join("") // Gabungkan jadi string
+    .toUpperCase();
+  const skus: string[] = [];
+  let index = 1;
+
+  while (skus.length < count) {
+    const num = String(index).padStart(3, "0");
+    const sku = `${prefix}${num}`;
+    if (!existingSkus.has(sku)) {
+      skus.push(sku);
+      existingSkus.add(sku);
+    }
+    index++;
+    if (index > 999) throw new Error("Exceeded SKU limit");
+  }
+  return skus;
+}
+
+function assignSKUsToVariants(
+  productName: string,
+  variants: Omit<ProductVariant, "sku">[]
+): ProductVariant[] {
+  const newSkus = generateUniqueSKU(productName, variants.length, existingSkus);
+
+  return variants.map((variant, idx) => ({
+    ...variant,
+    sku: newSkus[idx],
+  }));
+}
+
 export default function FormProduk() {
   const categoryProducts = useRef<CategoriesProduct[]>([]);
   const { id } = useParams(); //ID Edit Product
@@ -85,6 +126,11 @@ export default function FormProduk() {
   const [diskonId, setDiskonId] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleGenerateAllSKUs = () => {
+    const newVariants = assignSKUsToVariants(productName, varian);
+    setVarian(newVariants);
+  };
 
   const handleRadioChange = (value: string) => {
     setSelectedValue(value);
@@ -261,7 +307,12 @@ export default function FormProduk() {
                   type="text"
                   placeholder="Baju Anak"
                   value={productName}
-                  onChange={(e) => setProductName(e.target.value)}
+                  onChange={(e) => {
+                    setProductName(e.target.value);
+                    if (!id) {
+                      handleGenerateAllSKUs();
+                    }
+                  }}
                   error={!productName}
                 />
                 {!productName && (

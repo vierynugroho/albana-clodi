@@ -297,6 +297,7 @@ export default function FormCustomer() {
                 </p>
               )}
             </div>
+
             <div className="flex-1/3">
               <Label htmlFor="inputTwo">
                 Nama Lengkap <span className="text-red-500">*</span>{" "}
@@ -316,7 +317,9 @@ export default function FormCustomer() {
             </div>
 
             <div className="flex-1/3">
-              <Label>Provinsi</Label>
+              <Label>
+                Provinsi <span className="text-red-500">*</span>
+              </Label>
               <SearchableDropdown
                 options={provinces.map((p) => ({
                   id: Number(p.id),
@@ -336,10 +339,17 @@ export default function FormCustomer() {
                   }));
                 }}
               />
+              {!formData.provinceName && (
+                <p className="text-red-500 text-sm mt-1">
+                  Provinsi tidak boleh kosong.
+                </p>
+              )}
             </div>
 
             <div className="flex-1/3">
-              <Label>Kota/Kabupaten</Label>
+              <Label>
+                Kota/Kabupaten <span className="text-red-500">*</span>
+              </Label>
               <SearchableDropdown
                 options={cities.map((c) => ({
                   id: Number(c.id),
@@ -359,7 +369,9 @@ export default function FormCustomer() {
               />
             </div>
             <div className="flex-1/3">
-              <Label>Kecamatan</Label>
+              <Label>
+                Kecamatan <span className="text-red-500">*</span>{" "}
+              </Label>
               <SearchableDropdown
                 options={districts.map((d) => ({
                   id: Number(d.id),
@@ -413,7 +425,9 @@ export default function FormCustomer() {
               />
             </div>
             <div className="flex-1/3">
-              <Label>Email</Label>
+              <Label>
+                Email <span className="text-red-500">*</span>{" "}
+              </Label>
               <Input
                 type="text"
                 id="inputTwo"
@@ -423,10 +437,17 @@ export default function FormCustomer() {
                 onChange={(e) => handleChange("email", e.target.value)}
                 className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
               />
+              {!formData.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  Email tidak boleh kosong.
+                </p>
+              )}
             </div>
 
             <div className="w-full">
-              <Label>No Telepon</Label>
+              <Label>
+                No Telepon <span className="text-red-500">*</span>
+              </Label>
               <Input
                 value={formData.phoneNumber}
                 type="number"
@@ -436,10 +457,17 @@ export default function FormCustomer() {
                 onChange={(e) => handleChange("phoneNumber", e.target.value)}
                 className="appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none border p-2 rounded"
               />
+              {!formData.phoneNumber && (
+                <p className="text-red-500 text-sm mt-1">
+                  No Telepon tidak boleh kosong.
+                </p>
+              )}
             </div>
 
             <div className="flex-auto">
-              <Label>Alamat Lengkap</Label>
+              <Label>
+                Alamat Lengkap <span className="text-red-500">*</span>{" "}
+              </Label>
               <textarea
                 value={formData.address}
                 id="addres"
@@ -447,6 +475,11 @@ export default function FormCustomer() {
                 onChange={(e) => handleChange("address", e.target.value)}
                 className="w-full h-32 mt-2 p-4 rounded-xl border border-gray-300 focus:outline-none  dark:bg-dark-900 dark:text-white dark:border-gray-700 resize-none"
               />
+              {!formData.address && (
+                <p className="text-red-500 text-sm mt-1">
+                  Alamat Lengkap tidak boleh kosong.
+                </p>
+              )}
             </div>
 
             <Button size="md" className="w-full" onClick={handleSubmit}>
@@ -454,7 +487,7 @@ export default function FormCustomer() {
                 ? "Loading.."
                 : id
                 ? "Edit Customer"
-                : "Create Customer"}
+                : "Buat Customer"}
             </Button>
           </div>
         </ComponentCard>
