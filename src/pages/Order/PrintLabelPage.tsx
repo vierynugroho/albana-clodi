@@ -13,13 +13,14 @@ import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/ui/button/Button";
 import { PreviewOutput } from "../../components/print-label/preview/PreviewOutput";
 import { getReceiptByOrderId } from "../../service/order/print";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 
 export default function PrintSettingsPage() {
   const location = useLocation();
+  const { id: routeId } = useParams();
   const queryParams = new URLSearchParams(location.search);
-  const idsParam = queryParams.get("ids"); // ambil string ids dari query
+  const idsParam = queryParams.get("id") || routeId; // ambil string ids dari query
 
   // pakai useMemo supaya ids array hanya dibuat ulang kalau idsParam berubah
   const ids = useMemo(() => {
@@ -191,7 +192,9 @@ export default function PrintSettingsPage() {
             selectedFeature={selectedFeature}
             selectedFeatures={selectedOption[selectedFeature] || []}
             data={data}
-            className={selectedFeature === "thermal-58" ? "flex flex-col w-fit" : ""}
+            className={
+              selectedFeature === "thermal-58" ? "flex flex-col w-fit" : ""
+            }
           />
         ))}
       </div>

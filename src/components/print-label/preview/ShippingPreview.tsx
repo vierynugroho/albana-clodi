@@ -7,7 +7,7 @@ import { TPreviewProps } from "../../../service/order/print/order.type";
 
 const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
-
+  console.log(data);
   return (
     <div className="grid grid-cols-12 gap-4 gap-x-8 p-5 text-base">
       {/* Logo dan Shop Info */}
