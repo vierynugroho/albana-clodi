@@ -12,6 +12,8 @@ import {
   SalesChannelResponse,
   ShippingCostParams,
   ShippingCostResponse,
+  Shop,
+  ShopResponse,
   TCustomer,
   TDeliveryPlace,
 } from "./create-order.type";
@@ -255,3 +257,12 @@ export async function exportOrdersToExcel(): Promise<void> {
     throw error;
   }
 }
+
+export const getShop = async (): Promise<Shop> => {
+  const response = await axios.get<ShopResponse>(`${apiUrl}/shop`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data.responseObject;
+};

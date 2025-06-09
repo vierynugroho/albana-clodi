@@ -9,10 +9,18 @@ interface DropdownCreateOrderProps {
     harga: number;
     qty: number;
     subtotal: number;
+    discount?: number;
+    discountType?: "Rp" | "%";
+    finalPrice?: number;
   };
   onDelete: (id: string) => void;
   onUpdateQuantity: (id: string, newQty: number) => void;
-  onApplyDiscount?: (id: string, finalPrice: number, discount: number, type: "Rp" | "%") => void;
+  onApplyDiscount?: (
+    id: string,
+    finalPrice: number,
+    discount: number,
+    type: "Rp" | "%"
+  ) => void;
 }
 
 export default function DropdownCreateOrder({
@@ -26,6 +34,15 @@ export default function DropdownCreateOrder({
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [qty, setQty] = useState(order.qty);
   const [isOpenDiscount, setOpenDiscount] = useState(false);
+  const [discountValue, setDiscountValue] = useState<number>(0);
+  const [discountType, setDiscountType] = useState<"Rp" | "%">("Rp");
+
+  useEffect(() => {
+    if (order) {
+      setDiscountValue(order.discount ?? 0);
+      setDiscountType(order.discountType ?? "Rp");
+    }
+  }, [order]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -94,11 +111,20 @@ export default function DropdownCreateOrder({
         <ProductDiscountModal
           productName={order.name}
           initialPrice={order.harga}
+          initialDiscountValue={discountValue}
+          initialDiscountType={discountType}
           onClose={() => setOpenDiscount(false)}
           onSave={(finalPrice, discountValue, discountType) => {
             if (onApplyDiscount) {
-              onApplyDiscount(order.productId, finalPrice, discountValue, discountType);
+              onApplyDiscount(
+                order.productId,
+                finalPrice,
+                discountValue,
+                discountType
+              );
             }
+            setDiscountValue(discountValue);
+            setDiscountType(discountType);
             setOpenDiscount(false);
           }}
         />
