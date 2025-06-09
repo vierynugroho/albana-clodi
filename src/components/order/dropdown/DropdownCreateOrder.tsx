@@ -9,6 +9,9 @@ interface DropdownCreateOrderProps {
     harga: number;
     qty: number;
     subtotal: number;
+    discount?: number;
+    discountType?: "Rp" | "%";
+    finalPrice?: number;
   };
   onDelete: (id: string) => void;
   onUpdateQuantity: (id: string, newQty: number) => void;
@@ -33,6 +36,13 @@ export default function DropdownCreateOrder({
   const [isOpenDiscount, setOpenDiscount] = useState(false);
   const [discountValue, setDiscountValue] = useState<number>(0);
   const [discountType, setDiscountType] = useState<"Rp" | "%">("Rp");
+
+  useEffect(() => {
+    if (order) {
+      setDiscountValue(order.discount ?? 0);
+      setDiscountType(order.discountType ?? "Rp");
+    }
+  }, [order]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import Button from "../../produk/button/Button";
+import { formatPrice } from "../../../utils/format-price.utils";
 
 type DiscountType = "Rp" | "%";
 
@@ -70,7 +71,7 @@ export default function ProductDiscountModal({
             <Label>Harga Awal</Label>
             <Input
               type="text"
-              value={initialPrice.toLocaleString("id-ID")}
+              value={formatPrice(initialPrice)}
               disabled
               className="w-full border rounded px-4 py-2 bg-gray-100 text-gray-700"
             />
@@ -104,7 +105,7 @@ export default function ProductDiscountModal({
           <div>
             <Input
               type="text"
-              value={finalPrice.toLocaleString("id-ID")}
+              value={formatPrice(finalPrice)}
               disabled
               className="w-full border rounded px-4 py-2 bg-gray-100 text-gray-700"
             />
