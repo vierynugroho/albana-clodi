@@ -1,13 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../../../public/images/logo/albana-clodi-logo.svg";
 import Fragile from "../../../../public/images/icons/fragile.png";
 import Barcode from "react-barcode";
 import OrderLabel from "../ListOrderBarcode";
 import { TPreviewProps } from "../../../service/order/print/order.type";
+import { getShop } from "../../../service/order/order.service";
+import { Shop } from "../../../service/order/create-order.type";
 
 const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
+  const [shop, setShop] = useState<Shop>();
 
+  useEffect(() => {
+    async function fetchShop() {
+      try {
+        const response = await getShop();
+        setShop(response);
+      } catch (err) {
+        console.error("Failed to fetch shop", err);
+      }
+    }
+
+    fetchShop();
+  }, []);
   return (
     <div className="grid grid-cols-12 gap-4 gap-x-8 p-5 text-base">
       {/* Logo dan Shop Info */}
@@ -18,11 +33,8 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
           )}
           {has("Shop Info") && (
             <>
-              <div>ALBANA GROSIR</div>
-              <div>
-                Mitra distributor lebih dari 200 brand. Menyediakan family
-                fashion, mukena, tas, sandal, sepatu, perlengkapan bayi, dll.
-              </div>
+              <div className="uppercase">{shop?.name}</div>
+              <div>{shop?.description}</div>
             </>
           )}
         </div>
@@ -43,21 +55,28 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
         <div className="space-y-5">
           <div className="space-y-2">
             <div className="font-bold">Pengirim</div>
-            <div>ALBANA GROSIR</div>
-            <div>085648487917</div>
+            <div>{shop?.name}</div>
+            <div>{shop?.phoneNumber}</div>
           </div>
 
           {has("Warehouse") && (
             <div className="space-y-2">
               <div className="font-bold">Warehouse</div>
-              <div>{data?.delivery_place ?? ""}</div>
+              <div>{data?.delivery_place ?? "-"}</div>
             </div>
           )}
 
           {has("Nama Admin") && (
             <div className="space-y-2">
               <div className="font-bold">Admin</div>
-              <div>{data?.admin_name ?? ""}</div>
+              <div>{data?.admin_name ?? "-"}</div>
+            </div>
+          )}
+
+          {has("Catatan") && (
+            <div className="space-y-2">
+              <div className="font-bold">Catatan</div>
+              <div>{data?.notes ?? "-"}</div>
             </div>
           )}
         </div>
@@ -102,14 +121,26 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
               </div>
             )}
 
-            {(has("No Resi") || has("Barcode No Resi")) &&
-              data?.tracking_number &&
-              data.tracking_number.toLowerCase() !== "tidak ada nomor resi" && (
-                <div className="border font-semibold border-black p-3 w-fit">
-                  {has("No Resi") && (
-                    <div>NO RESI : {data.tracking_number}</div>
-                  )}
-                  {has("Barcode No Resi") && (
+            {(has("No Resi") ||
+              (has("Barcode No Resi") &&
+                data?.tracking_number &&
+                data.tracking_number.toLowerCase() !==
+                  "tidak ada nomor resi")) && (
+              <div className="border font-semibold border-black p-3 w-fit">
+                {has("No Resi") && (
+                  <div>
+                    NO RESI :{" "}
+                    {data?.tracking_number &&
+                    data.tracking_number.toLowerCase() !==
+                      "tidak ada nomor resi"
+                      ? data.tracking_number
+                      : "-"}
+                  </div>
+                )}
+                {has("Barcode No Resi") &&
+                  data?.tracking_number &&
+                  data.tracking_number.toLowerCase() !==
+                    "tidak ada nomor resi" && (
                     <Barcode
                       value={data.tracking_number}
                       height={50}
@@ -117,8 +148,8 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
                       displayValue={false}
                     />
                   )}
-                </div>
-              )}
+              </div>
+            )}
           </div>
         )}
       </div>

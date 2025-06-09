@@ -116,6 +116,7 @@ export interface OtherFees {
   discount: Discount;
   insurance: number;
   shippingCost: ShippingCost;
+  productDiscount: ProductDiscount[];
 }
 
 export interface Discount {
@@ -341,5 +342,26 @@ export interface SalesChannelResponse {
   success: boolean;
   message: string;
   responseObject: SalesChannel[];
+  statusCode: number;
+}
+
+export interface Shop {
+  id: string;
+  name: string;
+  description: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  owner: string;
+  logo: string | null;
+  banner: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ShopResponse {
+  success: boolean;
+  message: string;
+  responseObject: Shop;
   statusCode: number;
 }

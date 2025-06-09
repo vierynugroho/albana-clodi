@@ -64,6 +64,13 @@ export default function EditOrderFomPage() {
   const [orderProducts, setOrderProducts] = useState<
     { productId: string; productVariantId: string; productQty: number }[]
   >([]);
+    const [productDiscount, setProductDiscount] = useState<
+      {
+        produkVariantId: string;
+        discountType: "nominal" | "percent";
+        discountAmount: number;
+      }[]
+    >([]);
   const [shippingCost, setShippingCost] = useState<{
     shippingService?: string;
     cost?: number;
@@ -109,7 +116,7 @@ export default function EditOrderFomPage() {
 
   const paymentMethodOption = selectedPaymentMethod
     ? {
-        label: `${selectedPaymentMethod.bankName} - ${selectedPaymentMethod.bankBranch} ( ${selectedPaymentMethod.accountNumber} )`,
+        label: `${selectedPaymentMethod.bankName}`,
         value: selectedPaymentMethod.id,
         payment: selectedPaymentMethod,
       }
@@ -131,6 +138,11 @@ export default function EditOrderFomPage() {
       discountOrder?: { value?: number; type?: "nominal" | "percent" } | null;
       insuranceValue?: number;
       ongkirDiscountValue?: number;
+      productDiscount?: {
+        produkVariantId: string;
+        discountType: "nominal" | "percent";
+        discountAmount: number;
+      }[];
     }) => {
       setOrderProducts(data.orderProducts);
       setShippingCost(
@@ -147,6 +159,11 @@ export default function EditOrderFomPage() {
       setDiscount(data.discountOrder ? data.discountOrder : {});
       setInsurance(data.insuranceValue);
       setOngkirDiscountValue(data.ongkirDiscountValue);
+      if (data.productDiscount) {
+        setProductDiscount(data.productDiscount);
+      } else {
+        setProductDiscount([]);
+      }
     },
     []
   );
@@ -172,7 +189,6 @@ export default function EditOrderFomPage() {
             : order.OrderDetail.paymentDate
             ? new Date(order.OrderDetail.paymentDate)
             : null
-         
         );
         setNominalPayment(
           order.Installment &&
@@ -185,27 +201,46 @@ export default function EditOrderFomPage() {
         setSelectedPaymentMethod(order.OrderDetail.PaymentMethod);
         /// Mapping untuk TableAddOrder
         const categoryCustomer = order.OrdererCustomer.category;
+        const productDiscounts =
+          order.OrderDetail.otherFees.productDiscount || [];
         const mappedInitialData = {
           orders: order.OrderDetail.OrderProducts.map((orderProduct) => {
             const variant = orderProduct.Product.productVariants[0];
             const prices = variant?.productPrices;
-
             const harga = getHargaByCustomerCategory(
               prices?.[0],
               categoryCustomer
             );
 
+            const discountItem = productDiscounts.find(
+              (discount) => discount.produkVariantId === variant?.id
+            );
+
+            const hargaSetelahDiskon = discountItem
+              ? discountItem.discountType === "nominal"
+                ? harga - discountItem.discountAmount
+                : harga - harga * (discountItem.discountAmount / 100)
+              : harga;
+
             return {
               productId: orderProduct.productId,
               productVariantId: variant?.id || "",
               name: orderProduct.Product.name,
-              harga,
               qty: orderProduct.productQty,
-              subtotal: harga * orderProduct.productQty,
               subBerat:
                 (orderProduct.Product.weight || 0) * orderProduct.productQty,
+              discount: discountItem ? discountItem.discountAmount : undefined,
+              discountType: discountItem
+                ? discountItem.discountType === "nominal"
+                  ? "Rp"
+                  : "%"
+                : undefined,
+              harga: harga,
+              finalPrice: hargaSetelahDiskon,
+              subtotal: hargaSetelahDiskon * orderProduct.productQty,
             };
           }),
+
           items: [
             ...(order.OrderDetail.otherFees.discount?.value
               ? [
@@ -318,6 +353,9 @@ export default function EditOrderFomPage() {
     }
     if (discount?.value && discount.value > 0) {
       otherFees.discount = discount;
+    }
+    if (productDiscount.length > 0) {
+      otherFees.productDiscount = productDiscount;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const paymentMethodPayload: any = {
@@ -448,7 +486,7 @@ export default function EditOrderFomPage() {
                     return options.map((opt) => ({
                       ...opt,
                       place: opt.channel,
-                      channel: undefined, 
+                      channel: undefined,
                     }));
                   }}
                   value={salesChannelOption}
