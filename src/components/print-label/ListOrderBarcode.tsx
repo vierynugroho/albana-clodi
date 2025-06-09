@@ -1,4 +1,4 @@
-import Barcode from "react-barcode";
+// import Barcode from "react-barcode";
 import { TProduct } from "../../service/order/print/order.type";
 import { formatDateIndo } from "../../utils/format-date.utils";
 
@@ -32,6 +32,7 @@ const OrderLabel: React.FC<OrderLabelProps> = ({
           qty: 1,
           price,
           barcode: variant.barcode ?? "Tidak ada barcode",
+          sku: item.product_variants[0].sku
         };
       }) ?? []
   );
@@ -45,7 +46,7 @@ const OrderLabel: React.FC<OrderLabelProps> = ({
         {has("Tanggal Order") && <span> ( {formatDateIndo(date)} ) </span>}
       </div>
       {variantItems.map((item, index) => (
-        <div key={index} style={{ marginBottom: "10px" }}>
+        <div key={index} className="mb-[10px] space-y-2">
           {has("Item Produk") && (
             <div className="flex justify-between">
               <span>- {item.name}</span>
@@ -56,15 +57,16 @@ const OrderLabel: React.FC<OrderLabelProps> = ({
             (!item.barcode || item.barcode === "Tidak ada barcode" ? (
               <div className="text-center">-</div>
             ) : (
-              <Barcode
-                value={item.barcode}
-                width={1.5}
-                height={30}
-                fontSize={12}
-                displayValue={has("Barcode SKU Text")}
-              />
+              <img src={item.barcode} alt={item.name} />
+              // <Barcode
+              //   value={item.barcode}
+              //   width={1.5}
+              //   height={30}
+              //   fontSize={12}
+              //   displayValue={has("Barcode SKU Text")}
+              // />
             ))}
-          {has("Barcode SKU Text") && <div>{item.barcode}</div>}
+          {has("Barcode SKU Text") && <div>{item.sku}</div>}
         </div>
       ))}
       {has("Total Item") && (

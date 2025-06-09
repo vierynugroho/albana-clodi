@@ -184,7 +184,7 @@ export default function PrintSettingsPage() {
       </div>
 
       <div id="print-area" className="space-y-5" ref={componentRef}>
-        {receiptDataList.length === 0 && <p>Tidak ada data receipt.</p>}
+        {/* {receiptDataList.length === 0 && <p>Tidak ada data receipt.</p>} */}
         {receiptDataList.map((data, idx) => (
           <PreviewOutput
             key={idx}

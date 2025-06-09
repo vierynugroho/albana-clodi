@@ -1,29 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../../../public/images/logo/albana-clodi-logo.svg";
-import { TPreviewProps, TProduct } from "../../../service/order/print/order.type";
+import {
+  TPreviewProps,
+  TProduct,
+} from "../../../service/order/print/order.type";
 import { formatDateTimeIndo } from "../../../utils/format-date.utils";
 import { formatDate } from "@fullcalendar/core/index.js";
 import { formatPrice } from "../../../utils/format-price.utils";
+import { Shop } from "../../../service/order/create-order.type";
+import { getShop } from "../../../service/order/order.service";
 
 const ThermalPreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
 
+  const [shop, setShop] = useState<Shop>();
+  useEffect(() => {
+    async function fetchShop() {
+      try {
+        const response = await getShop();
+        setShop(response);
+      } catch (err) {
+        console.error("Failed to fetch shop", err);
+      }
+    }
+
+    fetchShop();
+  }, []);
   return (
     <div className="font-mono px-1 w-64 py-5 text-xs space-y-3">
       <div className="px-4 flex flex-col justify-center items-center text-center space-y-2">
         {has("Logo") && (
           <img src={Logo} alt="" className="w-2/3 filter grayscale" />
         )}
-        {has("Nama Toko") && <div>ALBANA GROSIR</div>}
+        {has("Nama Toko") && <div className="uppercase">{shop?.name}</div>}
         {has("Keterangan Toko") && (
           <div>
-            Mitra distributor lebih dari 200 brand. Menyediakan family fashion,
-            mukena, tas, sandal, sepatu, perlengkapan bayi, dll.
+            {shop?.description}
           </div>
         )}
         {has("Alamat Toko") && (
           <div>
-            Perum BTN Asabri Gedog Blok H-19 Kec.sananwetan Kota Blitar 66132
+            {shop?.address}
           </div>
         )}
       </div>
@@ -159,8 +176,14 @@ const ThermalPreview: React.FC<TPreviewProps> = ({ features, data }) => {
           <div className="border-t border-dashed border-black my-2" />
         </>
       )}
+      {has("Catatan") && (
+        <>
+          <div>Catatan: {data?.notes}</div>
+          <div className="border-t border-dashed border-black my-2" />
+        </>
+      )}
       <div className="text-center">
-        Terimakasih <br /> telah belanja di <br /> ALBANA GROSIR
+        Terimakasih <br /> telah belanja di <br /> <span className="uppercase">{shop?.name}</span>
       </div>
     </div>
   );

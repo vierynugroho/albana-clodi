@@ -343,3 +343,24 @@ export interface SalesChannelResponse {
   responseObject: SalesChannel[];
   statusCode: number;
 }
+
+export interface Shop {
+  id: string;
+  name: string;
+  description: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  owner: string;
+  logo: string | null;
+  banner: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ShopResponse {
+  success: boolean;
+  message: string;
+  responseObject: Shop;
+  statusCode: number;
+}

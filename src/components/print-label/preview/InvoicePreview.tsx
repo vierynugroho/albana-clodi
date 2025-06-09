@@ -1,22 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../../../public/images/logo/albana-clodi-logo.svg";
 import { TPreviewProps } from "../../../service/order/print/order.type";
 import { formatDateIndo } from "../../../utils/format-date.utils";
 import { formatPrice } from "../../../utils/format-price.utils";
+import { getShop } from "../../../service/order/order.service";
+import { Shop } from "../../../service/order/create-order.type";
 
 const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
+  const [shop, setShop] = useState<Shop>();
 
+   useEffect(() => {
+      async function fetchShop() {
+        try {
+          const response = await getShop();
+          setShop(response);
+        } catch (err) {
+          console.error("Failed to fetch shop", err);
+        }
+      }
+  
+      fetchShop();
+    }, []);
+    
   return (
     <div className="text-base w-full">
       <div className="grid grid-cols-12 gap-4 gap-x-8 p-5">
         <div className="col-span-9 flex items-start gap-5">
           <img src={Logo} alt="" className="w-20" />
           <div>
-            <div className="font-bold text-2xl">ALBANA GROSIR</div>
+            <div className="font-bold text-2xl uppercase">{shop?.name}</div>
             <div>
-              Mitra distributor lebih dari 200 brand. Menyediakan family
-              fashion, mukena, tas, sandal, sepatu, perlengkapan bayi, dll.
+{shop?.description}
             </div>
           </div>
         </div>
@@ -41,7 +56,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
             Kepada <span>{data?.customer_info.name}</span>
           </div>
           <div>
-            Terima kasih telah berbelanja di ALBANA GROSIR. Berikut adalah
+            Terima kasih telah berbelanja di <span className="">{shop?.name}</span>. Berikut adalah
             rincian orderan Anda:
           </div>
         </div>
@@ -190,6 +205,21 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
             </tr>
           )}
           {/* Alamat Pengiriman  */}
+          {has("Alamat Pengiriman") && (
+            <tr>
+              <td className="p-2 grid grid-cols-3">
+                <div>Alamat Pengiriman :</div>
+                <div className="col-span-2 space-y-1">
+                  <div className="font-bold text-lg">
+                    {data?.customer_info.name}
+                  </div>
+                  <div>{data?.customer_info.address}</div>
+                  <div>{data?.customer_info.phone}</div>
+                </div>
+              </td>
+            </tr>
+          )}
+          {/* Catatan  */}
           {has("Alamat Pengiriman") && (
             <tr>
               <td className="p-2 grid grid-cols-3">
