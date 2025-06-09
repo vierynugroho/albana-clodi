@@ -96,7 +96,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
 
               const discountedPrice =
                 originalPrice - (data?.discount?.nominal ?? 0);
-              const qty = data?.total_items ?? 0;
+              const qty = product.product_qty;
               const subtotal = discountedPrice * qty;
 
               return (
