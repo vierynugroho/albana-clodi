@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import Button from "../../produk/button/Button";
@@ -8,6 +8,8 @@ type DiscountType = "Rp" | "%";
 interface ProductDiscountModalProps {
   productName: string;
   initialPrice: number;
+  initialDiscountValue?: number;
+  initialDiscountType?: DiscountType;
   onClose: () => void;
   onSave: (finalPrice: number, discount: number, type: DiscountType) => void;
 }
@@ -15,11 +17,19 @@ interface ProductDiscountModalProps {
 export default function ProductDiscountModal({
   productName,
   initialPrice,
+  initialDiscountValue = 0,
+  initialDiscountType = "Rp",
   onClose,
   onSave,
 }: ProductDiscountModalProps) {
-  const [discountType, setDiscountType] = useState<DiscountType>("Rp");
-  const [discountValue, setDiscountValue] = useState<number>(0);
+  const [discountType, setDiscountType] = useState<DiscountType>(initialDiscountType);
+  const [discountValue, setDiscountValue] = useState<number>(initialDiscountValue);
+
+  // Optional: jika modal tidak di-unmount saat ditutup
+  useEffect(() => {
+    setDiscountType(initialDiscountType);
+    setDiscountValue(initialDiscountValue);
+  }, [initialDiscountType, initialDiscountValue]);
 
   const getFinalPrice = () => {
     if (discountType === "Rp") {
@@ -45,11 +55,9 @@ export default function ProductDiscountModal({
           </button>
         </div>
 
-        <div className="mt-6 text-left  space-y-4">
+        <div className="mt-6 text-left space-y-4">
           <div>
-            <Label className="block text-sm font-medium text-gray-700 mb-1">
-              Nama Barang
-            </Label>
+            <Label>Nama Barang</Label>
             <Input
               type="text"
               value={productName}
@@ -59,9 +67,7 @@ export default function ProductDiscountModal({
           </div>
 
           <div>
-            <Label className="block text-sm font-medium text-gray-700 mb-1">
-              Harga Awal
-            </Label>
+            <Label>Harga Awal</Label>
             <Input
               type="text"
               value={initialPrice.toLocaleString("id-ID")}
@@ -70,17 +76,12 @@ export default function ProductDiscountModal({
             />
           </div>
 
-          {/* Diskon */}
           <div>
-            <Label className="block text-sm font-medium text-gray-700 mb-1">
-              Diskon
-            </Label>
+            <Label>Diskon</Label>
             <div className="flex">
               <select
                 value={discountType}
-                onChange={(e) =>
-                  setDiscountType(e.target.value as DiscountType)
-                }
+                onChange={(e) => setDiscountType(e.target.value as DiscountType)}
                 className="border rounded-l px-3 py-2 bg-white"
               >
                 <option value="Rp">Rp</option>

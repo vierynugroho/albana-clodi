@@ -384,7 +384,10 @@ export default function TableAddOrder({
       )
       .map((order) => ({
         produkVariantId: order.productVariantId,
-        discountType: order.discountType === "Rp" ? "nominal" as const : "percent" as const,
+        discountType:
+          order.discountType === "Rp"
+            ? ("nominal" as const)
+            : ("percent" as const),
         discountAmount: order.discount ?? 0,
       }));
 

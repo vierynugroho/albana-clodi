@@ -109,7 +109,7 @@ export default function EditOrderFomPage() {
 
   const paymentMethodOption = selectedPaymentMethod
     ? {
-        label: `${selectedPaymentMethod.bankName} - ${selectedPaymentMethod.bankBranch} ( ${selectedPaymentMethod.accountNumber} )`,
+        label: `${selectedPaymentMethod.bankName}`,
         value: selectedPaymentMethod.id,
         payment: selectedPaymentMethod,
       }
@@ -172,7 +172,6 @@ export default function EditOrderFomPage() {
             : order.OrderDetail.paymentDate
             ? new Date(order.OrderDetail.paymentDate)
             : null
-         
         );
         setNominalPayment(
           order.Installment &&

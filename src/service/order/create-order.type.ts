@@ -116,6 +116,7 @@ export interface OtherFees {
   discount: Discount;
   insurance: number;
   shippingCost: ShippingCost;
+  productDiscount: ProductDiscount[];
 }
 
 export interface Discount {

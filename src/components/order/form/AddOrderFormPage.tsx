@@ -118,7 +118,7 @@ export default function AddOrderFomPage() {
       discountOrder?: { value?: number; type?: "nominal" | "percent" } | null;
       insuranceValue?: number;
       ongkirDiscountValue?: number;
-       productDiscount?: {
+      productDiscount?: {
         produkVariantId: string;
         discountType: "nominal" | "percent";
         discountAmount: number;
@@ -139,7 +139,7 @@ export default function AddOrderFomPage() {
       setDiscount(data.discountOrder ? data.discountOrder : {});
       setInsurance(data.insuranceValue);
       setOngkirDiscountValue(data.ongkirDiscountValue);
-       if (data.productDiscount) {
+      if (data.productDiscount) {
         setProductDiscount(data.productDiscount);
       } else {
         setProductDiscount([]);
@@ -387,7 +387,7 @@ export default function AddOrderFomPage() {
                     )
                   }
                   placeholder="Cari Lokasi Pengiriman"
-                  className="w-full" 
+                  className="w-full"
                   classNamePrefix="custom-select"
                   components={{
                     Option: DeliveryOption,
@@ -420,7 +420,7 @@ export default function AddOrderFomPage() {
                   loadOptions={fetchSalesChannels}
                   placeholder="Pilih sales channels"
                   className="w-full"
-                   classNamePrefix="custom-select"
+                  classNamePrefix="custom-select"
                   onChange={(option) => {
                     setSelectedSalesChannel(option ? option.channel : null);
                   }}
@@ -517,7 +517,7 @@ export default function AddOrderFomPage() {
                       loadOptions={fetchPayments}
                       placeholder="Pilih metode pembayaran"
                       className="w-full"
-                       classNamePrefix="custom-select"
+                      classNamePrefix="custom-select"
                       onChange={(option) => {
                         setSelectedPaymentMethod(
                           option ? option.payment : null
