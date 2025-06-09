@@ -20,6 +20,7 @@ import ModalFormDiscount, {
 } from "../modal/ModalDiskon";
 import DropdownAction from "../dropdown/DropdownMenuList.tsx";
 import { getHargaByCustomerCategory } from "../getPriceByCustomerCategory.ts";
+import { formatPrice } from "../../../utils/format-price.utils.ts";
 
 interface ItemData {
   type: ItemType;
@@ -110,6 +111,7 @@ export default function TableAddOrder({
   const isInitialized = useRef(false);
 
   useEffect(() => {
+    console.log("initialData", initialData);
     if (initialData && !isInitialized.current) {
       if (initialData.orders) setOrders(initialData.orders);
       if (initialData.items) setItems(initialData.items);
@@ -384,7 +386,10 @@ export default function TableAddOrder({
       )
       .map((order) => ({
         produkVariantId: order.productVariantId,
-        discountType: order.discountType === "Rp" ? "nominal" as const : "percent" as const,
+        discountType:
+          order.discountType === "Rp"
+            ? ("nominal" as const)
+            : ("percent" as const),
         discountAmount: order.discount ?? 0,
       }));
 
@@ -456,10 +461,10 @@ export default function TableAddOrder({
                         {order.name}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
-                        {order.harga}
+                        {formatPrice(order.harga)}
                         {order.discount ? (
                           <div className="text-red-500 italic text-[10px]">
-                            disc. {order.discount}
+                            disc. {formatPrice(order.discount)}
                             {order.discountType === "%" ? "%" : ""}
                           </div>
                         ) : null}
@@ -468,7 +473,7 @@ export default function TableAddOrder({
                         {order.qty}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
-                        {order.subtotal}
+                        {formatPrice(order.subtotal)}
                       </TableCell>
                       <TableCell className="relative px-4 py-3 text-end">
                         <DropdownCreateOrder
@@ -503,13 +508,13 @@ export default function TableAddOrder({
             <div className="flex justify-between">
               <span>Subtotal</span>
               <span className="font-bold">
-                Rp{totalSubtotal.toLocaleString("id-ID")}
+                {formatPrice(totalSubtotal)}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span>Ongkos Kirim {totalBerat} Kg -</span>
               <span className="font-bold">
-                Rp{(selectedShippingCost / 100).toLocaleString("id-ID")}
+                {formatPrice(selectedShippingCost / 100)}
               </span>
             </div>
 
@@ -628,7 +633,7 @@ export default function TableAddOrder({
             <div className="flex justify-between items-center font-semibold pt-4 border-t mt-4">
               <span>TOTAL</span>
               <span className="text-blue-700 text-xl md:text-3xl font-bold">
-                Rp{totalFinal.toLocaleString("id-ID")}
+                {formatPrice(totalFinal)}
               </span>
             </div>
           </div>

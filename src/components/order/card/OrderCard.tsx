@@ -284,7 +284,7 @@ export default function OrderCard({
                   onChange={() => onToggleSelect?.(order.id)}
                   className="w-5 h-5"
                 />
-                <Link to={`/order/print-label/${order.id}`}>
+                <Link to={`/order/print-label?ids=${order.id}`}>
                   <button className="flex items-center gap-2 border border-blue-600 dark:hover:bg-white/[0.03] px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100 text-sm">
                     <FaPrint /> Print
                   </button>

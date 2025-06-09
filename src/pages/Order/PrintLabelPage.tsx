@@ -20,7 +20,7 @@ export default function PrintSettingsPage() {
   const location = useLocation();
   const { id: routeId } = useParams();
   const queryParams = new URLSearchParams(location.search);
-  const idsParam = queryParams.get("id") || routeId; // ambil string ids dari query
+  const idsParam = queryParams.get("ids") || routeId; // ambil string ids dari query
 
   // pakai useMemo supaya ids array hanya dibuat ulang kalau idsParam berubah
   const ids = useMemo(() => {
@@ -185,7 +185,7 @@ export default function PrintSettingsPage() {
       </div>
 
       <div id="print-area" className="space-y-5" ref={componentRef}>
-        {receiptDataList.length === 0 && <p>Tidak ada data receipt.</p>}
+        {/* {receiptDataList.length === 0 && <p>Tidak ada data receipt.</p>} */}
         {receiptDataList.map((data, idx) => (
           <PreviewOutput
             key={idx}
