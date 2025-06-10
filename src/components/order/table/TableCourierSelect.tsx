@@ -194,7 +194,7 @@ export default function TableCourierSelection({
                     {item.etd}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm font-medium text-blue-600">
-                    {`Rp${(item.shipping_cost / 100).toLocaleString("id-ID")}`}
+                    {`Rp${(item.shipping_cost).toLocaleString("id-ID")}`}
                   </TableCell>
                 </TableRow>
               ))}
