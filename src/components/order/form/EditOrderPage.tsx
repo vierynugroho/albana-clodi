@@ -289,7 +289,6 @@ export default function EditOrderFomPage() {
         };
 
         setInitialData(mappedInitialData);
-        console.log(mappedInitialData);
       } catch (error) {
         console.error("Gagal mengambil data order:", error);
       }

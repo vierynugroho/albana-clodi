@@ -111,7 +111,6 @@ export default function TableAddOrder({
   const isInitialized = useRef(false);
 
   useEffect(() => {
-    console.log("initialData", initialData);
     if (initialData && !isInitialized.current) {
       if (initialData.orders) {
         const convertedOrders = initialData.orders.map((order) => ({
@@ -315,8 +314,6 @@ export default function TableAddOrder({
         discountAmount += val;
       }
     });
-
-    console.log(selectedShippingCost);
     return (
       totalSubtotal + otherAdditions + selectedShippingCost - discountAmount
     );

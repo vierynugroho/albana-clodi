@@ -77,16 +77,8 @@ export default function TableCourierSelection({
     null
   );
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
-  console.log(
-    selectedShippingName,
-    selectedShippingCost,
-    selectedShippingService
-  );
-
   useEffect(() => {
     const fetchShippingData = async () => {
-      console.log(shipperDestinationId);
       if (totalBerat <= 0 || !shipperDestinationId || !receiverDestinationId) {
         setCourier(manualServices);
         return;
