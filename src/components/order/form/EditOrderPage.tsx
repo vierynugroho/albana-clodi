@@ -29,7 +29,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Select from "../../form/Select.tsx";
 import { getHargaByCustomerCategory } from "../getPriceByCustomerCategory.ts";
 import { FaSpinner } from "react-icons/fa";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function EditOrderFomPage() {
   const { id } = useParams<{ id: string }>();
@@ -406,6 +406,7 @@ export default function EditOrderFomPage() {
 
   return (
     <div className="dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400">
+      <Toaster />
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"

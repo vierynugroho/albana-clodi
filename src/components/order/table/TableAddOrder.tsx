@@ -507,9 +507,7 @@ export default function TableAddOrder({
           <div className="border-t mt-6 pt-4 space-y-2">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span className="font-bold">
-                {formatPrice(totalSubtotal)}
-              </span>
+              <span className="font-bold">{formatPrice(totalSubtotal)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span>Ongkos Kirim {totalBerat} Kg -</span>
