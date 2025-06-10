@@ -113,7 +113,6 @@ export default function TableAddOrder({
   useEffect(() => {
     console.log("initialData", initialData);
     if (initialData && !isInitialized.current) {
-      // if (initialData.orders) setOrders(initialData.orders);
       if (initialData.orders) {
         const convertedOrders = initialData.orders.map((order) => ({
           ...order,

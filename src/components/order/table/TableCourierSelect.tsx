@@ -91,6 +91,7 @@ export default function TableCourierSelection({
         setCourier(manualServices);
         return;
       }
+
       const params: ShippingCostParams = {
         shipper_destination_id: shipperDestinationId,
         receiver_destination_id: receiverDestinationId,
@@ -98,6 +99,7 @@ export default function TableCourierSelection({
         item_value: itemValue ? itemValue : 0,
         cod: cod,
       };
+
       try {
         const res = await calculateShippingCost(params);
         const allServices = [
@@ -106,21 +108,108 @@ export default function TableCourierSelection({
           ...res.responseObject.calculate_instant,
         ];
 
+        let shouldAddInitialShipping = false;
+
+        if (
+          selectedShippingName &&
+          selectedShippingService &&
+          !allServices.some(
+            (svc) =>
+              svc.shipping_name.toLowerCase() ===
+                selectedShippingName.toLowerCase() &&
+              svc.service_name.toLowerCase() ===
+                selectedShippingService.toLowerCase()
+          )
+        ) {
+          shouldAddInitialShipping = true;
+        }
+
+        const injectedShipping = shouldAddInitialShipping
+          ? [
+              {
+                shipping_name: selectedShippingName ?? "",
+                service_name: selectedShippingService ?? "",
+                shipping_cost: selectedShippingCost ?? 0,
+                shipping_cashback: 0,
+                shipping_cost_net: selectedShippingCost ?? 0,
+                grandtotal: 0,
+                service_fee: 0,
+                net_income: 0,
+                etd: "- days",
+                weight: totalBerat,
+                is_cod: cod === "yes",
+                is_manual: true,
+              },
+            ]
+          : [];
+
         if (allServices.length > 0) {
-          setCourier([...allServices, ...manualServices]);
+          setCourier([...allServices, ...injectedShipping, ...manualServices]);
         } else {
-          setCourier(manualServices);
+          setCourier([...injectedShipping, ...manualServices]);
         }
       } catch (err) {
         console.log(
           err instanceof Error ? err : new Error("Gagal mengambil ongkos kirim")
         );
-        setCourier(manualServices);
+
+        const fallbackInjected =
+          selectedShippingName && selectedShippingService
+            ? [
+                {
+                  shipping_name: selectedShippingName ?? "",
+                  service_name: selectedShippingService ?? "",
+                  shipping_cost: selectedShippingCost ?? 0,
+                  shipping_cashback: 0,
+                  shipping_cost_net: selectedShippingCost ?? 0,
+                  grandtotal: 0,
+                  service_fee: 0,
+                  net_income: 0,
+                  etd: "- days",
+                  weight: totalBerat,
+                  is_cod: cod === "yes",
+                  is_manual: true,
+                },
+              ]
+            : [];
+
+        setCourier([...fallbackInjected, ...manualServices]);
       }
     };
 
     fetchShippingData();
-  }, [cod, itemValue, receiverDestinationId, shipperDestinationId, totalBerat]);
+  }, [
+    cod,
+    itemValue,
+    receiverDestinationId,
+    shipperDestinationId,
+    totalBerat,
+    selectedShippingCost,
+    selectedShippingName,
+    selectedShippingService,
+  ]);
+
+  useEffect(() => {
+    if (!selectedShippingName || !selectedShippingService) return;
+
+    const selectedIdx = courier.findIndex(
+      (c) =>
+        c.shipping_name.toLowerCase() === selectedShippingName.toLowerCase() &&
+        c.service_name.toLowerCase() === selectedShippingService.toLowerCase()
+    );
+
+    if (selectedIdx !== -1) {
+      setSelectedIndex(selectedIdx);
+      if (
+        courier[selectedIdx].is_manual &&
+        courier[selectedIdx].shipping_name === "Ekspedisi"
+      ) {
+        setSelectedManualIndex(selectedIdx);
+      } else {
+        setSelectedManualIndex(null);
+      }
+    }
+  }, [courier, selectedShippingName, selectedShippingService]);
 
   return (
     <div>
