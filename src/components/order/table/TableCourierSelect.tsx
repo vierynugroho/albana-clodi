@@ -107,7 +107,7 @@ export default function TableCourierSelection({
         ];
 
         if (allServices.length > 0) {
-          setCourier(allServices);
+          setCourier([...allServices, ...manualServices]);
         } else {
           setCourier(manualServices);
         }
@@ -194,7 +194,7 @@ export default function TableCourierSelection({
                     {item.etd}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm font-medium text-blue-600">
-                    {`Rp${(item.shipping_cost).toLocaleString("id-ID")}`}
+                    {`Rp${item.shipping_cost.toLocaleString("id-ID")}`}
                   </TableCell>
                 </TableRow>
               ))}
@@ -224,7 +224,7 @@ export default function TableCourierSelection({
               <Input
                 type="number"
                 placeholder="Masukkan tarif"
-                value={courier[selectedManualIndex].shipping_cost / 100}
+                value={courier[selectedManualIndex].shipping_cost}
                 onChange={(e) => {
                   let inputValue = Number(e.target.value);
                   if (isNaN(inputValue) || inputValue < 0) inputValue = 0;
