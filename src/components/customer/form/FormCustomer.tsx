@@ -42,6 +42,7 @@ const optionsCustomers = [
   { value: "reseller", label: "Reseller" },
   { value: "agent", label: "Agent" },
   { value: "dropshipper", label: "Dropshiper" },
+  { value: "member", label: "Member" },
 ];
 
 export default function FormCustomer() {
@@ -358,11 +359,11 @@ export default function FormCustomer() {
                 label="name"
                 id="id"
                 selectedVal={formData.cityName}
-                handleChange={(val) => {
-                  const selectedCity = cities.find((c) => c.name === val);
+                handleChange={(val, id) => {
+                  // const selectedCity = cities.find((c) => c.name === val);
                   setFormData((prev) => ({
                     ...prev,
-                    cityId: selectedCity ? selectedCity.id : "",
+                    cityId: String(id) ? String(id) : "",
                     cityName: val,
                   }));
                 }}
