@@ -82,7 +82,7 @@ export default function OrderCard({
                 #{order.OrderDetail.code}
               </p>
               <p className="text-sm text-gray-400">
-                dari <span className="font-semibold text-black">App</span> (
+                dari <span className="font-semibold text-black">{order.SalesChannel.name}</span> (
                 {order.orderDate
                   ? new Date(order.orderDate).toLocaleString("id-ID", {
                       weekday: "long",

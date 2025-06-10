@@ -18,9 +18,25 @@ const ProductOption = (
   const increase = () => setQty((prev) => prev + 1);
   const decrease = () => setQty((prev) => (prev > 1 ? prev - 1 : 1));
 
-
   const handleAdd = () => {
     const productId = data.product.product.id;
+    const stock = data.product.variant?.[0]?.stock ?? 0;
+
+    if (stock <= 0) {
+      toast.error("Stok produk habis. Tidak bisa ditambahkan.");
+      return;
+    }
+
+    if (qty > stock) {
+      toast.error(`Stok hanya tersedia ${stock} pcs. Kurangi jumlahnya.`);
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (!(window as any).addedProducts) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).addedProducts = new Set<string>();
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addedSet = (window as any).addedProducts as Set<string>;
 
