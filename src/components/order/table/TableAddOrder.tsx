@@ -111,9 +111,15 @@ export default function TableAddOrder({
   const isInitialized = useRef(false);
 
   useEffect(() => {
-    console.log("initialData", initialData);
     if (initialData && !isInitialized.current) {
-      if (initialData.orders) setOrders(initialData.orders);
+      if (initialData.orders) {
+        const convertedOrders = initialData.orders.map((order) => ({
+          ...order,
+          subBerat: order.subBerat / 1000,
+        }));
+        setOrders(convertedOrders);
+      }
+
       if (initialData.items) setItems(initialData.items);
       if (initialData.shipping) {
         setSelectedShippingCost(initialData.shipping.cost);
@@ -167,7 +173,6 @@ export default function TableAddOrder({
 
   const totalSubtotal = orders.reduce((acc, curr) => acc + curr.subtotal, 0);
   const totalBerat = orders.reduce((acc, curr) => acc + curr.subBerat, 0);
-  // const totalOrder = totalSubtotal + selectedShippingCost / 100;
 
   const handleDeleteOrder = (id: string) => {
     setOrders((prev) => prev.filter((o) => o.productId !== id));
@@ -251,7 +256,7 @@ export default function TableAddOrder({
             harga,
             qty,
             subtotal: harga * qty,
-            subBerat: berat * qty || 0,
+            subBerat: (berat * qty) / 1000 || 0,
           },
         ];
       });
@@ -309,9 +314,10 @@ export default function TableAddOrder({
         discountAmount += val;
       }
     });
-
-    return totalSubtotal + otherAdditions - discountAmount;
-  }, [items, totalSubtotal]);
+    return (
+      totalSubtotal + otherAdditions + selectedShippingCost - discountAmount
+    );
+  }, [items, selectedShippingCost, totalSubtotal]);
 
   useEffect(() => {
     if (!onChange) return;
@@ -507,14 +513,12 @@ export default function TableAddOrder({
           <div className="border-t mt-6 pt-4 space-y-2">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span className="font-bold">
-                {formatPrice(totalSubtotal)}
-              </span>
+              <span className="font-bold">{formatPrice(totalSubtotal)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span>Ongkos Kirim {totalBerat} Kg -</span>
               <span className="font-bold">
-                {formatPrice(selectedShippingCost / 100)}
+                {formatPrice(selectedShippingCost)}
               </span>
             </div>
 
