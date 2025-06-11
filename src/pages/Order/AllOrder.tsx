@@ -44,10 +44,12 @@ export type FilterState = {
   phoneNumber?: string;
   orderId?: string;
   shipperTrackingId?: string;
+  code?: string;
 };
 
 const searchFields = [
   "orderId",
+  "code",
   "customerName",
   "receiptNumber",
   "productName",
@@ -156,6 +158,7 @@ export default function AllOrderPage() {
         shipperTrackingId: params.get("shipperTrackingId") || "",
         sort: params.get("sort") || "",
         orderId: params.get("orderId") || "",
+        code: params.get("code") || "",
         // order: (params.get("order") as "asc" | "desc") || "desc",
       };
 

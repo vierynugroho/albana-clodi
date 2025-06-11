@@ -6,7 +6,7 @@ interface FilterOrderDropdownProps {
 }
 
 const filterOptions = [
-  { value: "orderId", label: "Order ID" },
+  { value: "code", label: "Order Code" },
   { value: "customerName", label: "Nama Customer" },
   { value: "productName", label: "Nama Produk" },
   { value: "receiptNumber", label: "No Resi" },
