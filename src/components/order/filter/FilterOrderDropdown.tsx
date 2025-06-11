@@ -6,13 +6,13 @@ interface FilterOrderDropdownProps {
 }
 
 const filterOptions = [
-  { value: "ordererCustomerId", label: "Order ID" },
+  { value: "orderId", label: "Order ID" },
   { value: "customerName", label: "Nama Customer" },
   { value: "productName", label: "Nama Produk" },
+  { value: "receiptNumber", label: "No Resi" },
+  { value: "phoneNumber", label: "Telp Customer" },
   // { value: "sku", label: "SKU" },
-  { value: "resiNumber", label: "No Resi" },
-  { value: "customerPhone", label: "Telp Customer" },
-  { value: "shipperTrackingId", label: "Shipper Tracking ID" },
+  // { value: "shipperTrackingId", label: "Shipper Tracking ID" },
 ];
 
 function FilterOrderDropdown(props: FilterOrderDropdownProps) {

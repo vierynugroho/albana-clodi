@@ -38,16 +38,27 @@ export type FilterState = {
   order?: "asc" | "desc";
   customerName?: string;
   ordererCustomerId?: string;
-  productName?:string;
+  productName?: string;
   sku?: string;
-  resiNumber?: string;
-  customerPhone?: string;
+  receiptNumber?: string;
+  phoneNumber?: string;
+  orderId?: string;
   shipperTrackingId?: string;
 };
 
+const searchFields = [
+  "orderId",
+  "customerName",
+  "receiptNumber",
+  "productName",
+  "phoneNumber",
+  "sku",
+  "shipperTrackingId",
+];
+
 export default function AllOrderPage() {
   const [selectedStatuses, setSelectedStatuses] = useState<string>("");
-  const [searchField, setSearchField] = useState<string>("customerName");
+  const [searchField, setSearchField] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
@@ -77,15 +88,22 @@ export default function AllOrderPage() {
 
   const location = useLocation();
   const navigate = useNavigate();
-
   const handleSearchAndFilter = useCallback(
     (keyword: string, filter: FilterState, field: string) => {
       const params = new URLSearchParams();
 
-      if (keyword && field) {
-        params.set(field, keyword.toLowerCase());
+      // Bersihkan semua searchFields dulu
+      searchFields.forEach((key) => {
+        params.delete(key);
+      });
+      params.delete("search");
+      if (keyword) {
+        if (field && field !== "") {
+          params.set(field, keyword.toLowerCase());
+        } else {
+          params.set("search", keyword.toLowerCase());
+        }
       }
-
       Object.entries(filter).forEach(([key, value]) => {
         if (value && value !== "") {
           params.set(key, value);
@@ -133,10 +151,11 @@ export default function AllOrderPage() {
         customerName: params.get("customerName") || "",
         productName: params.get("productName") || "",
         sku: params.get("sku") || "",
-        resiNumber: params.get("resiNumber") || "",
-        customerPhone: params.get("customerPhone") || "",
+        receiptNumber: params.get("receiptNumber") || "",
+        phoneNumber: params.get("phoneNumber") || "",
         shipperTrackingId: params.get("shipperTrackingId") || "",
         sort: params.get("sort") || "",
+        orderId: params.get("orderId") || "",
         // order: (params.get("order") as "asc" | "desc") || "desc",
       };
 
@@ -175,6 +194,40 @@ export default function AllOrderPage() {
       }
     }
   }, [handleSearchAndFilter, keyword, location.search, searchField]);
+
+  useEffect(() => {
+    setFilterOrder((prev) => {
+      const updated = { ...prev };
+
+      searchFields.forEach((field) => {
+        if (field !== searchField && updated[field as keyof FilterState]) {
+          delete updated[field as keyof FilterState];
+        }
+      });
+
+      return updated;
+    });
+  }, [searchField]);
+
+  useEffect(() => {
+    if (!searchField || keyword === undefined) return;
+
+    const timeout = setTimeout(() => {
+      handleSearchAndFilter(keyword, filterOrder, searchField);
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timeout);
+  }, [keyword, searchField, filterOrder, handleSearchAndFilter]);
+
+  const onSearchClick = () => {
+    const updatedFilter = {
+      ...filterOrder,
+      [searchField]: keyword,
+    };
+
+    setFilterOrder(updatedFilter);
+    handleSearchAndFilter(keyword, updatedFilter, searchField);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -263,23 +316,13 @@ export default function AllOrderPage() {
 
         {/* Search and Filter Row */}
         <div className="flex flex-wrap items-center gap-2 mb-4 mt-3">
-          <div className="relative">
-            {/* <FilterOrderDropdown /> */}
+          <div className="flex flex-wrap items-center">
             <FilterOrderDropdown
               value={searchField}
               onChange={setSearchField}
             />
-          </div>
-          <div className="flex-1">
-            {/* <SearchOrder
-              onSearch={() => handleSearchAndFilter(keyword, filterOrder)}
-              keyword={keyword}
-              keywordChange={setKeyword}
-            /> */}
             <SearchOrder
-              onSearch={() =>
-                handleSearchAndFilter(keyword, filterOrder, searchField)
-              }
+              onSearch={onSearchClick}
               keyword={keyword}
               keywordChange={setKeyword}
             />
@@ -323,7 +366,9 @@ export default function AllOrderPage() {
             <FilterOrder
               filter={filterOrder}
               setFilter={setFilterOrder}
-              onFilter={() => handleSearchAndFilter(keyword, filterOrder, searchField)}
+              onFilter={() =>
+                handleSearchAndFilter(keyword, filterOrder, searchField)
+              }
             />
           ) : null}
 

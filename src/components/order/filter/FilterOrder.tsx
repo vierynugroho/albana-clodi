@@ -46,7 +46,7 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
       name: "paymentStatus",
       options: [
         { value: "ALL", label: "Semua" },
-        { value: "Pending", label: "Belum Bayar" },
+        { value: "PENDING", label: "Belum Bayar" },
         { value: "INSTALLMENTS", label: "Cicilan" },
         { value: "SETTLEMENT", label: "Lunas" },
       ],
