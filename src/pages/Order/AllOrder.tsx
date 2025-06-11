@@ -17,9 +17,9 @@ import OrderToolbar from "../../components/order/orderToolbar";
 import { getOrders, OrderItem } from "../../service/order/index";
 import { exportOrdersToExcel } from "../../service/order/order.service";
 import toast from "react-hot-toast";
+import FilterOrderDropdown from "../../components/order/filter/FilterOrderDropdown";
 
 export type FilterState = {
-  ordererCustomerId?: string;
   deliveryTargetCustomerId?: string;
   salesChannelId?: string;
   deliveryPlaceId?: string;
@@ -36,10 +36,18 @@ export type FilterState = {
   search?: string;
   sort?: string;
   order?: "asc" | "desc";
+  customerName?: string;
+  ordererCustomerId?: string;
+  productName?:string;
+  sku?: string;
+  resiNumber?: string;
+  customerPhone?: string;
+  shipperTrackingId?: string;
 };
 
 export default function AllOrderPage() {
   const [selectedStatuses, setSelectedStatuses] = useState<string>("");
+  const [searchField, setSearchField] = useState<string>("customerName");
   const [keyword, setKeyword] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
@@ -71,10 +79,12 @@ export default function AllOrderPage() {
   const navigate = useNavigate();
 
   const handleSearchAndFilter = useCallback(
-    (keyword: string, filter: FilterState) => {
+    (keyword: string, filter: FilterState, field: string) => {
       const params = new URLSearchParams();
 
-      if (keyword) params.set("search", keyword.toLowerCase());
+      if (keyword && field) {
+        params.set(field, keyword.toLowerCase());
+      }
 
       Object.entries(filter).forEach(([key, value]) => {
         if (value && value !== "") {
@@ -96,7 +106,7 @@ export default function AllOrderPage() {
     };
 
     setFilterOrder(newFilter);
-    handleSearchAndFilter(keyword, newFilter);
+    handleSearchAndFilter(keyword, newFilter, searchField);
   };
 
   useEffect(() => {
@@ -120,6 +130,12 @@ export default function AllOrderPage() {
         productId: params.get("productId") || "",
         paymentMethodId: params.get("paymentMethodId") || "",
         search: params.get("search") || "",
+        customerName: params.get("customerName") || "",
+        productName: params.get("productName") || "",
+        sku: params.get("sku") || "",
+        resiNumber: params.get("resiNumber") || "",
+        customerPhone: params.get("customerPhone") || "",
+        shipperTrackingId: params.get("shipperTrackingId") || "",
         sort: params.get("sort") || "",
         // order: (params.get("order") as "asc" | "desc") || "desc",
       };
@@ -155,10 +171,10 @@ export default function AllOrderPage() {
       if (savedFilter) {
         const parsedFilter: FilterState = JSON.parse(savedFilter);
         setFilterOrder(parsedFilter);
-        handleSearchAndFilter(keyword, parsedFilter);
+        handleSearchAndFilter(keyword, parsedFilter, searchField);
       }
     }
-  }, [handleSearchAndFilter, keyword, location.search]);
+  }, [handleSearchAndFilter, keyword, location.search, searchField]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -247,10 +263,23 @@ export default function AllOrderPage() {
 
         {/* Search and Filter Row */}
         <div className="flex flex-wrap items-center gap-2 mb-4 mt-3">
-          <div className="relative">{/* <FilterOrderDropdown /> */}</div>
+          <div className="relative">
+            {/* <FilterOrderDropdown /> */}
+            <FilterOrderDropdown
+              value={searchField}
+              onChange={setSearchField}
+            />
+          </div>
           <div className="flex-1">
-            <SearchOrder
+            {/* <SearchOrder
               onSearch={() => handleSearchAndFilter(keyword, filterOrder)}
+              keyword={keyword}
+              keywordChange={setKeyword}
+            /> */}
+            <SearchOrder
+              onSearch={() =>
+                handleSearchAndFilter(keyword, filterOrder, searchField)
+              }
               keyword={keyword}
               keywordChange={setKeyword}
             />
@@ -294,7 +323,7 @@ export default function AllOrderPage() {
             <FilterOrder
               filter={filterOrder}
               setFilter={setFilterOrder}
-              onFilter={() => handleSearchAndFilter(keyword, filterOrder)}
+              onFilter={() => handleSearchAndFilter(keyword, filterOrder, searchField)}
             />
           ) : null}
 
@@ -338,7 +367,9 @@ export default function AllOrderPage() {
           onSelectAll={handleSelectAll}
           isAllSelected={isAllSelected}
           selectedCount={selectedOrderIds.length}
-          onMassPrint={handleMassPrint} selectedOrderIds={[]}        />
+          onMassPrint={handleMassPrint}
+          selectedOrderIds={[]}
+        />
       </div>
     </div>
   );

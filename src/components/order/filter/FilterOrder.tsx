@@ -37,7 +37,7 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
         { value: "CUSTOMER", label: "Customer" },
         { value: "MEMBER", label: "Member" },
         { value: "RESELLER", label: "Reseller" },
-        { value: "DROPSHIP", label: "Dropship" },
+        { value: "DROPSHIPPER", label: "Dropship" },
         { value: "AGENT", label: "Agent" },
       ],
     },
@@ -46,7 +46,7 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
       name: "paymentStatus",
       options: [
         { value: "ALL", label: "Semua" },
-        { value: "PENDING", label: "Belum Bayar" },
+        { value: "Pending", label: "Belum Bayar" },
         { value: "INSTALLMENTS", label: "Cicilan" },
         { value: "SETTLEMENT", label: "Lunas" },
       ],

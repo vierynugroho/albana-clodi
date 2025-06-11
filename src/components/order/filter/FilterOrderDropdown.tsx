@@ -9,7 +9,7 @@ const filterOptions = [
   { value: "ordererCustomerId", label: "Order ID" },
   { value: "customerName", label: "Nama Customer" },
   { value: "productName", label: "Nama Produk" },
-  { value: "sku", label: "SKU" },
+  // { value: "sku", label: "SKU" },
   { value: "resiNumber", label: "No Resi" },
   { value: "customerPhone", label: "Telp Customer" },
   { value: "shipperTrackingId", label: "Shipper Tracking ID" },
