@@ -19,9 +19,8 @@ import { useReactToPrint } from "react-to-print";
 export default function PrintSettingsPage() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const idsParam = queryParams.get("ids"); // ambil string ids dari query
+  const idsParam = queryParams.get("ids"); 
 
-  // pakai useMemo supaya ids array hanya dibuat ulang kalau idsParam berubah
   const ids = useMemo(() => {
     return idsParam ? idsParam.split(",").filter(Boolean) : [];
   }, [idsParam]);

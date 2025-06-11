@@ -47,6 +47,7 @@ export interface TReceiptData {
   delivery_target: string;
   customer_type: string;
   customer_info: TCustomerInfo;
+  dropship_info: TDropshipInfo;
 }
 
 export interface TProduct {
@@ -98,4 +99,15 @@ export interface TCustomerInfo {
   address: string;
   phone: string;
   email: string;
+}
+interface TSenderDropship {
+  name: string;
+  address: string;
+}
+
+type TRecipientDropship = TSenderDropship;
+
+type TDropshipInfo = {
+  sender : TSenderDropship;
+  recipient : TRecipientDropship
 }
