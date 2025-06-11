@@ -29,7 +29,7 @@ const OrderLabel: React.FC<OrderLabelProps> = ({
 
         return {
           name: `${item.product_name} | ${variant.sku}`,
-          qty: 1,
+          qty: item.product_qty ?? 1,
           price,
           barcode: variant.barcode ?? "Tidak ada barcode",
           sku: item.product_variants[0].sku

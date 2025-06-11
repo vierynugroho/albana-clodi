@@ -190,7 +190,9 @@ export default function PrintSettingsPage() {
             selectedFeature={selectedFeature}
             selectedFeatures={selectedOption[selectedFeature] || []}
             data={data}
-            className={selectedFeature === "thermal-58" ? "flex flex-col w-fit" : ""}
+            className={
+              selectedFeature === "thermal-58" ? "flex flex-col w-fit" : ""
+            }
           />
         ))}
       </div>
