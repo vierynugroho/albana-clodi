@@ -103,6 +103,7 @@ export interface TCustomerInfo {
 interface TSenderDropship {
   name: string;
   address: string;
+  phone: string;
 }
 
 type TRecipientDropship = TSenderDropship;

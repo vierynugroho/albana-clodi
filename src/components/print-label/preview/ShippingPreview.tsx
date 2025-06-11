@@ -59,9 +59,7 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
               <div>{data?.dropship_info?.sender?.name || shop?.name}</div>
               {/* <div>{data?.dropship_info?.sender?.address || shop?.address}</div> */}
               <div>
-                {shop?.phoneNumber &&
-                  !data?.dropship_info?.sender?.name &&
-                  `Telp. ${shop.phoneNumber}`}
+                Telp. {data?.dropship_info?.sender?.phone || shop?.phoneNumber}
               </div>
             </div>
           </div>
