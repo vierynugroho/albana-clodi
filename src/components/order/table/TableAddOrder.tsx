@@ -468,10 +468,12 @@ export default function TableAddOrder({
                       </TableCell>
                       <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                         {formatPrice(order.harga)}
-                        {order.discount ? (
+                        {order.discount !== undefined ? (
                           <div className="text-red-500 italic text-[10px]">
-                            disc. {formatPrice(order.discount)}
-                            {order.discountType === "%" ? "%" : ""}
+                            disc.{" "}
+                            {order.discountType === "%"
+                              ? `${order.discount}%`
+                              : formatPrice(order.discount)}
                           </div>
                         ) : null}
                       </TableCell>

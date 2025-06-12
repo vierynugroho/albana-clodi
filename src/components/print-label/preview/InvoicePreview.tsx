@@ -10,19 +10,19 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
   const has = (key: string) => features.includes(key);
   const [shop, setShop] = useState<Shop>();
 
-   useEffect(() => {
-      async function fetchShop() {
-        try {
-          const response = await getShop();
-          setShop(response);
-        } catch (err) {
-          console.error("Failed to fetch shop", err);
-        }
+  useEffect(() => {
+    async function fetchShop() {
+      try {
+        const response = await getShop();
+        setShop(response);
+      } catch (err) {
+        console.error("Failed to fetch shop", err);
       }
-  
-      fetchShop();
-    }, []);
-    
+    }
+
+    fetchShop();
+  }, []);
+
   return (
     <div className="text-base w-full">
       <div className="grid grid-cols-12 gap-4 gap-x-8 p-5">
@@ -30,9 +30,7 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
           <img src={Logo} alt="" className="w-20" />
           <div>
             <div className="font-bold text-2xl uppercase">{shop?.name}</div>
-            <div>
-{shop?.description}
-            </div>
+            <div>{shop?.description}</div>
           </div>
         </div>
         <div className="col-span-3 flex flex-col gap-3">
@@ -56,8 +54,9 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
             Kepada <span>{data?.customer_info.name}</span>
           </div>
           <div>
-            Terima kasih telah berbelanja di <span className="">{shop?.name}</span>. Berikut adalah
-            rincian orderan Anda:
+            Terima kasih telah berbelanja di{" "}
+            <span className="">{shop?.name}</span>. Berikut adalah rincian
+            orderan Anda:
           </div>
         </div>
         <div className="col-span-3 font-bold">
@@ -199,27 +198,14 @@ const InvoicePreview: React.FC<TPreviewProps> = ({ features, data }) => {
               <td className="p-2 grid grid-cols-3">
                 <div>Rekening Pembayaran</div>
                 <div className="col-span-2 flex flex-col gap-3">
-                  <div className="text-lg font-bold">{data?.payment_method}</div>
+                  <div className="text-lg font-bold">
+                    {data?.payment_method}
+                  </div>
                 </div>
               </td>
             </tr>
           )}
           {/* Alamat Pengiriman  */}
-          {has("Alamat Pengiriman") && (
-            <tr>
-              <td className="p-2 grid grid-cols-3">
-                <div>Alamat Pengiriman :</div>
-                <div className="col-span-2 space-y-1">
-                  <div className="font-bold text-lg">
-                    {data?.customer_info.name}
-                  </div>
-                  <div>{data?.customer_info.address}</div>
-                  <div>{data?.customer_info.phone}</div>
-                </div>
-              </td>
-            </tr>
-          )}
-          {/* Catatan  */}
           {has("Alamat Pengiriman") && (
             <tr>
               <td className="p-2 grid grid-cols-3">
