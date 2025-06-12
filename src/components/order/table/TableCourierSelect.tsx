@@ -311,7 +311,7 @@ export default function TableCourierSelection({
                   if (isNaN(inputValue) || inputValue < 0) inputValue = 0;
 
                   const updated = [...courier];
-                  const newShippingCost = inputValue * 100;
+                  const newShippingCost = inputValue;
 
                   updated[selectedManualIndex].shipping_cost = newShippingCost; // <-- di sini!
                   setCourier(updated);

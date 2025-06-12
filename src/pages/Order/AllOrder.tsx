@@ -17,9 +17,9 @@ import OrderToolbar from "../../components/order/orderToolbar";
 import { getOrders, OrderItem } from "../../service/order/index";
 import { exportOrdersToExcel } from "../../service/order/order.service";
 import toast from "react-hot-toast";
+import FilterOrderDropdown from "../../components/order/filter/FilterOrderDropdown";
 
 export type FilterState = {
-  ordererCustomerId?: string;
   deliveryTargetCustomerId?: string;
   salesChannelId?: string;
   deliveryPlaceId?: string;
@@ -36,10 +36,31 @@ export type FilterState = {
   search?: string;
   sort?: string;
   order?: "asc" | "desc";
+  customerName?: string;
+  ordererCustomerId?: string;
+  productName?: string;
+  sku?: string;
+  receiptNumber?: string;
+  phoneNumber?: string;
+  orderId?: string;
+  shipperTrackingId?: string;
+  code?: string;
 };
+
+const searchFields = [
+  "orderId",
+  "code",
+  "customerName",
+  "receiptNumber",
+  "productName",
+  "phoneNumber",
+  "sku",
+  "shipperTrackingId",
+];
 
 export default function AllOrderPage() {
   const [selectedStatuses, setSelectedStatuses] = useState<string>("");
+  const [searchField, setSearchField] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
@@ -69,13 +90,22 @@ export default function AllOrderPage() {
 
   const location = useLocation();
   const navigate = useNavigate();
-
   const handleSearchAndFilter = useCallback(
-    (keyword: string, filter: FilterState) => {
+    (keyword: string, filter: FilterState, field: string) => {
       const params = new URLSearchParams();
 
-      if (keyword) params.set("search", keyword.toLowerCase());
-
+      // Bersihkan semua searchFields dulu
+      searchFields.forEach((key) => {
+        params.delete(key);
+      });
+      params.delete("search");
+      if (keyword) {
+        if (field && field !== "") {
+          params.set(field, keyword.toLowerCase());
+        } else {
+          params.set("search", keyword.toLowerCase());
+        }
+      }
       Object.entries(filter).forEach(([key, value]) => {
         if (value && value !== "") {
           params.set(key, value);
@@ -96,7 +126,7 @@ export default function AllOrderPage() {
     };
 
     setFilterOrder(newFilter);
-    handleSearchAndFilter(keyword, newFilter);
+    handleSearchAndFilter(keyword, newFilter, searchField);
   };
 
   useEffect(() => {
@@ -120,7 +150,15 @@ export default function AllOrderPage() {
         productId: params.get("productId") || "",
         paymentMethodId: params.get("paymentMethodId") || "",
         search: params.get("search") || "",
+        customerName: params.get("customerName") || "",
+        productName: params.get("productName") || "",
+        sku: params.get("sku") || "",
+        receiptNumber: params.get("receiptNumber") || "",
+        phoneNumber: params.get("phoneNumber") || "",
+        shipperTrackingId: params.get("shipperTrackingId") || "",
         sort: params.get("sort") || "",
+        orderId: params.get("orderId") || "",
+        code: params.get("code") || "",
         // order: (params.get("order") as "asc" | "desc") || "desc",
       };
 
@@ -155,10 +193,44 @@ export default function AllOrderPage() {
       if (savedFilter) {
         const parsedFilter: FilterState = JSON.parse(savedFilter);
         setFilterOrder(parsedFilter);
-        handleSearchAndFilter(keyword, parsedFilter);
+        handleSearchAndFilter(keyword, parsedFilter, searchField);
       }
     }
-  }, [handleSearchAndFilter, keyword, location.search]);
+  }, [handleSearchAndFilter, keyword, location.search, searchField]);
+
+  useEffect(() => {
+    setFilterOrder((prev) => {
+      const updated = { ...prev };
+
+      searchFields.forEach((field) => {
+        if (field !== searchField && updated[field as keyof FilterState]) {
+          delete updated[field as keyof FilterState];
+        }
+      });
+
+      return updated;
+    });
+  }, [searchField]);
+
+  useEffect(() => {
+    if (!searchField || keyword === undefined) return;
+
+    const timeout = setTimeout(() => {
+      handleSearchAndFilter(keyword, filterOrder, searchField);
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timeout);
+  }, [keyword, searchField, filterOrder, handleSearchAndFilter]);
+
+  const onSearchClick = () => {
+    const updatedFilter = {
+      ...filterOrder,
+      [searchField]: keyword,
+    };
+
+    setFilterOrder(updatedFilter);
+    handleSearchAndFilter(keyword, updatedFilter, searchField);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -247,10 +319,13 @@ export default function AllOrderPage() {
 
         {/* Search and Filter Row */}
         <div className="flex flex-wrap items-center gap-2 mb-4 mt-3">
-          <div className="relative">{/* <FilterOrderDropdown /> */}</div>
-          <div className="flex-1">
+          <div className="flex flex-wrap items-center">
+            <FilterOrderDropdown
+              value={searchField}
+              onChange={setSearchField}
+            />
             <SearchOrder
-              onSearch={() => handleSearchAndFilter(keyword, filterOrder)}
+              onSearch={onSearchClick}
               keyword={keyword}
               keywordChange={setKeyword}
             />
@@ -294,7 +369,9 @@ export default function AllOrderPage() {
             <FilterOrder
               filter={filterOrder}
               setFilter={setFilterOrder}
-              onFilter={() => handleSearchAndFilter(keyword, filterOrder)}
+              onFilter={() =>
+                handleSearchAndFilter(keyword, filterOrder, searchField)
+              }
             />
           ) : null}
 
@@ -338,7 +415,9 @@ export default function AllOrderPage() {
           onSelectAll={handleSelectAll}
           isAllSelected={isAllSelected}
           selectedCount={selectedOrderIds.length}
-          onMassPrint={handleMassPrint} selectedOrderIds={[]}        />
+          onMassPrint={handleMassPrint}
+          selectedOrderIds={[]}
+        />
       </div>
     </div>
   );

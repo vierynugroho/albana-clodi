@@ -54,9 +54,14 @@ const ShippingPreview: React.FC<TPreviewProps> = ({ features, data }) => {
 
         <div className="space-y-5">
           <div className="space-y-2">
-            <div className="font-bold">Pengirim</div>
-            <div>{shop?.name}</div>
-            <div>{shop?.phoneNumber}</div>
+            <div className="space-y-2">
+              <div className="font-bold">Pengirim</div>
+              <div>{data?.dropship_info?.sender?.name || shop?.name}</div>
+              {/* <div>{data?.dropship_info?.sender?.address || shop?.address}</div> */}
+              <div>
+                Telp. {data?.dropship_info?.sender?.phone || shop?.phoneNumber}
+              </div>
+            </div>
           </div>
 
           {has("Warehouse") && (

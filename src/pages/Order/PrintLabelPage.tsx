@@ -13,16 +13,14 @@ import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/ui/button/Button";
 import { PreviewOutput } from "../../components/print-label/preview/PreviewOutput";
 import { getReceiptByOrderId } from "../../service/order/print";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 
 export default function PrintSettingsPage() {
   const location = useLocation();
-  const { id: routeId } = useParams();
   const queryParams = new URLSearchParams(location.search);
-  const idsParam = queryParams.get("ids") || routeId; // ambil string ids dari query
+  const idsParam = queryParams.get("ids"); 
 
-  // pakai useMemo supaya ids array hanya dibuat ulang kalau idsParam berubah
   const ids = useMemo(() => {
     return idsParam ? idsParam.split(",").filter(Boolean) : [];
   }, [idsParam]);

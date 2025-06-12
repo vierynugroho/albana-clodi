@@ -18,17 +18,17 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
     endDate: "",
   });
   const filters = [
-    {
-      label: "Status Order",
-      name: "orderStatus",
-      options: [
-        { value: "ALL", label: "Semua" },
-        { value: "PENDING", label: "Belum Diproses" },
-        { value: "PENDING", label: "Diproses" },
-        { value: "SEND", label: "Dikirim" },
-        { value: "SETTLEMENT", label: "Selesai" },
-      ],
-    },
+    // {
+    //   label: "Status Order",
+    //   name: "orderStatus",
+    //   options: [
+    //     { value: "ALL", label: "Semua" },
+    //     { value: "PENDING", label: "Belum Diproses" },
+    //     { value: "PENDING", label: "Diproses" },
+    //     { value: "SEND", label: "Dikirim" },
+    //     { value: "SETTLEMENT", label: "Selesai" },
+    //   ],
+    // },
     {
       label: "Kategori Customer",
       name: "customerCategory",
@@ -37,7 +37,7 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
         { value: "CUSTOMER", label: "Customer" },
         { value: "MEMBER", label: "Member" },
         { value: "RESELLER", label: "Reseller" },
-        { value: "DROPSHIP", label: "Dropship" },
+        { value: "DROPSHIPPER", label: "Dropship" },
         { value: "AGENT", label: "Agent" },
       ],
     },
