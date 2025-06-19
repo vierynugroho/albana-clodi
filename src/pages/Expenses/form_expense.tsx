@@ -115,7 +115,6 @@ export default function FormExpense({
     return ReactDOM.createPortal(
       <div className="fixed z-[100000] inset-0 overflow-y-auto">
       <Toaster />
-      <form>
       <div className="flex items-center justify-center min-h-screen px-4 text-center">
         <div className="fixed inset-0 bg-gray-500 opacity-75"></div>
         <div className="inline-block align-bottom bg-white rounded-lg px-6 pt-6 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
@@ -231,7 +230,6 @@ export default function FormExpense({
               Batal
             </button>
             <button
-              type="submit"
               onClick={isEdit ? handleEditDataExpense : addExpense}
               className="px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-500"
             >
@@ -240,7 +238,6 @@ export default function FormExpense({
           </div>
         </div>
       </div>
-      </form>
     </div>,
     document.body
   );
