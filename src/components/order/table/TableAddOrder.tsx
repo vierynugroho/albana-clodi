@@ -371,7 +371,7 @@ export default function TableAddOrder({ shipperDestinationId, receiverDestinatio
 			ongkirDiscountValue,
 			productDiscount,
 		});
-	}, [items, onChange, orders, selectedShippingCost, selectedShippingName, selectedShippingService, totalBerat, totalSubtotal, orders.map((order) => order.qty)]);
+	}, [items, onChange, orders, selectedShippingCost, selectedShippingName, selectedShippingService, totalBerat, totalSubtotal]);
 
 	return (
 		<>
