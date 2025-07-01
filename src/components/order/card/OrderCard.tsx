@@ -75,8 +75,8 @@ export default function OrderCard({ orders, selectedOrderIds, onToggleSelect, va
 							<p className='text-md text-blue-600 font-semibold'>#{order.OrderDetail.code}</p>
 							<p className='text-sm text-gray-400'>
 								dari <span className='font-semibold text-black'>{order.SalesChannel.name}</span> (
-								{order.orderDate
-									? new Date(order.orderDate).toLocaleString('id-ID', {
+								{order.createdAt
+									? new Date(order.createdAt).toLocaleString('id-ID', {
 											weekday: 'long',
 											year: 'numeric',
 											month: 'long',

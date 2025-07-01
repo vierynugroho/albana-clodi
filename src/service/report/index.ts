@@ -32,6 +32,7 @@ type ReportOrders = {
   penjualan_kotor: number;
   penjualan_bersih: number;
   laba_kotor: number;
+  laba_bersih: number;
   total_orders: number;
 };
 
