@@ -74,11 +74,19 @@ export default function AllExpense() {
 
   const fetchExpenses = useCallback(async () => {
     setLoading(true);
+
+    let monthNow;
+    if (!month) {
+      const now = new Date();
+      monthNow = (now.getMonth() + 1).toString();
+      setMonth(monthNow);
+    }
+
     const result = await getExpenses({
       keyword: "", // atau keyword dari state
       endDate,
       startDate,
-      month,
+      month: month || monthNow,
       year,
     });
     if (result.success && result.responseObject) {
@@ -147,10 +155,10 @@ export default function AllExpense() {
     fetchByKeyword();
     setLoading(false);
   }
-
   useEffect(() => {
     fetchExpenses();
   }, [fetchExpenses]);
+
   console.log(message);
 
   // useEffect()
@@ -200,7 +208,7 @@ export default function AllExpense() {
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     e.preventDefault();
                     handleSearch();
                   }

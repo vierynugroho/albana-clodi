@@ -144,7 +144,7 @@ export default function AllReportPage() {
                     icon={<GiMoneyStack size={30} />}
                     title="Laba Bersih"
                     result={`Rp ${
-                      report?.reportOrders?.laba_kotor?.toLocaleString(
+                      report?.reportOrders?.laba_bersih?.toLocaleString(
                         "id-ID"
                       ) ?? 0
                     }`}
