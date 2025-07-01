@@ -404,261 +404,245 @@ export default function EditOrderFomPage() {
   };
 
   return (
-    <div className="dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400">
-      <Toaster />
-      <PageMeta
-        title="ALBANA GROSIR"
-        description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
-      />
-      <OrderPageBreadcrumb pageTitle={`Edit Order : ${orderCode}`} />
-      <hr className="border-1 border-gray-200 dark:border-gray-500" />
+		<>
+			<Toaster />
+			<div className='dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400'>
+				<PageMeta
+					title='ALBANA GROSIR'
+					description='Pusat kontrol untuk semua transaksi dan pesanan pelanggan'
+				/>
+				<OrderPageBreadcrumb pageTitle={`Edit Order : ${orderCode}`} />
+				<hr className='border-1 border-gray-200 dark:border-gray-500' />
 
-      <div className="p-6 bg-gray-50 min-h-screen dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Form kiri */}
-          <ComponentCard
-            title="Informasi Order"
-            className="max-w-full md:max-h-fit"
-          >
-            <div className="space-y-6">
-              <CustomerSelect
-                label="Nama Pemesan"
-                selectedCustomer={selectedPemesan}
-                onSelect={(c) => setSelectedPemesan(c)}
-              />
-              <CustomerSelect
-                label="Nama Penerima"
-                selectedCustomer={selectedPenerima}
-                onSelect={(c) => setSelectedPenerima(c)}
-              />
+				<div className='p-6 bg-gray-50 min-h-screen dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400'>
+					<div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+						{/* Form kiri */}
+						<ComponentCard
+							title='Informasi Order'
+							className='max-w-full md:max-h-fit'
+						>
+							<div className='space-y-6'>
+								<CustomerSelect
+									label='Nama Pemesan'
+									selectedCustomer={selectedPemesan}
+									onSelect={(c) => setSelectedPemesan(c)}
+								/>
+								<CustomerSelect
+									label='Nama Penerima'
+									selectedCustomer={selectedPenerima}
+									onSelect={(c) => setSelectedPenerima(c)}
+								/>
 
-              <div className="relative">
-                <Label
-                  htmlFor="pengirimanDari"
-                  className="font-semibold text-md"
-                >
-                  Pengiriman Dari
-                </Label>
-                <AsyncSelect
-                  cacheOptions
-                  defaultOptions
-                  loadOptions={fetchDeliveryPlace}
-                  value={deliveryPlaceOption}
-                  onChange={(selectedOption) =>
-                    setSelectedDeliveryPlace(
-                      selectedOption ? selectedOption.place : null
-                    )
-                  }
-                  placeholder="Cari Lokasi Pengiriman"
-                  className="w-full"
-                  classNamePrefix="custom-select"
-                  components={{
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    Option: DeliveryOption as React.ComponentType<any>,
-                  }}
-                />
-              </div>
+								<div className='relative'>
+									<Label
+										htmlFor='pengirimanDari'
+										className='font-semibold text-md'
+									>
+										Pengiriman Dari
+									</Label>
+									<AsyncSelect
+										cacheOptions
+										defaultOptions
+										loadOptions={fetchDeliveryPlace}
+										value={deliveryPlaceOption}
+										onChange={(selectedOption) => setSelectedDeliveryPlace(selectedOption ? selectedOption.place : null)}
+										placeholder='Cari Lokasi Pengiriman'
+										className='w-full'
+										classNamePrefix='custom-select'
+										components={{
+											// eslint-disable-next-line @typescript-eslint/no-explicit-any
+											Option: DeliveryOption as React.ComponentType<any>,
+										}}
+									/>
+								</div>
 
-              <div className="flex flex-col space-y-2">
-                <Label htmlFor="datepicker">Pilih Tanggal:</Label>
-                <DatePicker
-                  id="datepicker"
-                  selected={orderDate}
-                  onChange={(date) => setOrderDate(date)}
-                  dateFormat="dd-MM-yyyy"
-                  className="border p-2 rounded dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300"
-                  placeholderText="Pilih tanggal order"
-                />
-              </div>
+								<div className='flex flex-col space-y-2'>
+									<Label htmlFor='datepicker'>Pilih Tanggal:</Label>
+									<DatePicker
+										id='datepicker'
+										selected={orderDate}
+										onChange={(date) => setOrderDate(date)}
+										dateFormat='dd-MM-yyyy'
+										className='border p-2 rounded dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300'
+										placeholderText='Pilih tanggal order'
+									/>
+								</div>
 
-              <div className="relative">
-                <Label
-                  htmlFor="pengirimanDari"
-                  className="font-semibold text-md"
-                >
-                  Sales Channels
-                </Label>
-                <AsyncSelect
-                  cacheOptions
-                  defaultOptions
-                  loadOptions={async (inputValue: string) => {
-                    const options = await fetchSalesChannels(inputValue);
-                    return options.map((opt) => ({
-                      ...opt,
-                      place: opt.channel,
-                      channel: undefined,
-                    }));
-                  }}
-                  value={salesChannelOption}
-                  classNamePrefix="custom-select"
-                  placeholder="Pilih sales channels"
-                  className="w-full"
-                  onChange={(option) => {
-                    setSelectedSalesChannel(option ? option.place : null);
-                  }}
-                />
-              </div>
+								<div className='relative'>
+									<Label
+										htmlFor='pengirimanDari'
+										className='font-semibold text-md'
+									>
+										Sales Channels
+									</Label>
+									<AsyncSelect
+										cacheOptions
+										defaultOptions
+										loadOptions={async (inputValue: string) => {
+											const options = await fetchSalesChannels(inputValue);
+											return options.map((opt) => ({
+												...opt,
+												place: opt.channel,
+												channel: undefined,
+											}));
+										}}
+										value={salesChannelOption}
+										classNamePrefix='custom-select'
+										placeholder='Pilih sales channels'
+										className='w-full'
+										onChange={(option) => {
+											setSelectedSalesChannel(option ? option.place : null);
+										}}
+									/>
+								</div>
 
-              <div className="flex flex-col space-y-2">
-                <label htmlFor="note" className="font-semibold text-md">
-                  Catatan
-                </label>
-                <textarea
-                  id="note"
-                  className="input h-30 w-full border border-gray-400 rounded-lg dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300"
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                />
-                {/* <div className="mt-2">
+								<div className='flex flex-col space-y-2'>
+									<label
+										htmlFor='note'
+										className='font-semibold text-md'
+									>
+										Catatan
+									</label>
+									<textarea
+										id='note'
+										className='input h-30 w-full border border-gray-400 rounded-lg dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300'
+										value={note}
+										onChange={(e) => setNote(e.target.value)}
+									/>
+									{/* <div className="mt-2">
                   <label className="inline-flex items-center">
                     <input type="checkbox" className="mr-2" />
                     Add To Print Label
                   </label>
                 </div> */}
-              </div>
-            </div>
-          </ComponentCard>
+								</div>
+							</div>
+						</ComponentCard>
 
-          {/* Detail Order */}
-          <div className="md:col-span-2 space-y-6">
-            <ComponentCard title="Orderan">
-              <TableAddOrder
-                shipperDestinationId={
-                  selectedPenerima?.destinationId ?? undefined
-                }
-                receiverDestinationId={
-                  selectedDeliveryPlace?.destinationId ?? undefined
-                }
-                onChange={handleChangeOrder}
-                initialData={initialData}
-              />
-            </ComponentCard>
+						{/* Detail Order */}
+						<div className='md:col-span-2 space-y-6'>
+							<ComponentCard title='Orderan'>
+								<TableAddOrder
+									shipperDestinationId={selectedPenerima?.destinationId ?? undefined}
+									receiverDestinationId={selectedDeliveryPlace?.destinationId ?? undefined}
+									onChange={handleChangeOrder}
+									initialData={initialData}
+								/>
+							</ComponentCard>
 
-            {/* Status Pembayaran */}
-            <ComponentCard title="Pembayaran">
-              <div className="w-full relative">
-                <label className="text-left font-semibold mb-1 block">
-                  Status Pembayaran
-                </label>
-                <div className="relative my-4">
-                  <Select
-                    onChange={(value: string) =>
-                      handleSelectChange(
-                        "paymentStatus",
-                        value as keyof typeof PaymentStatus
-                      )
-                    }
-                    defaultValue={selectedPaymentStatus ?? undefined}
-                    options={paymentOptions}
-                    className="w-full h-10 pr-10 pl-3 rounded-md border border-gray-300 dark:bg-dark-900 dark:text-white text-sm appearance-none"
-                  />
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-                      <path
-                        d="M6 8l4 4 4-4"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </div>
-              </div>
-              {(selectedPaymentStatus === "INSTALLMENTS" ||
-                selectedPaymentStatus === "SETTLEMENT") && (
-                <>
-                  <div className="flex flex-col relative mb-4">
-                    <Label className="font-semibold text-md">
-                      Pilih Tanggal:
-                    </Label>
-                    <DatePicker
-                      id="datepicker"
-                      selected={paymentDate}
-                      onChange={(date) => setPaymentDate(date)}
-                      dateFormat="dd-MM-yyyy"
-                      className="border p-2 rounded-md w-full"
-                      placeholderText="Pilih tanggal pembayaran"
-                    />
-                  </div>
+							{/* Status Pembayaran */}
+							<ComponentCard title='Pembayaran'>
+								<div className='w-full relative'>
+									<label className='text-left font-semibold mb-1 block'>Status Pembayaran</label>
+									<div className='relative my-4'>
+										<Select
+											onChange={(value: string) => handleSelectChange('paymentStatus', value as keyof typeof PaymentStatus)}
+											defaultValue={selectedPaymentStatus ?? undefined}
+											options={paymentOptions}
+											className='w-full h-10 pr-10 pl-3 rounded-md border border-gray-300 dark:bg-dark-900 dark:text-white text-sm appearance-none'
+										/>
+										<span className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400'>
+											<svg
+												width='20'
+												height='20'
+												fill='none'
+												viewBox='0 0 20 20'
+											>
+												<path
+													d='M6 8l4 4 4-4'
+													stroke='currentColor'
+													strokeWidth='2'
+													strokeLinecap='round'
+													strokeLinejoin='round'
+												/>
+											</svg>
+										</span>
+									</div>
+								</div>
+								{(selectedPaymentStatus === 'INSTALLMENTS' || selectedPaymentStatus === 'SETTLEMENT') && (
+									<>
+										<div className='flex flex-col relative mb-4'>
+											<Label className='font-semibold text-md'>Pilih Tanggal:</Label>
+											<DatePicker
+												id='datepicker'
+												selected={paymentDate}
+												onChange={(date) => setPaymentDate(date)}
+												dateFormat='dd-MM-yyyy'
+												className='border p-2 rounded-md w-full'
+												placeholderText='Pilih tanggal pembayaran'
+											/>
+										</div>
 
-                  <div className="relative mb-4">
-                    <Label className="font-semibold text-md">
-                      Metode Pembayaran
-                    </Label>
-                    <AsyncSelect
-                      cacheOptions
-                      defaultOptions
-                      loadOptions={fetchPayments}
-                      placeholder="Pilih metode pembayaran"
-                      className="w-full"
-                      classNamePrefix="custom-select"
-                      value={paymentMethodOption}
-                      onChange={(option) => {
-                        setSelectedPaymentMethod(
-                          option ? option.payment : null
-                        );
-                      }}
-                    />
-                  </div>
-                </>
-              )}
+										<div className='relative mb-4'>
+											<Label className='font-semibold text-md'>Metode Pembayaran</Label>
+											<AsyncSelect
+												cacheOptions
+												defaultOptions
+												loadOptions={fetchPayments}
+												placeholder='Pilih metode pembayaran'
+												className='w-full'
+												classNamePrefix='custom-select'
+												value={paymentMethodOption}
+												onChange={(option) => {
+													setSelectedPaymentMethod(option ? option.payment : null);
+												}}
+											/>
+										</div>
+									</>
+								)}
 
-              {selectedPaymentStatus === "INSTALLMENTS" && (
-                <div className="mb-4">
-                  <Label className="font-semibold text-md">Nominal</Label>
-                  <Input
-                    placeholder="0"
-                    onChange={(e) => setNominalPayment(e.target.value)}
-                    value={nominalPayment || ""}
-                  />
-                </div>
-              )}
-            </ComponentCard>
+								{selectedPaymentStatus === 'INSTALLMENTS' && (
+									<div className='mb-4'>
+										<Label className='font-semibold text-md'>Nominal</Label>
+										<Input
+											placeholder='0'
+											onChange={(e) => setNominalPayment(e.target.value)}
+											value={nominalPayment || ''}
+										/>
+									</div>
+								)}
+							</ComponentCard>
 
-            {(selectedPaymentStatus === "INSTALLMENTS" ||
-              selectedPaymentStatus === "SETTLEMENT") && (
-              <ComponentCard title="Shipping">
-                <div>
-                  <label className="text-left font-semibold mb-1 block">
-                    Nomor Resi
-                  </label>
-                  <Input
-                    placeholder="Masukkan Nomor Resi ( Optional )"
-                    value={recieptNumber}
-                    onChange={(e) => setReceiptNumber(e.target.value)}
-                  />
-                </div>
-              </ComponentCard>
-            )}
+							{(selectedPaymentStatus === 'INSTALLMENTS' || selectedPaymentStatus === 'SETTLEMENT') && (
+								<ComponentCard title='Shipping'>
+									<div>
+										<label className='text-left font-semibold mb-1 block'>Nomor Resi</label>
+										<Input
+											placeholder='Masukkan Nomor Resi ( Optional )'
+											value={recieptNumber}
+											onChange={(e) => setReceiptNumber(e.target.value)}
+										/>
+									</div>
+								</ComponentCard>
+							)}
 
-            {/* Tombol Aksi */}
-            <div className="flex flex-wrap justify-end gap-4 pt-2">
-              <Button
-                onClick={handleSubmit}
-                disabled={loading}
-                className={`flex items-center gap-2 px-4 py-2 rounded text-white ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                }`}
-              >
-                {loading ? (
-                  <>
-                    <FaSpinner className="animate-spin" size={18} />
-                    Menyimpan...
-                  </>
-                ) : (
-                  <>
-                    Simpan Order
-                    <IoIosSave size={20} />
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+							{/* Tombol Aksi */}
+							<div className='flex flex-wrap justify-end gap-4 pt-2'>
+								<Button
+									onClick={handleSubmit}
+									disabled={loading}
+									className={`flex items-center gap-2 px-4 py-2 rounded text-white ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+								>
+									{loading ? (
+										<>
+											<FaSpinner
+												className='animate-spin'
+												size={18}
+											/>
+											Menyimpan...
+										</>
+									) : (
+										<>
+											Simpan Order
+											<IoIosSave size={20} />
+										</>
+									)}
+								</Button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</>
+	);
 }
