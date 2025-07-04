@@ -173,7 +173,7 @@ export default function AllReportPage() {
               <CardReport
                 icon={<LuPackageOpen size={30} />}
                 title="Total Order"
-                result={`${report?.reportOrders?.total_orders ?? 0}`}
+                result={`${report?.reportOrders?.total_transaction_success ?? 0}`}
                 iconColor="bg-cyan-100 text-cyan-600"
                 className={`${
                   localStorage.getItem("role") === "ADMIN"
