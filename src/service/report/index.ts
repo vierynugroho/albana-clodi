@@ -34,6 +34,7 @@ type ReportOrders = {
   laba_kotor: number;
   laba_bersih: number;
   total_orders: number;
+  total_transaction_success: number;
 };
 
 export type ReportAll = {
