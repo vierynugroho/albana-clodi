@@ -22,6 +22,9 @@ const ProductOption = (
     const productId = data.product.product.id;
     const stock = data.product.variant?.[0]?.stock ?? 0;
 
+    // const productPrice = data.product.variant?.[0].productPrices[0].agent;
+    console.log({ data });
+
     if (stock <= 0) {
       toast.error("Stok produk habis. Tidak bisa ditambahkan.");
       return;
@@ -53,7 +56,6 @@ const ProductOption = (
     });
 
     window.dispatchEvent(customEvent);
-    toast.success("Produk berhasil ditambahkan.");
   };
 
   return (

@@ -343,6 +343,7 @@ export async function editProduct(
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log({ response });
     return {
       success: true,
       message: response.data.message ?? "Produk berhasil ditambahkan",
