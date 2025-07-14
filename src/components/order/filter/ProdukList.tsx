@@ -21,7 +21,17 @@ function ProductList() {
   };
 
   const handleTambah = (index: number) => {
-    alert(`Menambahkan ${jumlah[index]} x ${produkData[index].nama}`);
+    console.log(`TERTEKAN ${index}`);
+    // Log data harga yang ditambahkan
+    const produk = produkData[index];
+    const totalHarga = jumlah[index] * produk.harga;
+    console.log({
+      nama: produk.nama,
+      hargaSatuan: produk.harga,
+      jumlah: jumlah[index],
+      totalHarga: totalHarga,
+    });
+    alert(`Menambahkan ${jumlah[index]} x ${produk.nama}`);
   };
 
   const filteredProduk = produkData.filter((p) =>
@@ -42,7 +52,8 @@ function ProductList() {
         filteredProduk.map((p, index) => (
           <div
             key={index}
-            className="flex items-center justify-between bg-white p-4 mb-3 rounded shadow">
+            className="flex items-center justify-between bg-white p-4 mb-3 rounded shadow"
+          >
             <img src={PrdukImage} alt="produk" className="w-12 h-12 rounded" />
             <div className="flex-1 ml-4">
               <div className="font-semibold">{p.nama}</div>
@@ -53,7 +64,8 @@ function ProductList() {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => handleJumlahChange(index, -1)}
-                className="px-2 bg-gray-200 rounded">
+                className="px-2 bg-gray-200 rounded"
+              >
                 -
               </button>
               <input
@@ -64,13 +76,15 @@ function ProductList() {
               />
               <button
                 onClick={() => handleJumlahChange(index, 1)}
-                className="px-2 bg-gray-200 rounded">
+                className="px-2 bg-gray-200 rounded"
+              >
                 +
               </button>
             </div>
             <button
               onClick={() => handleTambah(index)}
-              className="ml-3 bg-blue-600 text-white px-3 py-1 rounded-lg">
+              className="ml-3 bg-blue-600 text-white px-3 py-1 rounded-lg"
+            >
               + Tambahkan
             </button>
           </div>
