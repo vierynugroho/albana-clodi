@@ -6,19 +6,18 @@ export const getHargaByCustomerCategory = (
     agent?: number;
   },
   category?: string
-): number => {
-  switch (category) {
-    case "AGENT":
-      return price.agent ?? price.reseller ?? price.member ?? price.normal;
-    case "RESELLER":
-      return price.reseller ?? price.member ?? price.normal;
-    case "MEMBER":
-      return price.member ?? price.normal;
-    case "DROPSHIPER":
-        return price.normal;
-    case "CUSTOMER" :
-        return price.normal;
-    default:
-      return price.normal;
+): number | null => {
+  if (category === "CUSTOMER") {
+    return price.normal;
+  } else if (category === "DROPSHIPPER") {
+    return price.normal;
+  } else if (category === "MEMBER") {
+    return price.member ?? null;
+  } else if (category === "RESELLER") {
+    return price.reseller ?? null;
+  } else if (category === "AGENT") {
+    return price.agent ?? null;
+  } else {
+    return null;
   }
 };
