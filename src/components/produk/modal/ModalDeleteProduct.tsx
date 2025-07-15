@@ -15,11 +15,12 @@ export default function ModalDeleteProduct({
 }: DeleteModalProps) {
   async function fetchdeleteProduk(id: string) {
     const result = await deleteProduct(id);
+    console.log({ HAPUS: result });
     if (result.success) {
+      fetchProduk();
       toast.success(result.message, {
         style: { marginTop: "10vh", zIndex: 100000 },
       });
-      fetchProduk();
     } else {
       toast.error(result.message, {
         style: { marginTop: "10vh", zIndex: 100000 },

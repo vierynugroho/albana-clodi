@@ -40,7 +40,7 @@ type FormCustomer = {
 const optionsCustomers = [
   { value: "customer", label: "Customer" },
   { value: "reseller", label: "Reseller" },
-  { value: "agent", label: "Agent" },
+  { value: "agent", label: "Agen" },
   { value: "dropshipper", label: "Dropshiper" },
   { value: "member", label: "Member" },
 ];

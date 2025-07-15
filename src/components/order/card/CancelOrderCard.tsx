@@ -82,7 +82,8 @@ export default function CancelOrderCard() {
       {orderCustumer.map((order) => (
         <div
           key={order.id}
-          className="max-w-full mx-auto mt-4 p-5 bg-white shadow-lg rounded-xl border">
+          className="max-w-full mx-auto mt-4 p-5 bg-white shadow-lg rounded-xl border"
+        >
           {/* Header */}
           <div className="flex justify-between items-start">
             <div>
@@ -98,7 +99,8 @@ export default function CancelOrderCard() {
                         ? "border-green-500 bg-green-500"
                         : "border-gray-300"
                     }  hover:border-green-500 transition duration-300`}
-                    title={`Status pengiriman: ${step.status}`}>
+                    title={`Status pengiriman: ${step.status}`}
+                  >
                     {step.icon}
                   </div>
                   {index < TrackingProgress.length - 1 && (
@@ -118,14 +120,20 @@ export default function CancelOrderCard() {
                 <p className="font-normal text-gray-500">Pemesan</p>
                 <p className="text-xl font-semibold">{order.customer}</p>
                 <p className="text-sm text-purple-600">
-                  {order.statusCustumer}
+                  {order.statusCustumer &&
+                  order.statusCustumer.toLowerCase() === "agent"
+                    ? "AGEN"
+                    : order.statusCustumer}
                 </p>
               </div>
               <div>
                 <p className="font-normal text-gray-500">Dikirim kepada</p>
                 <p className="text-theme-xl font-semibold">{order.customer}</p>
                 <p className="text-sm text-purple-600">
-                  {order.statusCustumer}
+                  {order.statusCustumer &&
+                  order.statusCustumer.toLowerCase() === "agent"
+                    ? "AGEN"
+                    : order.statusCustumer}
                 </p>
               </div>
               <div>
@@ -150,14 +158,18 @@ export default function CancelOrderCard() {
                   </span>
                   <button
                     onClick={() => setShowModal(true)}
-                    className="text-blue-700 text-md font-bold cursor-pointer mt-5 hover:underline flex items-center">
+                    className="text-blue-700 text-md font-bold cursor-pointer mt-5 hover:underline flex items-center"
+                  >
                     Lihat Riwayat
                     <IoIosArrowForward className="mx-1 font-bold" />
                   </button>
                 </div>
 
                 {showModal && (
-                  <ModalRiwayatTran changeModal={() => setShowModal(false)} orderId={""} />
+                  <ModalRiwayatTran
+                    changeModal={() => setShowModal(false)}
+                    orderId={""}
+                  />
                 )}
               </div>
 
@@ -209,7 +221,8 @@ export default function CancelOrderCard() {
               </button>
               <button
                 onClick={() => setShowModal(true)}
-                className="flex items-center gap-2 text-black bg-gray-100 px-4 py-3 border border-black rounded-lg text-sm">
+                className="flex items-center gap-2 text-black bg-gray-100 px-4 py-3 border border-black rounded-lg text-sm"
+              >
                 <IoDocumentTextOutline />
                 Payment Detail
               </button>
