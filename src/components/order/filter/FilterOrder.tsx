@@ -38,7 +38,7 @@ export default function FilterOrder({ filter, setFilter, onFilter }: Props) {
         { value: "MEMBER", label: "Member" },
         { value: "RESELLER", label: "Reseller" },
         { value: "DROPSHIPPER", label: "Dropship" },
-        { value: "AGENT", label: "Agent" },
+        { value: "AGENT", label: "Agen" },
       ],
     },
     {

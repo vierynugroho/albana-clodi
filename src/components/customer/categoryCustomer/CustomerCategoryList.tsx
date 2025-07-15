@@ -16,7 +16,7 @@ const customerCategories = [
       "Customer yang mendapatkan potongan harga khusus untuk penjualan kembali.",
   },
   {
-    title: "Agent",
+    title: "Agen",
     description:
       "Perantara yang biasanya memiliki kuota atau target penjualan tertentu.",
   },

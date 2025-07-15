@@ -12,7 +12,7 @@ type Props = {
 const optionsCustomers = [
   { value: "customer", label: "Customer" },
   { value: "reseller", label: "Reseller" },
-  { value: "agent", label: "Agent" },
+  { value: "agent", label: "Agen" },
   { value: "member", label: "Member" },
   { value: "dropshiper", label: "Dropshiper" },
 ];
@@ -88,7 +88,8 @@ export default function ModalCustomerKategory({ changeModal }: Props) {
               <button
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-brand-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-brand-300 focus:outline-none focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                onClick={() => addFilter()}>
+                onClick={() => addFilter()}
+              >
                 Tambah
               </button>
             </span>
@@ -96,7 +97,8 @@ export default function ModalCustomerKategory({ changeModal }: Props) {
               <button
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                onClick={changeModal}>
+                onClick={changeModal}
+              >
                 Cancel
               </button>
             </span>

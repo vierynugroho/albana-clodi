@@ -15,7 +15,7 @@ type Props = {
 const optionsCustomers = [
   { value: "CUSTOMER", label: "Customer" },
   { value: "RESELLER", label: "Reseller" },
-  { value: "AGENT", label: "Agent" },
+  { value: "AGENT", label: "Agen" },
   { value: "DROPSHIPPER", label: "Dropshiper" },
 ];
 

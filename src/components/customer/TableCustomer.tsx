@@ -122,7 +122,10 @@ export default function TableCustomer({
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {customer.category}
+                    {customer.category &&
+                    customer.category.toLowerCase() === "agent"
+                      ? "AGEN"
+                      : customer.category}
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
