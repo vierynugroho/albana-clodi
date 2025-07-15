@@ -62,7 +62,7 @@ const Select: React.FC<SelectProps> = ({
           value={option.value}
           className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
         >
-          {option.label}
+          {option.label?.toLowerCase() === "agent" ? "agen" : option.label}
         </option>
       ))}
     </select>
