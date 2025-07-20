@@ -1,4 +1,9 @@
-import { FaPrint, FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaPrint,
+  FaChevronDown,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 
 type OrderToolbarProps = {
   currentPage: number;
@@ -53,31 +58,82 @@ export default function OrderToolbar({
         </div>
       </div>
 
-      <div className="flex items-center space-x-1">
-        {/* pagination */}
-        <button onClick={() => onPageChange(1)} className="px-2 py-1 text-gray-400 hover:text-blue-600">&laquo;</button>
-        <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1} className="px-2 py-1 text-gray-400 hover:text-blue-600">
-          <FaChevronLeft />
-        </button>
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+      <div className="flex items-center justify-end w-full">
+        <nav
+          className="flex flex-wrap items-center justify-center gap-1 bg-white rounded-lg shadow-sm px-3 py-2 border border-gray-200"
+          aria-label="Pagination"
+          style={{ maxWidth: "100%", overflowX: "auto" }}
+        >
           <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            className={`px-3 py-1 rounded text-sm font-semibold ${
-              page === currentPage
-                ? "bg-blue-600 text-white"
-                : "bg-white text-blue-600 border border-blue-600"
-            }`}
+            onClick={() => onPageChange(1)}
+            className="px-2 py-1 text-gray-400 hover:text-blue-600 rounded transition"
+            aria-label="First Page"
+            disabled={currentPage === 1}
           >
-            {page}
+            &laquo;
           </button>
-        ))}
+          <button
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-2 py-1 text-gray-400 hover:text-blue-600 rounded transition"
+            aria-label="Previous Page"
+          >
+            <FaChevronLeft />
+          </button>
 
-        <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages} className="px-2 py-1 text-gray-400 hover:text-blue-600">
-          <FaChevronRight />
-        </button>
-        <button onClick={() => onPageChange(totalPages)} className="px-2 py-1 text-gray-400 hover:text-blue-600">&raquo;</button>
+          {/* Show only a window of pages for better UX */}
+          {Array.from({ length: totalPages }, (_, i) => i + 1)
+            .filter((page) => {
+              if (totalPages <= 7) return true;
+              if (page === 1 || page === totalPages) return true;
+              if (Math.abs(page - currentPage) <= 2) return true;
+              if (currentPage <= 4 && page <= 6) return true;
+              if (currentPage >= totalPages - 3 && page >= totalPages - 5)
+                return true;
+              return false;
+            })
+            .map((page, idx, arr) => {
+              // Add ellipsis
+              if (idx > 0 && page - arr[idx - 1] > 1) {
+                return (
+                  <span key={`ellipsis-${page}`} className="px-2 text-gray-400">
+                    ...
+                  </span>
+                );
+              }
+              return (
+                <button
+                  key={page}
+                  onClick={() => onPageChange(page)}
+                  className={`px-3 py-1 rounded text-sm font-semibold transition ${
+                    page === currentPage
+                      ? "bg-blue-600 text-white shadow"
+                      : "bg-white text-blue-600 border border-blue-600 hover:bg-blue-50"
+                  }`}
+                  style={{ minWidth: 36 }}
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-2 py-1 text-gray-400 hover:text-blue-600 rounded transition"
+            aria-label="Next Page"
+          >
+            <FaChevronRight />
+          </button>
+          <button
+            onClick={() => onPageChange(totalPages)}
+            className="px-2 py-1 text-gray-400 hover:text-blue-600 rounded transition"
+            aria-label="Last Page"
+            disabled={currentPage === totalPages}
+          >
+            &raquo;
+          </button>
+        </nav>
       </div>
     </div>
   );
