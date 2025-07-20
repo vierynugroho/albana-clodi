@@ -3,7 +3,7 @@ import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import Carousel from "../../components/laporan/Caraousel";
 import CardReport from "../../components/laporan/card/CardReport";
-import { FaLifeRing, FaPlaneDeparture } from "react-icons/fa";
+import { FaLifeRing } from "react-icons/fa";
 import { GiMoneyStack, GiProfit, GiTakeMyMoney } from "react-icons/gi";
 import { BiCalculator, BiSolidDiscount } from "react-icons/bi";
 import { LuPackageOpen } from "react-icons/lu";
@@ -105,28 +105,28 @@ export default function AllReportPage() {
           {report?.reportExpenses.filterInfo}
         </h2>
         <Carousel>
-          {/* Slide 1 */}
+          {/* Slide 1: Penjualan & Laba */}
           <div className="py-3 mr-5">
             <div className="grid gap-6 md:grid-cols-4">
-              <CardReport
-                icon={<FaLifeRing size={30} />}
-                title="Penjualan Kotor"
-                result={`Rp ${
-                  report?.reportOrders?.penjualan_kotor.toLocaleString(
-                    "id-ID"
-                  ) ?? 0
-                }`}
-                iconColor="bg-brand-100 text-brand-600"
-              />
               <CardReport
                 icon={<GiTakeMyMoney size={30} />}
                 title="Penjualan Bersih"
                 result={`Rp ${
-                  report?.reportOrders?.penjualan_bersih.toLocaleString(
+                  report?.reportOrders?.penjualan_bersih?.toLocaleString(
                     "id-ID"
                   ) ?? 0
                 }`}
                 iconColor="bg-amber-100 text-amber-600"
+              />
+              <CardReport
+                icon={<FaLifeRing size={30} />}
+                title="Penjualan Kotor"
+                result={`Rp ${
+                  report?.reportOrders?.penjualan_kotor?.toLocaleString(
+                    "id-ID"
+                  ) ?? 0
+                }`}
+                iconColor="bg-brand-100 text-brand-600"
               />
               {localStorage.getItem("role") === "ADMIN" ? null : (
                 <>
@@ -152,62 +152,62 @@ export default function AllReportPage() {
                   />
                 </>
               )}
+            </div>
+          </div>
 
+          {/* Slide 2: Pengeluaran & Item Terjual */}
+          <div className="py-3 mr-5">
+            <div className="grid gap-6 md:grid-cols-4">
               <CardReport
                 icon={<BiCalculator size={30} />}
                 title="Pengeluaran"
                 result={`Rp ${
-                  report?.reportExpenses?.totalExpenses.toLocaleString(
+                  report?.reportExpenses?.totalExpenses?.toLocaleString(
                     "id-ID"
                   ) ?? 0
                 }`}
                 iconColor="bg-red-100 text-red-600"
               />
-              {/* Row 2 */}
               <CardReport
                 icon={<BiSolidDiscount size={30} />}
                 title="Total Item Terjual"
                 result={`${report?.reportOrders?.total_item_terjual ?? 0}`}
-                iconColor="bg-red-100 text-red-600"
+                iconColor="bg-purple-100 text-purple-600"
               />
               <CardReport
                 icon={<LuPackageOpen size={30} />}
                 title="Total Order"
-                result={`${report?.reportOrders?.total_orders ?? 0}`}
+                result={`${report?.reportOrders?.total_transactions ?? 0}`}
                 iconColor="bg-cyan-100 text-cyan-600"
-                className={`${
-                  localStorage.getItem("role") === "ADMIN"
-                    ? `md:w-full md:col-span-2`
-                    : ""
-                }`}
               />
               <CardReport
-                icon={<FaPlaneDeparture size={30} />}
-                title="Biaya Lain"
-                result={`${report?.reportOrders?.total_transactions ?? 0}`}
-                iconColor="bg-blue-100 text-blue-600"
-                className={`${
-                  localStorage.getItem("role") === "ADMIN"
-                    ? `md:w-full md:col-span-2`
-                    : ""
+                icon={<LuPackageOpen size={30} />}
+                title="Total Transaksi Lunas"
+                result={`${
+                  report?.reportOrders?.total_transaction_success ?? 0
                 }`}
+                iconColor="bg-green-100 text-green-600"
               />
             </div>
           </div>
 
-          {/* Slide 2 */}
-          <div className="py-3">
+          {/* Slide 3: Transaksi Tertunda & Lainnya */}
+          <div className="py-3 mr-5">
             <div className="grid gap-6 md:grid-cols-4">
               <CardReport
                 icon={<LuPackageOpen size={30} />}
-                title="Ongkir"
-                result="Rp 0"
-                iconColor="bg-cyan-100 text-cyan-600"
+                title="Total Transaksi Tertunda"
+                result={`${
+                  report?.reportOrders?.total_transaction_pending ?? 0
+                }`}
+                iconColor="bg-yellow-100 text-yellow-600"
               />
               <CardReport
-                icon={<FaPlaneDeparture size={30} />}
-                title="Biaya Lain"
-                result="Rp 0"
+                icon={<LuPackageOpen size={30} />}
+                title="Total Transaksi Cicilan"
+                result={`${
+                  report?.reportOrders?.total_transaction_installments ?? 0
+                }`}
                 iconColor="bg-blue-100 text-blue-600"
               />
             </div>
