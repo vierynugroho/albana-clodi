@@ -22,6 +22,7 @@ import DropdownAction from "../dropdown/DropdownMenuList.tsx";
 import { getHargaByCustomerCategory } from "../getPriceByCustomerCategory.ts";
 import { formatPrice } from "../../../utils/format-price.utils.ts";
 import toast from "react-hot-toast";
+import { useProduct } from "../../../context/ProductContect";
 
 interface ItemData {
   type: ItemType;
@@ -89,6 +90,8 @@ export default function TableAddOrder({
   initialData,
   customerCategory,
 }: TableAddOrderProps) {
+  // Ambil dari context ProductProvider
+  const { addProduct, removeProduct } = useProduct();
   const [selectedShippingCost, setSelectedShippingCost] = useState(0);
   const [selectedShippingName, setSelectedShippingName] = useState<string>("");
   const [selectedShippingService, setSelectedShippingService] =
@@ -180,8 +183,7 @@ export default function TableAddOrder({
 
   const handleDeleteOrder = (id: string) => {
     setOrders((prev) => prev.filter((o) => o.productId !== id));
-    const addedSet = (window as any).addedProducts as Set<string>;
-    addedSet.delete(id);
+    removeProduct(id);
   };
 
   const handleUpdateQty = (productId: string, newQty: number) => {
@@ -220,9 +222,7 @@ export default function TableAddOrder({
   };
 
   useEffect(() => {
-    if (!(window as any).addedProducts) {
-      (window as any).addedProducts = new Set<string>();
-    }
+    // Tidak perlu lagi menggunakan window.addedProducts, gunakan state addedProducts dari React
 
     const handleAddProduct = (e: any) => {
       // Dahulukan pengecekan customerCategory sebelum cek harga
@@ -246,8 +246,7 @@ export default function TableAddOrder({
 
       const berat = product.product.weight;
 
-      const addedSet = (window as any).addedProducts as Set<string>;
-      addedSet.add(productId);
+      addProduct(productId);
 
       setOrders((prev) => {
         const existing = prev.find((o) => o.productId === productId);
@@ -281,7 +280,7 @@ export default function TableAddOrder({
 
     window.addEventListener("product:add", handleAddProduct);
     return () => window.removeEventListener("product:add", handleAddProduct);
-  }, [customerCategory]);
+  }, [addProduct, customerCategory]);
 
   const [modalType, setModalType] = useState<null | ItemType>(null);
   const [items, setItems] = useState<ItemData[]>([]);

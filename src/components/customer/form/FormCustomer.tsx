@@ -21,7 +21,7 @@ import {
   detailCustomer,
   editCustomer,
 } from "../../../service/customer";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useParams } from "react-router";
 
 type FormCustomer = {
@@ -277,7 +277,6 @@ export default function FormCustomer() {
 
   return (
     <div className="flex gap-4 l">
-      <Toaster />
       <div className="flex gap-5 w-full max-md:flex-col">
         <ComponentCard title="Informasi Customer" className="flex-1/2">
           <div className="space-y-6 flex flex-wrap gap-4">

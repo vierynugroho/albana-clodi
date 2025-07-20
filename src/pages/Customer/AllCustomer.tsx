@@ -12,7 +12,7 @@ import {
   downloadExcelCustomer,
   getCustomers,
 } from "../../service/customer";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { FilterState } from "../../service/customer";
 import PaginationNavigation from "../../components/produk/pagination/PaginationNavigation";
 
@@ -122,7 +122,6 @@ export default function AllCustomerPage() {
 
   return (
     <div>
-      <Toaster />
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"

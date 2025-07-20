@@ -5,7 +5,7 @@ import DetailVariant from "../../components/produk/detailProduct/DetailVariant";
 import ProdukPageBreadcrumb from "../../components/produk/ProdukPageBreadcrumb";
 import { getDetailProduct, ResponseDetailProduk } from "../../service/product";
 import { useParams } from "react-router";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 export default function DetailProduCtPage() {
   const { id } = useParams();
   const hasFetched = useRef(false);
@@ -38,7 +38,6 @@ export default function DetailProduCtPage() {
 
   return (
     <div>
-      <Toaster />
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
@@ -50,7 +49,11 @@ export default function DetailProduCtPage() {
         <div className="flex-col gap-5">
           <DetailProduct productDetail={productDetail} />
           {productDetail?.productVariants.map((varian, index) => (
-            <DetailVariant key={index} numberVariant={index} productVariant={varian} />
+            <DetailVariant
+              key={index}
+              numberVariant={index}
+              productVariant={varian}
+            />
           ))}
         </div>
       </div>

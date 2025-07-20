@@ -15,7 +15,7 @@ import {
 } from "../../service/expense";
 import DeleteModal from "../../components/expenses/modal/DeleteModal";
 import ModalUploadExel from "../../components/expenses/importExel/ModalUploadExel";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface Expense {
   id: string;
@@ -164,7 +164,6 @@ export default function AllExpense() {
   // useEffect()
   return (
     <div>
-      <Toaster />
       <PageMeta title="ALBANA GROSIR" description="Expense" />
       <div className="mx-2">
         <h1 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white/90 lg:text-3xl">
