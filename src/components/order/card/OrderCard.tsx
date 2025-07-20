@@ -187,6 +187,9 @@ export default function OrderCard({
                         : order.OrderDetail?.paymentStatus?.toLowerCase() ===
                           "pending"
                         ? "bg-yellow-500"
+                        : order.OrderDetail?.paymentStatus?.toLowerCase() ===
+                          "installments"
+                        ? "bg-orange-600"
                         : "bg-green-600"
                     }`}
                   >
