@@ -20,7 +20,7 @@ import {
   CategoryProduct,
   getCategories,
 } from "../../../service/product/category";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { LuWeight } from "react-icons/lu";
 
 const toastStyle = { marginTop: "10vh", zIndex: 100000 };
@@ -294,7 +294,6 @@ export default function FormProduk() {
 
   return (
     <div>
-      <Toaster />
       <div className="flex gap-4 max-xl:flex-col">
         <div className="flex flex-col gap-y-5">
           <ComponentCard title="Informasi Produk" className="md:min-w-[780px]">

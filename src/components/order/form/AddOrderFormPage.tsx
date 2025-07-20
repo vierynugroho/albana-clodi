@@ -30,7 +30,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Input from "../../form/input/InputField.tsx";
 import { CustomOption, DeliveryOption } from "../card/SelectOption.tsx";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export default function AddOrderFomPage() {
@@ -263,9 +263,6 @@ export default function AddOrderFomPage() {
 
   return (
     <>
-      <Toaster
-        toastOptions={{ style: { marginTop: "10vh", zIndex: 100000 } }}
-      />
       <div className="dark:border-gray-800 dark:bg-white/[0.0] dark:text-gray-400">
         <PageMeta
           title="ALBANA GROSIR"

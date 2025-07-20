@@ -7,7 +7,7 @@ import {
   BankPayment,
   getBankPayments,
 } from "../../../service/shopSetting/payment";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function PaymentSettingForm() {
   const hasFetched = useRef(false);
@@ -47,7 +47,6 @@ export default function PaymentSettingForm() {
 
   return (
     <div className="flex gap-8 max-md:flex-col">
-      <Toaster />
       {/* For Description */}
       <div className="text-start max-w-full md:max-w-60">
         <h2 className="font-bold">Rekening Bank</h2>

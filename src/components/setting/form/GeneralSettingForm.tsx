@@ -10,7 +10,7 @@ import {
   getServiceForm,
   createServiceForm,
 } from "../../../service/shopSetting";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function GeneralSettingForm() {
   const dataIsExist = useRef<boolean>(false);
@@ -60,7 +60,6 @@ export default function GeneralSettingForm() {
 
   return (
     <div className="flex flex-col gap-3">
-      <Toaster />
       <div className="flex gap-6">
         <div>
           <Label htmlFor="inputLogo">Logo Perusahaan</Label>

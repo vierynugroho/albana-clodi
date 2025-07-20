@@ -9,7 +9,7 @@ import {
   detailCategory,
   getCategories,
 } from "../../service/product/category";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import ModalDeleteCategory from "../../components/produk/modal/ModalDeleteCategory";
 
 export default function CategoryProduk() {
@@ -70,7 +70,6 @@ export default function CategoryProduk() {
 
   return (
     <div>
-      <Toaster />
       <PageMeta
         title="ALBANA GROSIR"
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"

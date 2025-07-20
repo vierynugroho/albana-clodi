@@ -15,7 +15,7 @@ import Button from "../ui/button/Button";
 import { TbCirclePlus } from "react-icons/tb";
 import ModalChannel from "./modal/ModalChannel";
 import { getAllSales, SalesChannel } from "../../service/shopSetting/sales";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import DeleteSalesModal from "./modal/DeleteSalesModal";
 export default function SalesChannelSetting() {
   const hasFetched = useRef(false);
@@ -57,7 +57,6 @@ export default function SalesChannelSetting() {
 
   return (
     <div className="w-full mx-auto">
-      <Toaster />
       <PageMeta title="ALBANA GROSIR" description="Pengaturan Sales Channel" />
 
       <div className="space-y-6">

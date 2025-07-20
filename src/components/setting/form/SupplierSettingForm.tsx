@@ -10,7 +10,7 @@ import {
   editSupplier,
   getDetailSupplier,
 } from "../../../service/shopSetting/supplier";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useParams } from "react-router";
 
 export default function SupplierSettingForm() {
@@ -47,7 +47,7 @@ export default function SupplierSettingForm() {
 
   const handleEdit = async () => {
     setLoading(true);
-    console.log(formData)
+    console.log(formData);
     if (id) {
       const result = await editSupplier(id, formData);
       if (result.success) {
@@ -80,7 +80,6 @@ export default function SupplierSettingForm() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <Toaster />
       <SupplierPageBreadcrumb pageTitle="Tambah Asal Pengiriman" />
       <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
         <div className="px-2">

@@ -5,6 +5,7 @@ import { ProductItem } from "../../../service/order/create-order.type";
 import { fetchProduct } from "../../../service/order/order.service";
 import { useState } from "react";
 import ProdukImage from "../../../../public/images/icons/produk_image.jpg";
+import { useProduct } from "../../../context/ProductContect";
 
 const ProductOption = (
   props: OptionProps<
@@ -14,6 +15,7 @@ const ProductOption = (
 ) => {
   const { data, innerRef, innerProps, isFocused } = props;
   const [qty, setQty] = useState(1);
+  const { getProductById } = useProduct();
 
   const increase = () => setQty((prev) => prev + 1);
   const decrease = () => setQty((prev) => (prev > 1 ? prev - 1 : 1));
@@ -35,15 +37,7 @@ const ProductOption = (
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (!(window as any).addedProducts) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).addedProducts = new Set<string>();
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addedSet = (window as any).addedProducts as Set<string>;
-
-    if (addedSet?.has(productId)) {
+    if (getProductById(productId)) {
       toast.error("Produk sudah ditambahkan sebelumnya.");
       return;
     }
