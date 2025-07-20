@@ -29,11 +29,16 @@ type ReportOrders = {
   filterInfo: string;
   total_transactions: number;
   total_item_terjual: number;
+  total_transaction_pending: number;
+  total_transaction_success: number;
+  total_transaction_failed: number;
+  total_transaction_installments: number;
+  total_expenses: number;
+  expenses_amount: number;
   penjualan_kotor: number;
   penjualan_bersih: number;
   laba_kotor: number;
   laba_bersih: number;
-  total_orders: number;
 };
 
 export type ReportAll = {
