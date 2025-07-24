@@ -454,11 +454,14 @@ export default function OrderCard({
                   Payment Detail
                 </button> */}
                 <div className="flex gap-2">
-                  <Link to="/order">
-                    <button className="flex items-center bg-green-600 border-green-600 gap-2 border px-4 py-3 rounded-lg text-white  text-sm">
-                      <IoBagHandleOutline /> Kembalikan Orderan
-                    </button>
-                  </Link>
+                  <button
+                    className="flex items-center bg-green-600 border-green-600 gap-2 border px-4 py-3 rounded-lg text-white text-sm"
+                    onClick={() =>
+                      toast.loading("Fitur Belum Tersedia", { icon: "⏳" })
+                    }
+                  >
+                    <IoBagHandleOutline /> Kembalikan Orderan
+                  </button>
                 </div>
               </div>
             </div>

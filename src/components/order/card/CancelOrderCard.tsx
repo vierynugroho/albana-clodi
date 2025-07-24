@@ -5,7 +5,7 @@ import ModalRiwayatTran from "../modal/ModalRiwayatTran";
 import { FaTruckFast } from "react-icons/fa6";
 import { BiSolidPackage } from "react-icons/bi";
 import { LuPackageCheck } from "react-icons/lu";
-import { Link } from "react-router";
+import toast from "react-hot-toast";
 import { MdDeleteForever } from "react-icons/md";
 import { IoDocumentTextOutline, IoBagHandleOutline } from "react-icons/io5";
 
@@ -227,11 +227,14 @@ export default function CancelOrderCard() {
                 Payment Detail
               </button>
               <div className="flex gap-2">
-                <Link to="/order">
-                  <button className="flex items-center bg-green-600 border-green-600 gap-2 border px-4 py-3 rounded-lg text-white  text-sm">
-                    <IoBagHandleOutline /> Kembalikan Orderan
-                  </button>
-                </Link>
+                <button
+                  className="flex items-center bg-green-600 border-green-600 gap-2 border px-4 py-3 rounded-lg text-white text-sm"
+                  onClick={() =>
+                    toast.loading("Fitur belum tersedia", { icon: "⏳" })
+                  }
+                >
+                  <IoBagHandleOutline /> Kembalikan Orderan
+                </button>
               </div>
             </div>
           </div>
