@@ -48,15 +48,11 @@ export default function AllCustomerPage() {
         setCustomers(result.responseObject.data);
         setTotalPages(result.responseObject.meta.totalPages);
         if (!hasFetched.current) {
-          toast.success(result.message, {
-            style: { marginTop: "10vh", zIndex: 100000 },
-          });
+          toast.success(result.message);
         }
       } else {
         if (!hasFetched.current) {
-          toast.error(result.message, {
-            style: { marginTop: "10vh", zIndex: 100000 },
-          });
+          toast.error(result.message);
         }
       }
       hasFetched.current = true;
@@ -76,19 +72,13 @@ export default function AllCustomerPage() {
     try {
       const response = await deleteCustomer(id);
       if (response.success) {
-        toast.success("Customer berhasil dihapus", {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
+        toast.success("Customer berhasil dihapus");
         fetchCustomers(search.current?.value, query, currentPage);
       } else {
-        toast.error(response.message || "Gagal menghapus customer", {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
+        toast.error(response.message || "Gagal menghapus customer");
       }
     } catch (error) {
-      toast.error("Terjadi kesalahan saat menghapus customer", {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.error("Terjadi kesalahan saat menghapus customer");
       console.error("Error saat menghapus customer:", error);
     }
   };
@@ -97,14 +87,10 @@ export default function AllCustomerPage() {
     try {
       const response = await downloadExcelCustomer();
       if (!response.success) {
-        toast.error(response.message || "Gagal mengunduh data customer", {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
+        toast.error(response.message || "Gagal mengunduh data customer");
       }
     } catch (error) {
-      toast.error("Terjadi kesalahan saat mengunduh data", {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.error("Terjadi kesalahan saat mengunduh data");
       console.error("Error saat mengunduh data:", error);
     }
   };
