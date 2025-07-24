@@ -6,7 +6,7 @@ import CardReport from "../../components/laporan/card/CardReport";
 import { FaLifeRing } from "react-icons/fa";
 import { GiMoneyStack, GiProfit, GiTakeMyMoney } from "react-icons/gi";
 import { BiCalculator, BiSolidDiscount } from "react-icons/bi";
-import { LuPackageOpen } from "react-icons/lu";
+import { LuPackageOpen, LuPackageX } from "react-icons/lu";
 // import StatisticsChart from "../../components/ecommerce/StatisticsSalerChart";
 import {
   getPaymentTransaction,
@@ -157,6 +157,14 @@ export default function AllReportPage() {
                   report?.reportOrders?.total_transaction_installments ?? 0
                 }`}
                 iconColor="bg-blue-100 text-blue-600"
+              />
+              <CardReport
+                icon={<LuPackageX size={30} />}
+                title="Total Transaksi Dibatalkan"
+                result={`${
+                  report?.reportOrders?.total_transaction_failed ?? 0
+                }`}
+                iconColor="bg-red-100 text-red-600"
               />
             </div>
           </div>
