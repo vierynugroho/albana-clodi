@@ -18,23 +18,28 @@ export default function ModalDeleteProduct({
     console.log({ HAPUS: result });
     if (result.success) {
       fetchProduk();
-      toast.success(result.message, {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.success(result.message);
     } else {
-      toast.error(result.message, {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.error(result.message);
     }
     changeModal();
   }
   return ReactDOM.createPortal(
     <div
-      className="fixed z-[100000] inset-0 overflow-y-auto"
-      style={{ zIndex: 100000 }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 100000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "rgba(0,0,0,0.6)",
+        backdropFilter: "blur(4px)",
+      }}
       tabIndex={-1}
       aria-modal="true"
       role="dialog"
+      className="overflow-y-auto"
     >
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         {/* Overlay */}

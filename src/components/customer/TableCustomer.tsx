@@ -172,13 +172,15 @@ export default function TableCustomer({
       {/* Modal Delete: Perbaikan agar pointer-events pada modal tetap aktif dan backdrop tidak menghalangi interaksi */}
       {showDeleteModal && (
         <div
-          className="z-[100000] inset-0 flex items-center justify-center min-h-screen px-4 text-center"
           style={{
             position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
+            inset: 0,
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(4px)",
           }}
         >
           {/* Backdrop */}

@@ -19,23 +19,31 @@ export default function DeleteSupplierModal({
     setLoading(true);
     const result = await deleteSupplier(id);
     if (result.success) {
-      toast.success(result.message, {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.success(result.message);
       changeModal();
       refreshData();
     } else {
-      toast.success("Gagal Menghapus Data", {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.success("Gagal Menghapus Data");
     }
     setLoading(false);
   }
 
   return ReactDOM.createPortal(
     <div
-      className="fixed z-[100000] inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75"
-      style={{ top: 0, left: 0, width: "100vw", height: "100vh" }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 100000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "rgba(0,0,0,0.6)",
+        backdropFilter: "blur(4px)",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+      }}
       tabIndex={-1}
       aria-modal="true"
       role="dialog"

@@ -16,21 +16,26 @@ export default function ModalDeleteCategory({
   async function fetchdeleteCategory(id: string) {
     const result = await deleteCategory(id);
     if (result.success) {
-      toast.success(result.message, {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.success(result.message);
       fechCategory();
     } else {
-      toast.error(result.message, {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.error(result.message);
     }
     changeModal();
   }
   return ReactDOM.createPortal(
     <div
-      className="fixed z-[100000] inset-0 overflow-y-auto"
-      style={{ position: "fixed", zIndex: 100000, inset: 0, overflowY: "auto" }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 100000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "rgba(0,0,0,0.6)",
+        backdropFilter: "blur(4px)",
+        overflowY: "auto",
+      }}
       tabIndex={-1}
       aria-modal="true"
       role="dialog"

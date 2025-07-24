@@ -24,10 +24,14 @@ export default function OrderCard({
   selectedOrderIds,
   onToggleSelect,
   variant = "default",
+  onOrderCancelled,
 }: Props) {
   const [showModal, setShowModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [orderIdToCancel, setOrderIdToCancel] = useState<string | null>(null);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
+  // Tracking progress seharusnya dinamis, tapi untuk sekarang tetap statis
   const TrackingProgress = [
     {
       icon: <BiSolidPackage className="text-green-500 w-4 h-4" />,
@@ -50,27 +54,79 @@ export default function OrderCard({
     );
   }
 
-  const handleCancelOrder = async (orderId: string) => {
-    const confirmCancel = window.confirm("Yakin ingin membatalkan order ini?");
-    if (!confirmCancel) return;
+  const handleCancelOrder = (orderId: string) => {
+    setOrderIdToCancel(orderId);
+    setShowCancelModal(true);
+  };
 
+  // Modal Konfirmasi Batalkan Order
+  const confirmCancelOrder = async () => {
+    if (!orderIdToCancel) return;
     const toastId = toast.loading("Membatalkan order...");
 
     try {
-      await cancelOrder(orderId);
+      await cancelOrder(orderIdToCancel);
       toast.success("Order berhasil dibatalkan.", { id: toastId });
-      // Refresh halaman atau update state setelah berhasil
-      window.location.reload();
+      if (onOrderCancelled) onOrderCancelled();
+      else window.location.reload();
     } catch (error) {
       console.error("Gagal membatalkan order:", error);
       toast.error("Gagal membatalkan order.", { id: toastId });
     } finally {
       toast.dismiss(toastId);
+      setShowCancelModal(false);
+      setOrderIdToCancel(null);
     }
   };
 
+  // Modal Batalkan Order - Diperbaiki agar lebih rapi dan responsif
+  const CancelOrderModal = () =>
+    showCancelModal ? (
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "rgba(0,0,0,0.6)",
+          backdropFilter: "blur(4px)",
+        }}
+      >
+        <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md mx-4">
+          <div className="bg-white rounded-xl shadow-2xl p-6 w-full">
+            <h2 className="text-lg font-semibold mb-3 text-center">
+              Konfirmasi Pembatalan
+            </h2>
+            <p className="mb-6 text-center text-gray-700">
+              Yakin ingin membatalkan order ini?
+            </p>
+            <div className="flex justify-center gap-3">
+              <button
+                className="px-5 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+                onClick={() => {
+                  setShowCancelModal(false);
+                  setOrderIdToCancel(null);
+                }}
+              >
+                Batal
+              </button>
+              <button
+                className="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition font-semibold"
+                onClick={confirmCancelOrder}
+              >
+                Ya, Batalkan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    ) : null;
+
   return (
     <>
+      {showCancelModal && <CancelOrderModal />}
       {orders.map((order) => (
         <div
           key={order.id}
@@ -80,12 +136,12 @@ export default function OrderCard({
           <div className="flex justify-between items-start">
             <div>
               <p className="text-md text-blue-600 font-semibold">
-                #{order.OrderDetail.code}
+                #{order.OrderDetail?.code || "-"}
               </p>
               <p className="text-sm text-gray-400">
                 dari{" "}
                 <span className="font-semibold text-black">
-                  {order.SalesChannel.name}
+                  {order.SalesChannel?.name || "-"}
                 </span>{" "}
                 (
                 {order.createdAt
@@ -254,7 +310,7 @@ export default function OrderCard({
                     </p>
 
                     <p className="text-md text-gray-500">
-                      Resi: {order.OrderDetail.receiptNumber || "-"}
+                      Resi: {order.OrderDetail?.receiptNumber || "-"}
                     </p>
                   </div>
                 </div>
@@ -320,10 +376,10 @@ export default function OrderCard({
                 </Link>
                 <button
                   onClick={() => handleCancelOrder(order.id)}
-                  className="flex items-center border-red-500 border gap-2 px-4 py-2 font-medium text-red-500 rounded-lg cursor-pointer group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-300"
+                  className="flex items-center border border-red-600 gap-2 px-4 py-2 font-medium text-red-600 rounded-lg cursor-pointer group text-sm hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-white/[0.03] dark:hover:text-red-300"
                 >
                   <IoClose size={20} />
-                  Cancel Order
+                  Batalkan Order
                 </button>
                 <div className="flex gap-2">
                   {/* <DropdownCancelOrder orderId={order.id} /> */}

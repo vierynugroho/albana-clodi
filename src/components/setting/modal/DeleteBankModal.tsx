@@ -16,13 +16,9 @@ export default function DeleteBankModal({
   async function handleDeleteExpense(id: string) {
     const result = await deleteBankPayment(id);
     if (result.success) {
-      toast.success(result.message, {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.success(result.message);
     } else {
-      toast.success("Gagal Menghapus Data", {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.success("Gagal Menghapus Data");
     }
     refreshData();
     changeModal();
@@ -30,8 +26,16 @@ export default function DeleteBankModal({
 
   return ReactDOM.createPortal(
     <div
-      className="fixed z-[100000] inset-0 overflow-y-auto"
-      style={{ zIndex: 100000 }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 100000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "rgba(0,0,0,0.6)",
+        backdropFilter: "blur(4px)",
+      }}
       tabIndex={-1}
       aria-modal="true"
       role="dialog"
