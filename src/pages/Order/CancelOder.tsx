@@ -8,6 +8,26 @@ import OrderCard from "../../components/order/card/OrderCard";
 
 const PER_PAGE_OPTIONS = [5, 10, 20, 50, 100];
 
+// Helper for compact pagination
+function getPagination(current: number, total: number, maxLength = 7) {
+  // Always show first, last, current, and neighbors, with ellipsis as needed
+  if (total <= maxLength) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  const result: (number | "...")[] = [];
+  const left = Math.max(2, current - 1);
+  const right = Math.min(total - 1, current + 1);
+
+  result.push(1);
+  if (left > 2) result.push("...");
+  for (let i = left; i <= right; i++) {
+    result.push(i);
+  }
+  if (right < total - 1) result.push("...");
+  result.push(total);
+  return result;
+}
+
 export default function CancelOrderPage() {
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,6 +70,9 @@ export default function CancelOrderPage() {
   const handlePerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setOrdersPerPage(Number(e.target.value));
   };
+
+  // Pagination logic for compact display
+  const paginationItems = getPagination(currentPage, totalPages, 7);
 
   return (
     <div>
@@ -110,19 +133,29 @@ export default function CancelOrderPage() {
           >
             Prev
           </button>
-          {[...Array(totalPages)].map((_, idx) => (
-            <button
-              key={idx + 1}
-              onClick={() => handlePageChange(idx + 1)}
-              className={`px-3 py-1 border-t border-b border-gray-300 ${
-                currentPage === idx + 1
-                  ? "bg-blue-600 text-white"
-                  : "bg-white hover:bg-gray-100 text-gray-700"
-              }`}
-            >
-              {idx + 1}
-            </button>
-          ))}
+          {paginationItems.map((item, idx) =>
+            item === "..." ? (
+              <span
+                key={`ellipsis-${idx}`}
+                className="px-3 py-1 border-t border-b border-gray-300 bg-white text-gray-400 select-none"
+              >
+                ...
+              </span>
+            ) : (
+              <button
+                key={item}
+                onClick={() => handlePageChange(Number(item))}
+                className={`px-3 py-1 border-t border-b border-gray-300 ${
+                  currentPage === item
+                    ? "bg-blue-600 text-white"
+                    : "bg-white hover:bg-gray-100 text-gray-700"
+                }`}
+                aria-current={currentPage === item ? "page" : undefined}
+              >
+                {item}
+              </button>
+            )
+          )}
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
