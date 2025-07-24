@@ -6,8 +6,13 @@ import { getOrders, OrderItem } from "../../service/order";
 import OrderPageBreadcrumb from "./OrderPageBreadcrumb";
 import OrderCard from "../../components/order/card/OrderCard";
 
+const PER_PAGE_OPTIONS = [5, 10, 20, 50, 100];
+
 export default function CancelOrderPage() {
   const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage, setOrdersPerPage] = useState(10);
+
   useEffect(() => {
     async function fetchFilteredOrders() {
       const result = await getOrders();
@@ -24,6 +29,28 @@ export default function CancelOrderPage() {
     fetchFilteredOrders();
   }, []);
 
+  // Reset to page 1 if ordersPerPage changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [ordersPerPage]);
+
+  // Hitung index untuk slicing data
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  // Selalu tampilkan pagination, minimal 1 halaman
+  const totalPages = Math.max(1, Math.ceil(orders.length / ordersPerPage));
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
+  const handlePerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setOrdersPerPage(Number(e.target.value));
+  };
+
   return (
     <div>
       <PageMeta
@@ -31,13 +58,83 @@ export default function CancelOrderPage() {
         description="Pusat kontrol untuk semua transaksi dan pesanan pelanggan"
       />
       <OrderPageBreadcrumb pageTitle="Cancel Order" />
-      <div>{/* <FilterBarCancelOrder /> */}</div>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+        {/* <FilterBarCancelOrder /> */}
+        <div />
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-700">Tampilkan</span>
+          <select
+            className="border border-gray-300 rounded px-2 py-1 text-sm"
+            value={ordersPerPage}
+            onChange={handlePerPageChange}
+          >
+            {PER_PAGE_OPTIONS.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+          <span className="text-sm text-gray-700">data per halaman</span>
+        </div>
+      </div>
       <div>
         {/* <CancelOrderCard /> */}
-        <OrderCard
-          variant="cancel"
-          orders={orders}
-        />
+        <OrderCard variant="cancel" orders={currentOrders} />
+      </div>
+      {/* Pagination Controls */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-6 gap-4">
+        <div className="text-sm text-gray-600">
+          Menampilkan{" "}
+          <span className="font-semibold">
+            {orders.length === 0 ? 0 : indexOfFirstOrder + 1}
+          </span>
+          {" - "}
+          <span className="font-semibold">
+            {Math.min(indexOfLastOrder, orders.length)}
+          </span>
+          {" dari "}
+          <span className="font-semibold">{orders.length}</span> data
+        </div>
+        <nav
+          className="inline-flex rounded-md shadow-sm"
+          aria-label="Pagination"
+        >
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 border border-gray-300 rounded-l-md ${
+              currentPage === 1
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-white hover:bg-gray-100"
+            }`}
+          >
+            Prev
+          </button>
+          {[...Array(totalPages)].map((_, idx) => (
+            <button
+              key={idx + 1}
+              onClick={() => handlePageChange(idx + 1)}
+              className={`px-3 py-1 border-t border-b border-gray-300 ${
+                currentPage === idx + 1
+                  ? "bg-blue-600 text-white"
+                  : "bg-white hover:bg-gray-100 text-gray-700"
+              }`}
+            >
+              {idx + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 border border-gray-300 rounded-r-md ${
+              currentPage === totalPages
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-white hover:bg-gray-100"
+            }`}
+          >
+            Next
+          </button>
+        </nav>
       </div>
     </div>
   );
