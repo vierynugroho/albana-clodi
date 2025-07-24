@@ -215,7 +215,12 @@ export default function CancelOrderCard() {
           {/* Actions */}
           <div className="mt-6 flex justify-end gap-2">
             <div className="flex gap-2">
-              <button className="flex items-center gap-2 text-red-600 border border-red-600 px-4 py-3 rounded-lg text-sm">
+              <button
+                className="flex items-center gap-2 text-red-600 border border-red-600 px-4 py-3 rounded-lg text-sm"
+                onClick={() =>
+                  toast.loading("Fitur belum tersedia", { icon: "⏳" })
+                }
+              >
                 <MdDeleteForever />
                 Hapus Order
               </button>
