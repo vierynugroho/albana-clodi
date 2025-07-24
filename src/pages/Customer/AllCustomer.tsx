@@ -14,7 +14,6 @@ import {
 } from "../../service/customer";
 import toast from "react-hot-toast";
 import { FilterState } from "../../service/customer";
-import PaginationNavigation from "../../components/produk/pagination/PaginationNavigation";
 
 export default function AllCustomerPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,29 +23,27 @@ export default function AllCustomerPage() {
   const search = useRef<HTMLInputElement>(null);
   const hasFetched = useRef(false);
 
-  //   Pagination State For Pagination
+  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  //   Query Filter
+  // Query Filter
   const [query, setQuery] = useState<FilterState>({
     category: null,
     status: null,
   });
 
-  console.log(query);
-
   function handleSearch() {
     setIsSearching(true);
     const keyword = search.current?.value;
     setCurrentPage(1);
-    fetchCustomers(keyword, query).finally(() => setIsSearching(false));
+    fetchCustomers(keyword, query, 1).finally(() => setIsSearching(false));
   }
 
   const fetchCustomers = useCallback(
-    async (search = "", query?: FilterState) => {
+    async (search = "", query?: FilterState, page = currentPage) => {
       setIsLoading(true);
-      const result = await getCustomers(search, query, currentPage);
+      const result = await getCustomers(search, query, page);
       if (result.success && result.responseObject) {
         setCustomers(result.responseObject.data);
         setTotalPages(result.responseObject.meta.totalPages);
@@ -71,7 +68,8 @@ export default function AllCustomerPage() {
   const handleFilter = useCallback(() => {
     const keyword = search.current?.value || "";
     changeModal();
-    fetchCustomers(keyword, query);
+    setCurrentPage(1);
+    fetchCustomers(keyword, query, 1);
   }, [query, fetchCustomers]);
 
   const handleDeleteCustomer = async (id: string) => {
@@ -81,7 +79,7 @@ export default function AllCustomerPage() {
         toast.success("Customer berhasil dihapus", {
           style: { marginTop: "10vh", zIndex: 100000 },
         });
-        fetchCustomers();
+        fetchCustomers(search.current?.value, query, currentPage);
       } else {
         toast.error(response.message || "Gagal menghapus customer", {
           style: { marginTop: "10vh", zIndex: 100000 },
@@ -111,14 +109,54 @@ export default function AllCustomerPage() {
     }
   };
 
-  console.log(currentPage);
   useEffect(() => {
-    fetchCustomers(search.current?.value);
+    fetchCustomers(search.current?.value, query, currentPage);
+    // eslint-disable-next-line
   }, [fetchCustomers, currentPage]);
 
   function changeModal() {
     setFilter((prevFilter) => !prevFilter);
   }
+
+  // Custom Pagination UI as in the image
+  function getPageNumbers() {
+    const pages = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, "...", totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(
+          1,
+          "...",
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages
+        );
+      } else {
+        pages.push(
+          1,
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          totalPages
+        );
+      }
+    }
+    return pages;
+  }
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages || page === currentPage) return;
+    setCurrentPage(page);
+    fetchCustomers(search.current?.value, query, page);
+  };
 
   return (
     <div>
@@ -208,12 +246,48 @@ export default function AllCustomerPage() {
             customers={customers}
             deleteCustomer={handleDeleteCustomer}
           />
-          <PaginationNavigation
-            currentPage={currentPage}
-            totalPages={totalPages}
-            setCurrentPage={setCurrentPage}
-            loading={isLoading}
-          />
+
+          {/* Custom Pagination */}
+          <div className="flex items-center justify-between mt-6">
+            <div className="text-sm text-gray-600 dark:text-gray-300">
+              Halaman {currentPage} dari {totalPages}
+            </div>
+            <div className="flex items-center gap-1 md:gap-2">
+              <button
+                className="px-2 py-1 rounded border text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                &lt;
+              </button>
+              {getPageNumbers().map((page, idx) =>
+                page === "..." ? (
+                  <span key={idx} className="px-2 text-gray-400 select-none">
+                    ...
+                  </span>
+                ) : (
+                  <button
+                    key={page}
+                    className={`px-3 py-1 rounded border text-sm font-medium ${
+                      currentPage === page
+                        ? "bg-blue-500 text-white border-blue-500"
+                        : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300"
+                    }`}
+                    onClick={() => handlePageChange(Number(page))}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+              <button
+                className="px-2 py-1 rounded border text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                &gt;
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
