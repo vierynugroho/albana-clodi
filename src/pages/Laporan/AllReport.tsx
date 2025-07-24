@@ -105,57 +105,6 @@ export default function AllReportPage() {
           {report?.reportExpenses.filterInfo}
         </h2>
         <Carousel>
-          {/* Slide 1: Penjualan & Laba */}
-          <div className="py-3 mr-5">
-            <div className="grid gap-6 md:grid-cols-4">
-              <CardReport
-                icon={<GiTakeMyMoney size={30} />}
-                title="Penjualan Bersih"
-                result={`Rp ${
-                  report?.reportOrders?.penjualan_bersih?.toLocaleString(
-                    "id-ID"
-                  ) ?? 0
-                }`}
-                iconColor="bg-amber-100 text-amber-600"
-              />
-              <CardReport
-                icon={<FaLifeRing size={30} />}
-                title="Penjualan Kotor"
-                result={`Rp ${
-                  report?.reportOrders?.penjualan_kotor?.toLocaleString(
-                    "id-ID"
-                  ) ?? 0
-                }`}
-                iconColor="bg-brand-100 text-brand-600"
-              />
-              {localStorage.getItem("role") === "ADMIN" ? null : (
-                <>
-                  <CardReport
-                    icon={<GiProfit size={30} />}
-                    title="Laba Kotor"
-                    result={`Rp ${
-                      report?.reportOrders?.laba_kotor?.toLocaleString(
-                        "id-ID"
-                      ) ?? 0
-                    }`}
-                    iconColor="bg-green-100 text-green-600"
-                  />
-                  <CardReport
-                    icon={<GiMoneyStack size={30} />}
-                    title="Laba Bersih"
-                    result={`Rp ${
-                      report?.reportOrders?.laba_bersih?.toLocaleString(
-                        "id-ID"
-                      ) ?? 0
-                    }`}
-                    iconColor="bg-yellow-100 text-yellow-600"
-                  />
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Slide 2: Pengeluaran & Item Terjual */}
           <div className="py-3 mr-5">
             <div className="grid gap-6 md:grid-cols-4">
               <CardReport
@@ -191,7 +140,6 @@ export default function AllReportPage() {
             </div>
           </div>
 
-          {/* Slide 3: Transaksi Tertunda & Lainnya */}
           <div className="py-3 mr-5">
             <div className="grid gap-6 md:grid-cols-4">
               <CardReport
@@ -212,6 +160,55 @@ export default function AllReportPage() {
               />
             </div>
           </div>
+
+          {localStorage.getItem("role") === "ADMIN" ? null : (
+            <div className="py-3 mr-5">
+              <div className="grid gap-6 md:grid-cols-4">
+                <>
+                  <CardReport
+                    icon={<GiProfit size={30} />}
+                    title="Laba Kotor"
+                    result={`Rp ${
+                      report?.reportOrders?.laba_kotor?.toLocaleString(
+                        "id-ID"
+                      ) ?? 0
+                    }`}
+                    iconColor="bg-green-100 text-green-600"
+                  />
+                  <CardReport
+                    icon={<GiMoneyStack size={30} />}
+                    title="Laba Bersih"
+                    result={`Rp ${
+                      report?.reportOrders?.laba_bersih?.toLocaleString(
+                        "id-ID"
+                      ) ?? 0
+                    }`}
+                    iconColor="bg-yellow-100 text-yellow-600"
+                  />
+                  <CardReport
+                    icon={<GiTakeMyMoney size={30} />}
+                    title="Penjualan Bersih"
+                    result={`Rp ${
+                      report?.reportOrders?.penjualan_bersih?.toLocaleString(
+                        "id-ID"
+                      ) ?? 0
+                    }`}
+                    iconColor="bg-amber-100 text-amber-600"
+                  />
+                  <CardReport
+                    icon={<FaLifeRing size={30} />}
+                    title="Penjualan Kotor"
+                    result={`Rp ${
+                      report?.reportOrders?.penjualan_kotor?.toLocaleString(
+                        "id-ID"
+                      ) ?? 0
+                    }`}
+                    iconColor="bg-brand-100 text-brand-600"
+                  />
+                </>
+              </div>
+            </div>
+          )}
         </Carousel>
 
         <div className="grid grid-cols-12 gap-4 md:gap-6 mt-10">
@@ -226,9 +223,12 @@ export default function AllReportPage() {
           {/* <div className="col-span-12">
             <StatisticsChart />
           </div> */}
-          <div className="col-span-12 xl:col-span-7">
-            <PaymentTransactions data={paymentTransaction} />
-          </div>
+
+          {localStorage.getItem("role") === "SUPERADMIN" && (
+            <div className="col-span-12 xl:col-span-7">
+              <PaymentTransactions data={paymentTransaction} />
+            </div>
+          )}
         </div>
       </div>
     </div>
