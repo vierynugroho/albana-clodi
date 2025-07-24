@@ -1,7 +1,6 @@
 import ReactDOM from "react-dom";
 import DropzoneFileExel from "./DropzoneFileExel";
 
-
 type Props = {
   changeModal: () => void;
 };
