@@ -34,8 +34,20 @@ export default function DeleteModal({
 
   return (
     <div
-      className="fixed z-[100000] inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75"
-      style={{ top: 0, left: 0, width: "100vw", height: "100vh" }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "rgba(0,0,0,0.6)",
+        backdropFilter: "blur(4px)",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+      }}
       tabIndex={-1}
       aria-modal="true"
       role="dialog"
