@@ -39,7 +39,7 @@ const AppLayout: React.FC = () => {
       <ProductProvider>
         {/* Toaster dipindahkan ke root layout agar tidak ter-mount ulang */}
         <Toaster
-          position="top-right"
+          position="top-center"
           reverseOrder={false}
           toastOptions={{
             style: { zIndex: 99999, fontSize: "1rem" },
