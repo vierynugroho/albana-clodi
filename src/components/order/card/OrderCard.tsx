@@ -86,25 +86,78 @@ export default function OrderCard({
         style={{
           position: "fixed",
           inset: 0,
-          zIndex: 9999,
+          zIndex: 100000,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "rgba(0,0,0,0.6)",
+          background: "rgba(0,0,0,0.5)",
           backdropFilter: "blur(4px)",
         }}
+        tabIndex={-1}
+        aria-modal="true"
+        role="dialog"
+        onClick={() => {
+          setShowCancelModal(false);
+          setOrderIdToCancel(null);
+        }}
       >
-        <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md mx-4">
-          <div className="bg-white rounded-xl shadow-2xl p-6 w-full">
-            <h2 className="text-lg font-semibold mb-3 text-center">
+        <div
+          className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-0"
+          style={{ zIndex: 100001 }}
+          onClick={(e) => e.stopPropagation()}
+          role="document"
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 pt-6 pb-2 border-b border-gray-100">
+            <h2 className="text-xl font-semibold text-gray-900">
               Konfirmasi Pembatalan
             </h2>
-            <p className="mb-6 text-center text-gray-700">
-              Yakin ingin membatalkan order ini?
-            </p>
-            <div className="flex justify-center gap-3">
+            <button
+              className="text-gray-400 hover:text-gray-600 transition"
+              onClick={() => {
+                setShowCancelModal(false);
+                setOrderIdToCancel(null);
+              }}
+              aria-label="Tutup"
+            >
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path
+                  d="M18 6L6 18M6 6l12 12"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+          {/* Body */}
+          <div className="px-6 pt-4 pb-6">
+            <div className="flex flex-col items-center">
+              <div className="flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-4">
+                <svg
+                  className="h-7 w-7 text-red-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+              <p className="text-base text-gray-700 text-center mb-2">
+                Yakin ingin membatalkan order ini?
+              </p>
+              <p className="text-sm text-gray-500 text-center mb-6">
+                Tindakan ini bersifat permanen dan tidak dapat dibatalkan.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
               <button
-                className="px-5 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+                className="w-full sm:w-auto px-5 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-100 transition"
                 onClick={() => {
                   setShowCancelModal(false);
                   setOrderIdToCancel(null);
@@ -113,7 +166,7 @@ export default function OrderCard({
                 Batal
               </button>
               <button
-                className="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition font-semibold"
+                className="w-full sm:w-auto px-5 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition"
                 onClick={confirmCancelOrder}
               >
                 Ya, Batalkan

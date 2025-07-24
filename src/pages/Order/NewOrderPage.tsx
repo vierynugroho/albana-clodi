@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import { Link } from "react-router";
@@ -7,6 +7,62 @@ import Button from "../../components/ui/button/Button";
 import Alert from "../../components/ui/alert/Alert";
 import NewOrderTable from "../../components/order/table/NewOrderTable";
 import ModalFilterNewOrder from "../../components/order/modal/ModalFilterNewOrder";
+
+function ModalWrapper({
+  show,
+  onClose,
+  children,
+}: {
+  show: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [show]);
+
+  if (!show) return null;
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 100000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "rgba(0,0,0,0.6)",
+        backdropFilter: "blur(4px)",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        overflowY: "auto",
+      }}
+      tabIndex={-1}
+      aria-modal="true"
+      role="dialog"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl px-6 pt-6 pb-4 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+        style={{ zIndex: 100001, position: "relative" }}
+        onClick={(e) => e.stopPropagation()}
+        role="document"
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function NewOrderPage() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -30,7 +86,8 @@ export default function NewOrderPage() {
                 height="20"
                 viewBox="0 0 20 20"
                 fill="none"
-                xmlns="http://www.w3.org/2000/svg">
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   fillRule="evenodd"
                   clipRule="evenodd"
@@ -51,15 +108,15 @@ export default function NewOrderPage() {
           size="md"
           variant="outlineblue"
           className="font-semibold"
-          onClick={() => setShowModal(true)}>
+          onClick={() => setShowModal(true)}
+        >
           Filter
           <FaFilter />
         </Button>
-
-        {showModal && (
-          <ModalFilterNewOrder changeModal={() => setShowModal(false)} />
-        )}
       </div>
+      <ModalWrapper show={showModal} onClose={() => setShowModal(false)}>
+        <ModalFilterNewOrder changeModal={() => setShowModal(false)} />
+      </ModalWrapper>
       <div className="flex justify-end items-center mt-6">
         <div className="flex justify-between items-center bg-white p-3.5 rounded-lg">
           <p className="text-md font-light">
