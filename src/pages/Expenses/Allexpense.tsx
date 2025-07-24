@@ -94,9 +94,7 @@ export default function AllExpense() {
       setTotalExpenses(result.responseObject.totalExpenses);
       setMessage(result.message);
       if (!hasFetched.current) {
-        toast.success(result.message, {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
+        toast.success(result.message);
       }
     } else {
       setMessage(result.message);
