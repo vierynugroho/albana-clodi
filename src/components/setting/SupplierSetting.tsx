@@ -14,20 +14,21 @@ export default function DeliverySettingForm() {
   const [deliveries, setDeliveries] = useState<Supplier[]>([]);
 
   const getAllSupplier = async () => {
-    const result = await getSuppliers();
-    if (result.success && result.responseObject) {
-      setDeliveries(result.responseObject);
-      if (!hasFetched.current) {
-        toast.success(result.message, {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
+    try {
+      const result = await getSuppliers();
+      if (result.success && result.responseObject) {
+        setDeliveries(result.responseObject);
+        if (!hasFetched.current) {
+          toast.success(result.message);
+        }
       } else {
-        toast.error("Gagal Mendapatkan Data", {
-          style: { marginTop: "10vh", zIndex: 100000 },
-        });
+        toast.error(result.message || "Gagal Mendapatkan Data");
       }
+    } catch {
+      toast.error("Terjadi kesalahan saat mengambil data supplier");
+    } finally {
+      hasFetched.current = true;
     }
-    hasFetched.current = true;
   };
   useEffect(() => {
     getAllSupplier();

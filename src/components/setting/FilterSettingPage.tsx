@@ -2,7 +2,7 @@ import Button from "../ui/button/Button";
 import { CiSettings } from "react-icons/ci";
 import { DollarLineIcon } from "../../icons";
 import { Page } from "../../pages/SettingPage/SettingPage";
-import { FaRegUser } from "react-icons/fa";
+// import { FaRegUser } from "react-icons/fa";
 import { LiaPeopleCarrySolid } from "react-icons/lia";
 import { CiShop } from "react-icons/ci";
 
@@ -18,7 +18,8 @@ export default function FilterSettingPage({ setPage, page }: Props) {
         variant={page === "pengaturanUmum" ? "primary" : "outline"}
         className="flex-1/2"
         startIcon={<CiSettings className="size-5" />}
-        onClick={() => setPage("pengaturanUmum")}>
+        onClick={() => setPage("pengaturanUmum")}
+      >
         Pengaturan Umum
       </Button>
       <Button
@@ -26,7 +27,8 @@ export default function FilterSettingPage({ setPage, page }: Props) {
         variant={page === "payment" ? "primary" : "outline"}
         className="flex-1/2"
         startIcon={<DollarLineIcon className="size-5" />}
-        onClick={() => setPage("payment")}>
+        onClick={() => setPage("payment")}
+      >
         Payment
       </Button>
       <Button
@@ -34,23 +36,25 @@ export default function FilterSettingPage({ setPage, page }: Props) {
         variant={page === "asalPengiriman" ? "primary" : "outline"}
         className="flex-1/2"
         startIcon={<LiaPeopleCarrySolid className="size-5" />}
-        onClick={() => setPage("asalPengiriman")}>
+        onClick={() => setPage("asalPengiriman")}
+      >
         Asal Pengiriman
       </Button>
-      <Button
+      {/* <Button
         size="md"
         variant={page === "pengaturanAkun" ? "primary" : "outline"}
         className="flex-1/2"
         startIcon={<FaRegUser className="size-5" />}
         onClick={() => setPage("pengaturanAkun")}>
         Pengaturan Akun
-      </Button>
+      </Button> */}
       <Button
         size="md"
         variant={page === "selesChannel" ? "primary" : "outline"}
         className="flex-1/2"
         startIcon={<CiShop className="size-5" />}
-        onClick={() => setPage("selesChannel")}>
+        onClick={() => setPage("selesChannel")}
+      >
         Shales Channel
       </Button>
     </div>

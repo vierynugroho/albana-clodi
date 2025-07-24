@@ -33,12 +33,24 @@ export default function DeleteModal({
   }, []);
 
   return (
-    <div className="fixed z-[100000] inset-0 overflow-y-auto">
+    <div
+      className="fixed z-[100000] inset-0 overflow-y-auto"
+      tabIndex={-1}
+      aria-modal="true"
+      role="dialog"
+      style={{ outline: "none" }}
+    >
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+        {/* Overlay */}
+        <div
+          className="fixed inset-0 transition-opacity"
+          aria-hidden="true"
+          onClick={changeModal}
+        >
           <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
 
+        {/* Centering trick for modal */}
         <span
           className="hidden sm:inline-block sm:align-middle sm:h-screen"
           aria-hidden="true"
@@ -47,8 +59,9 @@ export default function DeleteModal({
         <div
           ref={modalRef}
           className="inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-4 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
-          role="dialog"
-          aria-modal="true"
+          role="document"
+          tabIndex={0}
+          onClick={(e) => e.stopPropagation()}
         >
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100">
@@ -81,7 +94,10 @@ export default function DeleteModal({
               <button
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-700 text-base font-semibold text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out sm:text-sm"
-                onClick={() => deleteExpense(id)}
+                onClick={() => {
+                  deleteExpense(id);
+                  changeModal();
+                }}
                 autoFocus
               >
                 Hapus Pengeluaran

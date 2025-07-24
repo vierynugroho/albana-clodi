@@ -28,15 +28,37 @@ export default function ModalDeleteCategory({
     changeModal();
   }
   return ReactDOM.createPortal(
-    <div className="fixed z-[100000] inset-0 overflow-y-auto">
+    <div
+      className="fixed z-[100000] inset-0 overflow-y-auto"
+      style={{ position: "fixed", zIndex: 100000, inset: 0, overflowY: "auto" }}
+      tabIndex={-1}
+      aria-modal="true"
+      role="dialog"
+    >
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 transition-opacity">
+        {/* Overlay */}
+        <div
+          className="fixed inset-0 transition-opacity"
+          style={{ position: "fixed", inset: 0 }}
+          aria-hidden="true"
+          onClick={changeModal}
+        >
           <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
 
-        <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+        {/* Centering trick for modals */}
+        <span
+          className="hidden sm:inline-block sm:align-middle sm:h-screen"
+          aria-hidden="true"
+        >
+          &#8203;
+        </span>
 
-        <div className="inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-4 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        <div
+          className="inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-4 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+          style={{ zIndex: 100001, position: "relative" }}
+          role="document"
+        >
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100">
               <svg
@@ -45,6 +67,7 @@ export default function ModalDeleteCategory({
                 stroke="currentColor"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -67,7 +90,11 @@ export default function ModalDeleteCategory({
               <button
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-700 text-base font-semibold text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out sm:text-sm"
-                onClick={() => fetchdeleteCategory(id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fetchdeleteCategory(id);
+                }}
+                autoFocus
               >
                 Hapus Category
               </button>
@@ -76,7 +103,10 @@ export default function ModalDeleteCategory({
               <button
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 transition duration-150 ease-in-out sm:text-sm"
-                onClick={changeModal}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  changeModal();
+                }}
               >
                 Batal
               </button>

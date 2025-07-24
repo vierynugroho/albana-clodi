@@ -169,26 +169,51 @@ export default function TableCustomer({
         </Table>
       </div>
 
+      {/* Modal Delete: Perbaikan agar pointer-events pada modal tetap aktif dan backdrop tidak menghalangi interaksi */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-50">
-          <div className="bg-black bg-blend-color text-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">Konfirmasi Hapus</h2>
-            <p className="mb-6">
-              Apakah Anda yakin ingin menghapus customer ini?
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={handleCloseDeleteModal}
-                className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 text-slate-600"
-              >
-                Batal
-              </button>
-              <button
-                onClick={() => handleConfirmDelete(selectedCustomerId)}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-              >
-                Hapus
-              </button>
+        <div
+          className="z-[100000] inset-0 flex items-center justify-center min-h-screen px-4 text-center"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+          }}
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black opacity-50"
+            style={{
+              zIndex: 100000,
+              pointerEvents: "auto",
+            }}
+            onClick={handleCloseDeleteModal}
+          ></div>
+          {/* Modal */}
+          <div
+            className="relative z-[100001] w-full flex justify-center items-center pointer-events-auto"
+            style={{ pointerEvents: "auto" }}
+          >
+            <div className="bg-white text-gray-900 rounded-lg p-6 w-full max-w-md shadow-2xl">
+              <h2 className="text-xl font-semibold mb-4">Konfirmasi Hapus</h2>
+              <p className="mb-6">
+                Apakah Anda yakin ingin menghapus customer ini?
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={handleCloseDeleteModal}
+                  className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 text-slate-600"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={() => handleConfirmDelete(selectedCustomerId)}
+                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                >
+                  Hapus
+                </button>
+              </div>
             </div>
           </div>
         </div>
