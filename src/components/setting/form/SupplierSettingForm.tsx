@@ -55,7 +55,7 @@ export default function SupplierSettingForm() {
           style: { marginTop: "10vh", zIndex: 100000 },
         });
       } else {
-        toast.error("Gagal membuat Data Supplier", {
+        toast.error(`Gagal membuat Data Supplier - ${result.message}`, {
           style: { marginTop: "10vh", zIndex: 100000 },
         });
       }

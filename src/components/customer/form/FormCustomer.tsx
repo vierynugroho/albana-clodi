@@ -219,14 +219,14 @@ export default function FormCustomer() {
               style: { marginTop: "10vh", zIndex: 100000 },
             });
           } else {
-            toast.error("Customer gagal diperbarui", {
+            toast.error(`Customer gagal diperbarui: ${response.message}`, {
               style: { marginTop: "10vh", zIndex: 100000 },
             });
             console.error("Gagal menambahkan customer:", response.message);
           }
         })
         .catch((error) => {
-          toast.error("Customer gagal diperbarui");
+          toast.error(`Customer gagal diperbarui: ${error.message}`);
           console.error("Error saat menambahkan customer:", error);
         })
         .finally(afterSubmit);

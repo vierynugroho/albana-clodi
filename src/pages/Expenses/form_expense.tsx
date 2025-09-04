@@ -60,7 +60,7 @@ export default function FormExpense({
       });
       refreshData();
     } else {
-      toast.error("Gagal Membuat Pengeluaran", {
+      toast.error(`Gagal Membuat Pengeluaran: ${result.message}`, {
         style: { marginTop: "10vh", zIndex: 100000 },
       });
     }

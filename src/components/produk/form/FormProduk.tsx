@@ -208,7 +208,7 @@ export default function FormProduk() {
       } else {
         const message =
           errorMessages[result.message] || errorMessages["errorEdit"];
-        toast.error(message, { style: toastStyle });
+        toast.error(`${message} - ${result.message}`, { style: toastStyle });
       }
     }
   };

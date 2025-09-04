@@ -71,7 +71,7 @@ export default function OrderCard({
       else window.location.reload();
     } catch (error) {
       console.error("Gagal membatalkan order:", error);
-      toast.error("Gagal membatalkan order.", { id: toastId });
+      toast.error("Gagal membatalkan order", { id: toastId });
     } finally {
       toast.dismiss(toastId);
       setShowCancelModal(false);

@@ -28,7 +28,7 @@ export default function ModalChannel({ changeModal, refreshData, id }: Props) {
       changeModal();
       refreshData();
     } else {
-      toast.error("Gagal Membuat Sales", {
+      toast.error(`Gagal Membuat Sales: ${result.message}`, {
         style: { marginTop: "10vh", zIndex: 100000 },
       });
     }

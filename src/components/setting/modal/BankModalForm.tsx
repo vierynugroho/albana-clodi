@@ -54,9 +54,12 @@ export default function BankModalForm({ changeModal, id, refreshData }: Props) {
         style: { marginTop: "10vh", zIndex: 100000 },
       });
     } else {
-      toast.error("Gagal Membuat Payment Pembayaran", {
-        style: { marginTop: "10vh", zIndex: 100000 },
-      });
+      toast.error(
+        `Gagal Membuat Payment Pembayaran: ${createBankAccount.message}`,
+        {
+          style: { marginTop: "10vh", zIndex: 100000 },
+        }
+      );
       console.error(createBankAccount.message);
     }
 
@@ -105,7 +108,7 @@ export default function BankModalForm({ changeModal, id, refreshData }: Props) {
   }, [id]);
 
   return ReactDOM.createPortal(
-    <div className="fixed z-[100000] inset-0 overflow-y-auto">
+    <div className="fixed z-[2147483647] inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 text-center">
         <div className="fixed inset-0 bg-gray-500 opacity-75"></div>
         <div className="inline-block align-bottom bg-white rounded-lg px-6 pt-6 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
