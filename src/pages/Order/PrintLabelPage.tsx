@@ -46,6 +46,25 @@ export default function PrintSettingsPage() {
   const handlePrintReact = useReactToPrint({
     contentRef: componentRef,
     documentTitle: `${selectedFeature} - ALBANA GROSIR`,
+    pageStyle:
+      selectedFeature === "thermal-58"
+        ? `
+        @page {
+          size: 58mm auto;
+          margin: 0;
+        }
+        @media print {
+          body {
+            margin: 0;
+            padding: 0;
+          }
+          #print-area {
+            width: 58mm;
+            max-width: 58mm;
+          }
+        }
+      `
+        : undefined,
   });
 
   const options: TPrintSetting[] = [
