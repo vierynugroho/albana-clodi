@@ -238,7 +238,7 @@ export const cancelOrder = async (orderId: string): Promise<any> => {
 
 export async function exportOrdersToExcel(): Promise<void> {
   try {
-    const response = await axios.get("/orders/export/excel", {
+    const response = await axios.get(`${apiUrl}/orders/export/excel`, {
       responseType: "blob",
       headers: {
         Authorization: `Bearer ${token}`,
