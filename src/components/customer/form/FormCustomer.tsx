@@ -258,9 +258,7 @@ export default function FormCustomer() {
             window.location.href = "/customer";
           } else {
             const errorMessage =
-              response.message === "Customer already exists"
-                ? "Nama Customer Sudah Ada"
-                : "Customer gagal ditambahkan";
+              response.message || "Gagal menambahkan customer";
 
             toast.error(errorMessage, {
               style: { marginTop: "10vh", zIndex: 100000 },
