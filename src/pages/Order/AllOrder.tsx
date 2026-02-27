@@ -77,7 +77,7 @@ export default function AllOrderPage() {
   const [selectedStatuses, setSelectedStatuses] = useState<string>("");
   const [searchField, setSearchField] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
 
   // Cursor-pagination state (1 page = 1 request)
