@@ -9,12 +9,18 @@ type OrderToolbarProps = {
   currentPage: number;
   totalItems: number;
   itemsPerPage: number;
+
   onPageChange: (page: number) => void;
+
   onSelectAll: (checked: boolean) => void;
   isAllSelected: boolean;
   selectedCount: number;
   selectedOrderIds: string[];
   onMassPrint: () => void;
+
+  hasNext?: boolean;
+  hasPrev?: boolean;
+  totalPagesOverride?: number;
 };
 
 export default function OrderToolbar({
@@ -27,8 +33,20 @@ export default function OrderToolbar({
   selectedCount,
   // selectedOrderIds,
   onMassPrint,
+  hasNext,
+  hasPrev,
+  totalPagesOverride,
 }: OrderToolbarProps) {
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const computedTotalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const totalPages =
+    typeof totalPagesOverride === "number" && totalPagesOverride > 0
+      ? totalPagesOverride
+      : computedTotalPages;
+
+  const prevDisabled = typeof hasPrev === "boolean" ? !hasPrev : currentPage === 1;
+  const nextDisabled =
+    typeof hasNext === "boolean" ? !hasNext : currentPage === totalPages;
 
   return (
     <div className="flex justify-between items-center px-4 py-4 relative border-t border-gray-200 mt-2">
@@ -69,67 +87,42 @@ export default function OrderToolbar({
             className="px-2 py-1 text-gray-400 hover:text-blue-600 rounded transition"
             aria-label="First Page"
             disabled={currentPage === 1}
+            title="Halaman pertama"
           >
             &laquo;
           </button>
+
           <button
             onClick={() => onPageChange(currentPage - 1)}
-            disabled={currentPage === 1}
+            disabled={prevDisabled}
             className="px-2 py-1 text-gray-400 hover:text-blue-600 rounded transition"
             aria-label="Previous Page"
+            title="Sebelumnya"
           >
             <FaChevronLeft />
           </button>
 
-          {/* Show only a window of pages for better UX */}
-          {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter((page) => {
-              if (totalPages <= 7) return true;
-              if (page === 1 || page === totalPages) return true;
-              if (Math.abs(page - currentPage) <= 2) return true;
-              if (currentPage <= 4 && page <= 6) return true;
-              if (currentPage >= totalPages - 3 && page >= totalPages - 5)
-                return true;
-              return false;
-            })
-            .map((page, idx, arr) => {
-              // Add ellipsis
-              if (idx > 0 && page - arr[idx - 1] > 1) {
-                return (
-                  <span key={`ellipsis-${page}`} className="px-2 text-gray-400">
-                    ...
-                  </span>
-                );
-              }
-              return (
-                <button
-                  key={page}
-                  onClick={() => onPageChange(page)}
-                  className={`px-3 py-1 rounded text-sm font-semibold transition ${
-                    page === currentPage
-                      ? "bg-blue-600 text-white shadow"
-                      : "bg-white text-blue-600 border border-blue-600 hover:bg-blue-50"
-                  }`}
-                  style={{ minWidth: 36 }}
-                >
-                  {page}
-                </button>
-              );
-            })}
+          <span className="px-3 py-1 text-sm font-semibold text-gray-700">
+            Page {currentPage}
+            {Number.isFinite(totalPages) && totalPages > 0 ? ` / ${totalPages}` : ""}
+          </span>
 
           <button
             onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={nextDisabled}
             className="px-2 py-1 text-gray-400 hover:text-blue-600 rounded transition"
             aria-label="Next Page"
+            title="Berikutnya"
           >
             <FaChevronRight />
           </button>
+
           <button
             onClick={() => onPageChange(totalPages)}
             className="px-2 py-1 text-gray-400 hover:text-blue-600 rounded transition"
             aria-label="Last Page"
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || nextDisabled}
+            title="Halaman terakhir"
           >
             &raquo;
           </button>
